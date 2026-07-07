@@ -1,4 +1,5 @@
 // ---------- UTILITY: VALIDATE URLs ----------
+// Only allow http(s) destinations for any generated link.
 function isValidUrl(url) {
   try {
     const parsed = new URL(url);
@@ -31,7 +32,7 @@ function trap(o){
 // ---------- ARSENAL ----------
 const PLATFORMS = [
   { desig:"M-5", name:"The Bucket", vibe:"Standard issue. Everyone's got one.",
-    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><path class="o" d="M12 14 L16 38 L32 38 L36 14 Z"/><line class="w" x1="15" y1="24" x2="33" y2="24"/><circle class="d" cx="24" cy="24" r="2.5"/></svg>`,
+    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><path class="o" d="M12 14 L16 38 L32 38 L36 14 Z"/><line class="w" x1="15" y1="24" x2="33" y2="24"/><circle class="d" cx="24" cy="24" r="3.5"/></svg>`,
     good:["Free / everywhere","Easy 15-min build"], warn:["Tippy in wind","Small surface"],
     schem: trap({
       body:`<path class="body" d="M165,80 L177,250 L263,250 L275,80"/>`,
@@ -45,11 +46,11 @@ const PLATFORMS = [
         L('ANCHOR / PAVER','middle',220,278,220,261,false)
       ]
     }),
-    steps:["Use a dark bucket (paint it black if it's pale — dark draws her in).","Fill about ¾ with water + a few handfuls of grass clippings. Let it get funky.","Leave the surface open — no fine mesh screen, just a ½\" coarse guard that lets her land.","Drop a Bti dunk in."],
+    steps:["Use a dark bucket (paint it black if it's pale — dark draws her in).","Fill about ¾ with water + a few handfuls of grass clippings. Let it get funky.","Leave the surface open — she has to land on the water to lay. Only if kids or pets roam nearby, cap it with coarse ½\" hardware cloth (she still flies through); never fine window screen, which keeps her out and kills the trap.","Drill a small overflow hole ~2\" below the rim and screen that hole inside so storms drain without flushing larvae.","Emplace it: bolt to a paver or strap to a T-post so the wind can't tip it."],
     kill:"1 Bti dunk" },
 
   { desig:"TUB", name:"Old Tub or Sink", vibe:"The lazy genius — it drains itself.",
-    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><path class="o" d="M11 16 Q11 38 18 38 L30 38 Q37 38 37 16"/><line class="w" x1="13" y1="25" x2="35" y2="25"/><circle class="d" cx="24" cy="25" r="2.5"/></svg>`,
+    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><path class="o" d="M11 16 Q11 38 18 38 L30 38 Q37 38 37 16"/><line class="w" x1="13" y1="25" x2="35" y2="25"/><circle class="d" cx="24" cy="25" r="3.5"/></svg>`,
     good:["Built-in drain plug","Too heavy to blow over","Indestructible"], warn:["Heavy to position once"],
     schem: trap({
       body:`<path class="body" d="M135,108 Q135,250 178,250 L262,250 Q305,250 305,108"/>`,
@@ -62,11 +63,11 @@ const PLATFORMS = [
         L('DRAIN PLUG','start',236,278,224,268,false)
       ]
     }),
-    steps:["Set it roughly level somewhere shaded.","Fill with water + grass clippings; let it ferment a few days.","Leave the surface open for her to lay; if you must cover it for safety, use coarse screening only.","Drop a Bti dunk in; re-dunk monthly."],
+    steps:["Set it roughly level somewhere shaded.","Fill with water + grass clippings; let it ferment a few days.","Leave the surface open for her to lay; if you must cover it for safety, use coarse ½\" hardware cloth — not fine window screen.","Service it the easy way: pull the drain plug, rinse, refill, re-dunk.","That existing drain is your whole maintenance plan — use it."],
     kill:"1 Bti dunk" },
 
   { desig:"DRM", name:"Halved Food Drum", vibe:"Two wide traps from one free barrel.",
-    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><path class="o" d="M8 18 L10 38 L38 38 L40 18"/><line class="w" x1="11" y1="27" x2="37" y2="27"/><circle class="d" cx="24" cy="27" r="2.5"/></svg>`,
+    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><path class="o" d="M8 18 L10 38 L38 38 L40 18"/><line class="w" x1="11" y1="27" x2="37" y2="27"/><circle class="d" cx="24" cy="27" r="3.5"/></svg>`,
     good:["Huge surface = more catch","Free from car washes / co-ops"], warn:["Light when empty — ballast it"],
     schem: trap({
       body:`<path class="body" d="M120,92 L128,248 L312,248 L320,92"/>`,
@@ -74,17 +75,17 @@ const PLATFORMS = [
       wl:150, wlL:128, wlR:312, dunkX:220, base:248,
       extra:`<path class="ann" d="M320,124 h12 v6"/><rect class="anchor" x="150" y="250" width="20" height="13"/><rect class="anchor" x="180" y="250" width="20" height="13"/>`,
       labels:[
-        L('½" GUARD (SHE PASSES)','middle',220,52,220,92,false),
+        L('½\" GUARD (SHE PASSES)','middle',220,52,220,92,false),
         L('SCREENED OVERFLOW','start',300,116,332,124,false),
         L('BTI DUNK','start',340,150,235,150,true),
         L('BALLAST (BRICKS)','middle',175,278,175,263,false)
       ]
     }),
-    steps:["Get a food-grade plastic drum (free at car washes, breweries, co-ops). Cut it in half across the middle.","Darken the inside if it's pale; line cracks with scrap billboard vinyl.","Fill each half with water + grass clippings in a shaded spot.","Leave top open; anchor it so it won't tip.","Drop a Bti dunk in each half; re-dunk monthly."],
+    steps:["Get a food-grade plastic drum (free at car washes, breweries, co-ops). Cut it in half across the middle.","Darken the inside if it's pale; line cracks with scrap billboard vinyl.","Fill with water + grass clippings.","Leave the wide surface open — it's your best catch. For a child- and pet-safe cover use coarse ½\" hardware cloth she can fly through, never fine screen. Weigh it down with bricks or bolt it to a paver.","Add a screened overflow ~2\" below the rim for storms."],
     kill:"1 dunk per half" },
 
   { desig:"STK", name:"Stock Tank", vibe:"Built for the field. Cracked ones are free.",
-    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><path class="o" d="M7 20 Q7 38 13 38 L35 38 Q41 38 41 20"/><line class="w" x1="9" y1="28" x2="39" y2="28"/><circle class="d" cx="24" cy="28" r="2.5"/></svg>`,
+    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><path class="o" d="M7 20 Q7 38 13 38 L35 38 Q41 38 41 20"/><line class="w" x1="9" y1="28" x2="39" y2="28"/><circle class="d" cx="24" cy="28" r="3.5"/></svg>`,
     good:["Made for outdoors","Often has a drain plug","Low and stable"], warn:["Big — scale up the dunks"],
     schem: trap({
       body:`<path class="body" d="M110,116 Q110,248 138,248 L302,248 Q330,248 330,116"/>`,
@@ -97,11 +98,11 @@ const PLATFORMS = [
         L('DRAIN PLUG','start',355,182,348,182,false)
       ]
     }),
-    steps:["Beg a cracked or rusted-out tank off any rancher — they'll be glad it's gone.","Patch cracks with scrap billboard vinyl or pond-liner offcuts.","Fill with water + grass clippings; keep it shaded.","Drop Bti dunks in — use 1 per ~25 gallons (check the label)."],
+    steps:["Beg a cracked or rusted-out tank off any rancher — they'll be glad it's gone.","Patch cracks with scrap billboard vinyl or pond-liner offcuts.","Fill with water + grass clippings; site it in shade.","Use the drain plug for easy servicing.","Scale your dunks to the size — one per ~100 sq ft of surface."],
     kill:"1 dunk per ~25 gallons (check the label)" },
 
   { desig:"TIR", name:"The Tire", vibe:"Her favorite nursery, turned against her.",
-    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><circle class="o" cx="24" cy="24" r="15"/><circle class="o" cx="24" cy="24" r="6"/><circle class="d" cx="24" cy="24" r="2.5"/></svg>`,
+    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><circle class="o" cx="24" cy="24" r="15"/><circle class="o" cx="24" cy="24" r="6"/><circle class="d" cx="24" cy="24" r="2.6"/></svg>`,
     good:["Free everywhere","Wind-proof","She already loves it"], warn:["Water hides in the bead — re-dose, don't drain"],
     schem: bp(
       `<path class="body" d="M95,205 Q95,150 140,150 Q180,150 180,188 Q190,205 220,205 Q250,205 260,188 Q260,150 300,150 Q345,150 345,205 Q345,240 300,240 L140,240 Q95,240 95,205 Z"/>`+
@@ -113,11 +114,11 @@ const PLATFORMS = [
       L('BTI DUNK','start',300,150,232,199,true)+
       L('RE-DOSE — CANNOT FULLY DRAIN','middle',220,272,220,225,false)
     ),
-    steps:["Tire shops pay to get rid of these — take a few off their hands.","Lay it flat or half-bury it in a ditch or low corner.","Fill the well with water + grass clippings.","Because you can't fully drain a tire, drop a Bti dunk in and re-dose it every month — mandatory."],
+    steps:["Tire shops pay to get rid of these — take a few off their hands.","Lay it flat or half-bury it in a ditch or low corner.","Fill the well with water + grass clippings.","Because you can't fully empty a tire, you maintain it by re-dosing — not draining.","Best emplaced in the spots that already hold water after rain."],
     kill:"1 Bti dunk, re-dosed monthly" },
 
   { desig:"FRZ", name:"Dead Chest Freezer", vibe:"An insulated tank you got for free.",
-    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><rect class="o" x="9" y="14" width="30" height="24"/><line class="o" x1="9" y1="19" x2="39" y2="19"/><line class="w" x1="13" y1="24" x2="35" y2="24"/><circle class="d" cx="24" cy="24" r="2.5"/></svg>`,
+    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><rect class="o" x="9" y="14" width="30" height="24"/><line class="o" x1="9" y1="19" x2="39" y2="19"/><line class="w" x1="13" y1="28" x2="35" y2="28"/><circle class="d" cx="24" cy="28" r="3.2"/></svg>`,
     good:["Insulated = steady ferment, slow evaporation","Watertight","Immovable"], warn:["Big footprint"],
     schem: trap({
       body:`<path class="body" d="M115,98 L115,250 L325,250 L325,98 M129,98 L129,236 L311,236 L311,98"/>`,
@@ -125,17 +126,17 @@ const PLATFORMS = [
       wl:150, wlL:129, wlR:311, dunkX:220, base:236,
       extra:`<path class="ann" d="M325,206 h12"/><circle class="ann" cx="339" cy="206" r="4.5"/>`,
       labels:[
-        L('½" GUARD (SHE PASSES)','middle',220,62,220,98,false),
+        L('½\" GUARD (SHE PASSES)','middle',220,62,220,98,false),
         L('INSULATED WALLS','start',118,82,122,120,false),
         L('BTI DUNK','start',236,150,235,150,true),
         L('LOW DRAIN','start',350,206,343,206,false)
       ]
     }),
-    steps:["Grab a dead chest freezer or mini-fridge off a curb / Marketplace 'free' pile.","Prop the lid open or pull it off entirely.","Fill with water + grass clippings.","Leave it open so she can land; use a ½\" coarse guard if needed for safety.","Drop Bti dunks by volume (check label); re-dunk monthly."],
+    steps:["Grab a dead chest freezer or mini-fridge off a curb / Marketplace 'free' pile.","Prop the lid open or pull it off entirely.","Fill with water + grass clippings.","Leave it open so she can reach the water; if pets or kids are near, cap with coarse ½\" hardware cloth she flies through — not fine window screen.","Drill a low drain hole or keep a siphon hose handy for servicing."],
     kill:"Dunks by volume (check the label)" },
 
   { desig:"IMP", name:"Improvise", vibe:"It's the rules, not the container.",
-    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><path class="o" style="stroke-dasharray:4 3" d="M13 15 L16 38 L32 38 L35 15"/><text x="24" y="29" text-anchor="middle" font-family="'Oswald',sans-serif" font-weight="700" font-size="18" fill="currentColor">?</text></svg>`,
+    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><path class="o" style="stroke-dasharray:4 3" d="M13 15 L16 38 L32 38 L35 15"/><text x="24" y="29" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--amber)">?</text></svg>`,
     good:["Use anything you've already got"], warn:["Must hold ≥2 gal & not blow over"],
     schem: trap({
       body:`<path class="body" style="stroke-dasharray:6 4" d="M165,90 L177,250 L263,250 L275,90"/>`,
@@ -149,7 +150,7 @@ const PLATFORMS = [
         L('ANY DARK VESSEL ≥ 2 GAL','middle',220,278,220,250,false)
       ]
     }),
-    steps:["Any dark vessel that holds a couple gallons works: mortar tub, old cooler, water trough, tote.","Funky water + grass to lure her in.","A Bti dunk to kill the larvae — non-negotiable."],
+    steps:["Any dark vessel that holds a couple gallons works: mortar tub, old cooler, water trough, tote.","Funky water + grass to lure her in.","A Bti dunk to kill the larvae — non-negotiable.","Keep the surface open so she can land and lay (coarse ½\" hardware-cloth cover only if safety needs it — never fine screen), plus a screened overflow so storms can't flush the larvae.","Anchor it against the wind, and keep it maintained."],
     kill:"Always a Bti dunk" }
 ];
 
@@ -198,7 +199,7 @@ const RETAILERS = [
 ];
 const buy = document.getElementById('buy');
 RETAILERS.forEach(r=>{
-  if (!isValidUrl(r.u)) return; // Skip invalid URLs
+  if (!isValidUrl(r.u)) return; // Skip anything that isn't a plain http(s) link
   const a=document.createElement('a');
   a.href=r.u; a.target="_blank"; a.rel="noopener noreferrer";
   a.innerHTML=`<span class="bn">${r.n} ↗</span><span class="bd">${r.d}</span>`;
@@ -206,46 +207,18 @@ RETAILERS.forEach(r=>{
 });
 
 // ---------- SHARE ----------
-function toast(msg){
-  const t=document.getElementById('toast');
-  // Sanitize: limit length and use textContent to prevent XSS
-  t.textContent = String(msg).substring(0, 200);
-  t.classList.add('show');
-  clearTimeout(window._tt);
-  window._tt=setTimeout(()=>t.classList.remove('show'),2600);
-}
-
-function copyLink(){
-  const url=location.href;
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(url)
-      .then(()=>toast('Link copied — send it to a neighbor'))
-      .catch(()=>toast('Failed to copy link'));
-  } else {
-    toast('Share not supported in this browser');
-  }
-}
-
-function shareSite(){
-  const url=location.href;
-  if(navigator.share){
-    navigator.share({
-      title:'Operation: Doland Skeeter War',
-      text:'Protect your land from West Nile mosquitoes — here\'s how.',
-      url:url
-    }).catch(()=>{}); // Silently fail if user cancels
-  } else {
-    toast('Share not supported in this browser');
-  }
-}
-
-window.copyLink=copyLink;
-window.shareSite=shareSite;
+function toast(msg){const t=document.getElementById('toast');t.textContent=String(msg).substring(0,200);t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),2600);}
+function copyLink(){const url=location.href;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(()=>toast('Link copied — send it to a neighbor')).catch(()=>toast('Copy the page link to share'));}else{toast('Copy the page link to share');}}
+function shareSite(){const url=location.href;if(navigator.share){navigator.share({title:'Operation: Doland Skeeter War',text:'Protect your land from West Nile mosquitoes — here\'s how.',url:url}).catch(()=>{});}else{copyLink();}}
+// Wire buttons here (no inline onclick handlers) so the page works under a strict
+// script-src Content-Security-Policy that forbids inline script.
+const shareBtn=document.getElementById('shareBtn'); if(shareBtn) shareBtn.addEventListener('click',shareSite);
+const copyBtn=document.getElementById('copyBtn'); if(copyBtn) copyBtn.addEventListener('click',copyLink);
 
 // ---------- SCROLL-SPY ----------
 const links=Array.from(document.querySelectorAll('#phasenav a')); const map={};
 links.forEach(a=>map[a.getAttribute('href').slice(1)]=a);
-const spy=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('active'));const m=map[e.target.id];if(m)m.classList.add('active');}})},{rootMargin:'0px 0px -50% 0px'});
+const spy=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('active'));const m=map[e.target.id];if(m)m.classList.add('active');}})},{rootMargin:'-45% 0px -50% 0px'});
 document.querySelectorAll('.order').forEach(s=>spy.observe(s));
 
 // ---------- REVEAL ----------
