@@ -3,15 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Content Security Policy. Delivered via meta because the site is hosted on
-     GitHub Pages, which does not honor an Apache .htaccess. frame-ancestors and
-     X-Frame-Options cannot be set from a meta tag, so clickjacking protection
-     would require a header-capable host. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+<!-- Content Security Policy. Single-origin: all fonts are self-hosted under
+     /fonts, so no external font origins are allowed. A matching policy is also
+     delivered as a real response header via a Cloudflare Transform Rule; keep
+     the two in sync. Note: browsers ignore frame-ancestors when it arrives in a
+     <meta> CSP (it only takes effect as a real header), so clickjacking
+     protection is actually enforced by the Cloudflare header — it is listed
+     here too only so the meta and header policies stay identical. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'">
 <title>Operation: Doland Skeeter War</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/fonts/fonts.css">
 <style>
   :root{
     --drab:#191B12; --drab-2:#22251A; --drab-3:#2C3022;
