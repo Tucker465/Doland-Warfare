@@ -1,0 +1,7 @@
+# Security contact for dolandskeeterwar.com — RFC 9116
+# https://www.rfc-editor.org/rfc/rfc9116
+
+Contact: mailto:security@dolandskeeterwar.com
+Expires: 2027-07-11T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://dolandskeeterwar.com/.well-known/security.txt
