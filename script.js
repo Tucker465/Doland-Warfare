@@ -136,10 +136,10 @@ const PLATFORMS = [
     kill:"Dunks by volume (check the label)" },
 
   { desig:"IMP", name:"Improvise", vibe:"It's the rules, not the container.",
-    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><path class="o" style="stroke-dasharray:4 3" d="M13 15 L16 38 L32 38 L35 15"/><text x="24" y="29" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--amber)">?</text></svg>`,
+    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><path class="o dash-icon" d="M13 15 L16 38 L32 38 L35 15"/><text x="24" y="29" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--amber)">?</text></svg>`,
     good:["Use anything you've already got"], warn:["Must hold ≥2 gal & not blow over"],
     schem: trap({
-      body:`<path class="body" style="stroke-dasharray:6 4" d="M165,90 L177,250 L263,250 L275,90"/>`,
+      body:`<path class="body dash-schem" d="M165,90 L177,250 L263,250 L275,90"/>`,
       water:`<path class="water" d="M180,150 L183,247 L257,247 L260,150 Z"/>`,
       wl:150, wlL:180, wlR:260, dunkX:220, base:250,
       extra:`<path class="ann" d="M275,124 h14 v6"/><text x="220" y="122" font-family="'IBM Plex Mono',monospace" font-size="22" fill="#3f4a2e" text-anchor="middle">?</text>`,
@@ -155,32 +155,72 @@ const PLATFORMS = [
 ];
 
 const arsenal = document.getElementById('arsenal');
+
+// el(tag, className?, text?) — an element with an optional class and text.
+// Text always goes in via textContent, so it can never be parsed as markup.
+function el(tag, className, text){
+  const n = document.createElement(tag);
+  if (className) n.className = className;
+  if (text != null) n.textContent = text;
+  return n;
+}
+// svgNode(markup) — turn a trusted, program-generated SVG string into live SVG
+// nodes without an innerHTML sink. DOMParser never executes script or event
+// handlers on parse, so this stays safe even if a schematic/icon ever came
+// from dynamic data. The root <svg> needs an explicit xmlns because XML parsing
+// (unlike the HTML parser) does not infer the SVG namespace, and without it the
+// nodes would not render as graphics.
+function svgNode(markup){
+  if (!/\sxmlns=/.test(markup)) markup = markup.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+  const doc = new DOMParser().parseFromString(markup, 'image/svg+xml');
+  if (doc.querySelector('parsererror')) return document.createComment('svg parse error');
+  return document.importNode(doc.documentElement, true);
+}
+
 PLATFORMS.forEach((p)=>{
-  const card = document.createElement('div'); card.className='platform';
-  const good = p.good.map(g=>`<span class="tag good">+ ${g}</span>`).join('');
-  const warn = p.warn.map(w=>`<span class="tag warn">! ${w}</span>`).join('');
-  const steps = p.steps.map(s=>`<li>${s}</li>`).join('');
-  card.innerHTML = `
-    <button class="platform-btn" aria-expanded="false">
-      <span class="desig">${p.desig}</span>
-      ${p.icon}
-      <span class="pf-name"><span class="pn">${p.name}</span><span class="pv">${p.vibe}</span></span>
-      <span class="pf-cue">
-        <span class="cue-label is-closed">TAP TO BUILD</span>
-        <span class="cue-label is-open">HIDE</span>
-        <span class="chev" aria-hidden="true">▸</span>
-      </span>
-    </button>
-    <div class="platform-body"><div class="pb-inner">
-      ${p.schem}
-      <p class="bp-cap">FIELD SCHEMATIC — labeled for clarity.</p>
-      <div class="tags">${good}${warn}</div>
-      <ol class="steps">${steps}</ol>
-      <div class="kill-line"><span class="kx">KILL</span>
-        <span class="t">${p.kill} — this is the part that does the work. Skip it and you've built a nursery.</span></div>
-    </div></div>`;
+  const card = el('div','platform');
+
+  const btn = el('button','platform-btn');
+  btn.setAttribute('aria-expanded','false');
+  btn.appendChild(el('span','desig',p.desig));
+  btn.appendChild(svgNode(p.icon));
+
+  const name = el('span','pf-name');
+  name.appendChild(el('span','pn',p.name));
+  name.appendChild(el('span','pv',p.vibe));
+  btn.appendChild(name);
+
+  const cue = el('span','pf-cue');
+  cue.appendChild(el('span','cue-label is-closed','TAP TO BUILD'));
+  cue.appendChild(el('span','cue-label is-open','HIDE'));
+  const chev = el('span','chev','▸'); chev.setAttribute('aria-hidden','true');
+  cue.appendChild(chev);
+  btn.appendChild(cue);
+  card.appendChild(btn);
+
+  const body = el('div','platform-body');
+  const inner = el('div','pb-inner');
+  inner.appendChild(svgNode(p.schem));
+  inner.appendChild(el('p','bp-cap','FIELD SCHEMATIC — labeled for clarity.'));
+
+  const tags = el('div','tags');
+  p.good.forEach(g=>tags.appendChild(el('span','tag good',`+ ${g}`)));
+  p.warn.forEach(w=>tags.appendChild(el('span','tag warn',`! ${w}`)));
+  inner.appendChild(tags);
+
+  const ol = el('ol','steps');
+  p.steps.forEach(s=>ol.appendChild(el('li',null,s)));
+  inner.appendChild(ol);
+
+  const kill = el('div','kill-line');
+  kill.appendChild(el('span','kx','KILL'));
+  kill.appendChild(el('span','t',`${p.kill} — this is the part that does the work. Skip it and you've built a nursery.`));
+  inner.appendChild(kill);
+
+  body.appendChild(inner);
+  card.appendChild(body);
   arsenal.appendChild(card);
-  const btn=card.querySelector('.platform-btn'), body=card.querySelector('.platform-body');
+
   btn.addEventListener('click',()=>{
     const open=card.classList.toggle('open');
     btn.setAttribute('aria-expanded',open?'true':'false');
@@ -202,7 +242,8 @@ RETAILERS.forEach(r=>{
   if (!isValidUrl(r.u)) return; // Skip anything that isn't a plain http(s) link
   const a=document.createElement('a');
   a.href=r.u; a.target="_blank"; a.rel="noopener noreferrer";
-  a.innerHTML=`<span class="bn">${r.n} ↗</span><span class="bd">${r.d}</span>`;
+  a.appendChild(el('span','bn',`${r.n} ↗`));
+  a.appendChild(el('span','bd',r.d));
   buy.appendChild(a);
 });
 
