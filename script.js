@@ -257,9 +257,10 @@ const shareBtn=document.getElementById('shareBtn'); if(shareBtn) shareBtn.addEve
 const copyBtn=document.getElementById('copyBtn'); if(copyBtn) copyBtn.addEventListener('click',copyLink);
 
 // ---------- SCROLL-SPY ----------
-const links=Array.from(document.querySelectorAll('#phasenav a')); const map={};
-links.forEach(a=>map[a.getAttribute('href').slice(1)]=a);
-const spy=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('active'));const m=map[e.target.id];if(m)m.classList.add('active');}})},{rootMargin:'-45% 0px -50% 0px'});
+// Section links live in several places now (top bar, desktop section rail,
+// context rail). Highlight every link that points at the active section.
+const links=Array.from(document.querySelectorAll('.section-link'));
+const spy=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const href='#'+e.target.id;links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')===href));}})},{rootMargin:'-45% 0px -50% 0px'});
 document.querySelectorAll('.order').forEach(s=>spy.observe(s));
 
 // ---------- REVEAL ----------

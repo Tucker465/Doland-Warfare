@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'en' }}">
+<head>
+{% include head.html %}
+</head>
+<body>
+{% include cmdbar.html %}
+<div class="layout">
+  {% include section-rail.html %}
+  <main class="main" id="main">
+    {{ content }}
+  </main>
+  {% include context-rail.html %}
+</div>
+{% include footer.html %}
+<div id="toast"></div>
+<script src="/script.js" defer></script>
+</body>
+</html>

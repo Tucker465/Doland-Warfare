@@ -1,0 +1,15 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Content Security Policy. Single-origin: all scripts, styles, fonts, and
+     images are same-origin (or self-contained data: URIs), so no external
+     origins are allowed. A matching policy is also delivered as a real response
+     header via a Cloudflare Transform Rule; keep the two in sync. Note: browsers
+     ignore frame-ancestors in a <meta> CSP (it only takes effect as a real
+     header), so clickjacking protection is enforced by the Cloudflare header —
+     it is listed here too only so the meta and header policies stay identical.
+     Adding ANY external resource (script/img/font/fetch/iframe) requires
+     updating the matching directive here AND in the Cloudflare rule. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'">
+<title>{{ page.title | default: site.title }}</title>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/styles.css">
