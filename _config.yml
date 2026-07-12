@@ -1,0 +1,31 @@
+title: "Operation: Doland Skeeter War"
+description: "Neighbor-to-neighbor mosquito control — West Nile defense for Doland, SD."
+url: "https://dolandskeeterwar.com"
+lang: en
+
+# Jekyll excludes dot-directories by default; force-include the RFC 9116 contact.
+include:
+  - ".well-known"
+
+# Dev/build artifacts that must never be published.
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - scratchpad
+
+# Extensible content types. Defined now so future sections drop in as single
+# files (one markdown file -> one page), never a re-architecture.
+collections:
+  buildplans:
+    output: true
+    permalink: /build/:name/
+  tools:
+    output: true
+    permalink: /tools/:name/
+  intel:
+    output: true
+    permalink: /intel/:name/
+
+# No custom plugins — stays within the GitHub Pages allowlist.
+plugins: []

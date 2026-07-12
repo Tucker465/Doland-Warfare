@@ -48,7 +48,7 @@
 
   /* SECTIONS */
   .order{padding:44px 0;border-bottom:1px solid var(--line)}
-  .order:nth-child(even){background:var(--drab-2)}
+  .order:nth-of-type(even){background:var(--drab-2)}
   .sec-head{display:flex;gap:16px;align-items:baseline;margin-bottom:6px}
   .sec-num{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(34px,9vw,52px);line-height:.85;color:var(--amber-dim);flex-shrink:0}
   .sec-titles h2{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(26px,7vw,40px);line-height:.95;text-transform:uppercase;letter-spacing:.005em;color:var(--paper)}
@@ -308,4 +308,54 @@
    inline SVG style attributes in script.js for the same reason. */
 .dash-icon{stroke-dasharray:4 3}
 .dash-schem{stroke-dasharray:6 4}
+
+/* ============================================================================
+   RESPONSIVE SHELL (Phase 1)
+   Mobile & tablet render exactly as before: .layout/.main are pass-through
+   wrappers and the side rails are hidden, so the content keeps its full-bleed
+   sections and 760px reading column untouched. On wide desktops the rails are
+   ADDED into the previously-dead gutters as fixed panels — the content is not
+   reflowed, so nothing about the existing layout can regress.
+   ============================================================================ */
+  .layout{display:block}
+  .main{display:block}
+
+  /* Side rails: desktop-only. Hidden (and out of the DOM flow) below 1200px. */
+  .section-rail,.context-rail{display:none}
+
+  @media (min-width:1201px){
+    /* The phase nav moves from the top bar into the left rail on desktop. */
+    .cmdbar .phasenav{display:none}
+
+    .section-rail,.context-rail{
+      display:block;position:fixed;top:84px;width:190px;
+      max-height:calc(100vh - 104px);overflow:auto;
+      background:var(--drab-2);border:1px solid var(--line);border-radius:6px;
+      padding:14px 14px 16px;z-index:40;
+    }
+    /* Anchor each rail just outside the centered 760px content column. */
+    .section-rail{left:calc(50% - 594px)}
+    .context-rail{left:calc(50% + 404px)}
+
+    .rail-head{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;
+      letter-spacing:.16em;color:var(--moss);margin-bottom:12px;
+      padding-bottom:8px;border-bottom:1px solid var(--line)}
+
+    .rail-nav{list-style:none;display:flex;flex-direction:column;gap:2px}
+    .rail-nav a,.ctx-index a{display:flex;gap:8px;align-items:baseline;
+      font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.02em;
+      color:var(--moss);text-decoration:none;padding:6px 8px;border-radius:4px;
+      border:1px solid transparent;transition:.16s}
+    .rail-nav a .n,.ctx-index a .n{color:var(--moss-dim);font-size:10px;font-weight:600}
+    .rail-nav a:hover,.ctx-index a:hover{color:var(--paper);background:var(--drab-3)}
+    .rail-nav a.active,.ctx-index a.active{color:var(--amber);border-color:var(--amber-dim);background:var(--drab-3)}
+    .rail-nav a.active .n,.ctx-index a.active .n{color:var(--amber)}
+
+    .ctx-block{margin-bottom:14px}
+    .ctx-k{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;
+      letter-spacing:.1em;color:var(--moss-dim);margin-bottom:4px}
+    .ctx-v{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--paper-2);line-height:1.4}
+    .ctx-index{list-style:none;display:flex;flex-wrap:wrap;gap:3px}
+    .ctx-index a{padding:4px 7px}
+  }
 

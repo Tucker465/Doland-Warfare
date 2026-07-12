@@ -1,0 +1,7 @@
+# Town-specific values, referenced by variable so a future SD-wide or per-town
+# site is a re-skin (swap this file), not a rebuild. Do not hardcode "Doland"
+# into templates — pull from here.
+town: Doland
+county: Spink County
+state: SD
+domain: DolandSkeeterWar.com
