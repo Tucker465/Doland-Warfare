@@ -27,5 +27,7 @@ collections:
     output: true
     permalink: /intel/:name/
 
-# No custom plugins — stays within the GitHub Pages allowlist.
-plugins: []
+# jekyll-sitemap is on the GitHub Pages allowlist; it generates /sitemap.xml
+# from published pages/collections and keeps it current as new content is added.
+plugins:
+  - jekyll-sitemap
