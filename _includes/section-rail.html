@@ -1,8 +1,11 @@
+{%- assign section_base = '' %}
+{%- unless page.url == '/' %}{% assign section_base = '/' %}{% endunless %}
 <aside class="section-rail" aria-label="Section navigation">
   <div class="rail-head">OPORD</div>
   <ol class="rail-nav">
     {%- for s in site.data.nav.order_sections %}
-    <li><a class="section-link" href="#{{ s.id }}"><span class="n">{{ s.num }}</span> {{ s.label }}</a></li>
+    <li><a class="section-link" href="{{ section_base }}#{{ s.id }}"><span class="n">{{ s.num }}</span> {{ s.label }}</a></li>
     {%- endfor %}
+    <li><a class="section-link{% if page.url == '/about/' %} active{% endif %}" href="/about/">About</a></li>
   </ol>
 </aside>

@@ -177,7 +177,7 @@ function svgNode(markup){
   return document.importNode(doc.documentElement, true);
 }
 
-PLATFORMS.forEach((p)=>{
+if (arsenal) PLATFORMS.forEach((p)=>{
   const card = el('div','platform');
 
   const btn = el('button','platform-btn');
@@ -238,7 +238,7 @@ const RETAILERS = [
   {n:"Runnings", d:"check in store", u:"https://www.runnings.com/"}
 ];
 const buy = document.getElementById('buy');
-RETAILERS.forEach(r=>{
+if (buy) RETAILERS.forEach(r=>{
   if (!isValidUrl(r.u)) return; // Skip anything that isn't a plain http(s) link
   const a=document.createElement('a');
   a.href=r.u; a.target="_blank"; a.rel="noopener noreferrer";

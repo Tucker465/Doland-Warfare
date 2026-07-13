@@ -1,8 +1,11 @@
 ---
 layout: default
-title: "Operation: Doland Skeeter War"
+title: "Doland Skeeter War — SD Mosquito Control & West Nile Prevention Guide"
 description: "Knock down West Nile mosquitoes on your own land in Doland, SD — kill standing water and run simple, wildlife-safe Bti larval traps. A plain-language field guide."
 preload_hero: true
+schema_article: true
+schema_howto: true
+schema_faq: true
 ---
 <header class="hero">
   <div class="wrap">
@@ -100,6 +103,8 @@ preload_hero: true
       <div class="buy">
         <a href="https://www.cdc.gov/west-nile-virus/index.html" target="_blank" rel="noopener noreferrer"><span class="bn">CDC ↗</span><span class="bd">West Nile facts</span></a>
         <a href="https://westnile.sd.gov/" target="_blank" rel="noopener noreferrer"><span class="bn">SD DOH ↗</span><span class="bd">SD data &amp; guidance</span></a>
+        <a href="https://www.epa.gov/mosquitocontrol/bti-mosquito-control" target="_blank" rel="noopener noreferrer"><span class="bn">EPA ↗</span><span class="bd">Bti safety &amp; use</span></a>
+        <a href="https://extension.sdstate.edu/these-mosquitoes-are-awful-what-can-i-do-my-backyard-manage-them" target="_blank" rel="noopener noreferrer"><span class="bn">SDSU Extension ↗</span><span class="bd">SD backyard guidance</span></a>
       </div>
     </div>
   </div>
@@ -128,10 +133,9 @@ preload_hero: true
     <div class="quickstart">
       <div class="qt">▸ FOUR MOVES — START TODAY</div>
       <ul class="qsteps">
-        <li><span><b>Walk your land</b> after the next rain and dump the easy standing water.</span></li>
-        <li><span><b>Grab Bti</b> — "Mosquito Dunks," about $10 at any farm or hardware store.</span></li>
-        <li><span><b>Build one trap</b> for the water you can't get rid of (pick a platform below).</span></li>
-        <li><span><b>Tell a neighbor</b> — it only works if the block does it too.</span></li>
+        {%- for step in site.data.quickstart %}
+        <li><span><b>{{ step.lead }}</b> {{ step.rest }}</span></li>
+        {%- endfor %}
       </ul>
     </div>
 
@@ -313,5 +317,21 @@ preload_hero: true
       </div>
     </div>
     <p>The more of Doland that's in the fight, the fewer of them are left to bite any of us.</p>
+  </div>
+</section>
+
+<section class="order" id="faq">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">06</div>
+      <div class="sec-titles"><h2>Frequently Asked Questions</h2><div class="plain">Debrief.</div></div></div>
+    <div class="para-tag">PARA 6 — DEBRIEF</div>
+    <div class="faq">
+      {%- for item in site.data.faq %}
+      <details class="faq-item">
+        <summary>{{ item.q }}</summary>
+        <div class="faq-a"><p>{{ item.a }}</p></div>
+      </details>
+      {%- endfor %}
+    </div>
   </div>
 </section>
