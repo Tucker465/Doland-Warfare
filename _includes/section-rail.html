@@ -1,8 +1,0 @@
-<aside class="section-rail" aria-label="Section navigation">
-  <div class="rail-head">OPORD</div>
-  <ol class="rail-nav">
-    {%- for s in site.data.nav.order_sections %}
-    <li><a class="section-link" href="#{{ s.id }}"><span class="n">{{ s.num }}</span> {{ s.label }}</a></li>
-    {%- endfor %}
-  </ol>
-</aside>

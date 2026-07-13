@@ -320,40 +320,21 @@
   .layout{display:block}
   .main{display:block}
 
-  /* Left section rail is added into the desktop gutter; hidden below the width
-     where it fits without crowding the content. */
-  .section-rail{display:none}
-
-  /* Widen the reading column on desktop so the content and card grids stop
-     looking pinched in a wide viewport. Mobile and tablet keep the original
-     760px column, so nothing narrow-screen changes. */
+  /* Option A — fill the width on desktop: widen the content column, cap the
+     narrative paragraphs so text stays readable, and let the card grids use the
+     extra room (the two single-column groups go multi-column). Navigation stays
+     in the top command bar at every width, so nothing competes with the content
+     for the gutters. Mobile and tablet are unchanged (the original 760px column,
+     full-bleed sections, top-bar phase nav). */
   @media (min-width:1201px){
-    .wrap,.cmdbar-inner{max-width:900px}
-  }
+    .wrap,.cmdbar-inner{max-width:1120px}
 
-  @media (min-width:1360px){
-    /* Enough gutter now for the rail — move the phase nav out of the top bar
-       and into it so the two aren't duplicated. */
-    .cmdbar .phasenav{display:none}
+    /* Keep narrative text at a readable measure inside the wide column. */
+    .order p{max-width:42em}
 
-    .section-rail{
-      display:block;position:fixed;top:84px;width:200px;
-      left:calc(50% - 670px);
-      max-height:calc(100vh - 104px);overflow:auto;
-      background:var(--drab-2);border:1px solid var(--line);border-radius:6px;
-      padding:14px 14px 16px;z-index:40;
-    }
-    .rail-head{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;
-      letter-spacing:.16em;color:var(--moss);margin-bottom:12px;
-      padding-bottom:8px;border-bottom:1px solid var(--line)}
-    .rail-nav{list-style:none;display:flex;flex-direction:column;gap:2px}
-    .rail-nav a{display:flex;gap:8px;align-items:baseline;
-      font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.02em;
-      color:var(--moss);text-decoration:none;padding:6px 8px;border-radius:4px;
-      border:1px solid transparent;transition:.16s}
-    .rail-nav a .n{color:var(--moss-dim);font-size:10px;font-weight:600}
-    .rail-nav a:hover{color:var(--paper);background:var(--drab-3)}
-    .rail-nav a.active{color:var(--amber);border-color:var(--amber-dim);background:var(--drab-3)}
-    .rail-nav a.active .n{color:var(--amber)}
+    /* The two single-column card groups now use the width. align-items:start so
+       an expanded (taller) platform card doesn't stretch its row neighbour. */
+    .arsenal{grid-template-columns:1fr 1fr;align-items:start}
+    .fronts{grid-template-columns:repeat(3,1fr)}
   }
 
