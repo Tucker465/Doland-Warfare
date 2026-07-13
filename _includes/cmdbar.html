@@ -3,7 +3,7 @@
     <div class="callsign">OP: <span>{{ site.data.locale.town | upcase }}&nbsp;SKEETER&nbsp;WAR</span></div>
     <div class="phasenav" id="phasenav">
       {%- for s in site.data.nav.order_sections %}
-      <a class="section-link" href="#{{ s.id }}"><span class="n">{{ s.num }}</span>{{ s.short }}</a>
+      <a class="section-link" href="#{{ s.id }}" title="{{ s.label }}"><span class="n">{{ s.num }}</span>{{ s.short }}</a>
       {%- endfor %}
     </div>
   </div>

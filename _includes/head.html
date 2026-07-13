@@ -1,18 +1,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Content Security Policy. Single-origin: all scripts, styles, fonts, and
-     images are same-origin (or self-contained data: URIs), so no external
-     origins are allowed. A matching policy is also delivered as a real response
-     header via a Cloudflare Transform Rule; keep the two in sync. Note: browsers
-     ignore frame-ancestors in a <meta> CSP (it only takes effect as a real
-     header), so clickjacking protection is enforced by the Cloudflare header —
-     it is listed here too only so the meta and header policies stay identical.
-     Adding ANY external resource (script/img/font/fetch/iframe) requires
-     updating the matching directive here AND in the Cloudflare rule. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'">
+     images are served from this origin, so no external origins are allowed. A
+     matching policy is also delivered as a real response header via a Cloudflare
+     Transform Rule; keep the two in sync. frame-ancestors is intentionally NOT
+     in this meta tag: browsers ignore it in a <meta> CSP (and log a console
+     warning), so clickjacking protection is enforced only by the Cloudflare
+     header, which keeps frame-ancestors 'self'. Adding ANY external resource
+     (script/img/font/fetch/iframe) requires updating the matching directive
+     here AND in the Cloudflare rule. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
 <title>{{ page.title | default: site.title }}</title>
 <meta name="description" content="{{ page.description | default: site.description }}">
 <link rel="canonical" href="{{ page.url | absolute_url }}">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
 <!-- Open Graph / social + agent link preview metadata (public summary only). -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{{ site.title }}">
@@ -44,5 +46,9 @@
   ]
 }
 </script>
+{%- if page.preload_hero %}
+<!-- Preload the LCP hero image so it starts fetching before the CSS. -->
+<link rel="preload" as="image" type="image/webp" href="/assets/hero-1280.webp" imagesrcset="/assets/hero-800.webp 800w, /assets/hero-1280.webp 1280w" imagesizes="(min-width:1201px) 1080px, 100vw" fetchpriority="high">
+{%- endif %}
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/styles.css">
