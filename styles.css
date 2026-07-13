@@ -320,42 +320,40 @@
   .layout{display:block}
   .main{display:block}
 
-  /* Side rails: desktop-only. Hidden (and out of the DOM flow) below 1200px. */
-  .section-rail,.context-rail{display:none}
+  /* Left section rail is added into the desktop gutter; hidden below the width
+     where it fits without crowding the content. */
+  .section-rail{display:none}
 
+  /* Widen the reading column on desktop so the content and card grids stop
+     looking pinched in a wide viewport. Mobile and tablet keep the original
+     760px column, so nothing narrow-screen changes. */
   @media (min-width:1201px){
-    /* The phase nav moves from the top bar into the left rail on desktop. */
+    .wrap,.cmdbar-inner{max-width:900px}
+  }
+
+  @media (min-width:1360px){
+    /* Enough gutter now for the rail — move the phase nav out of the top bar
+       and into it so the two aren't duplicated. */
     .cmdbar .phasenav{display:none}
 
-    .section-rail,.context-rail{
-      display:block;position:fixed;top:84px;width:190px;
+    .section-rail{
+      display:block;position:fixed;top:84px;width:200px;
+      left:calc(50% - 670px);
       max-height:calc(100vh - 104px);overflow:auto;
       background:var(--drab-2);border:1px solid var(--line);border-radius:6px;
       padding:14px 14px 16px;z-index:40;
     }
-    /* Anchor each rail just outside the centered 760px content column. */
-    .section-rail{left:calc(50% - 594px)}
-    .context-rail{left:calc(50% + 404px)}
-
     .rail-head{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;
       letter-spacing:.16em;color:var(--moss);margin-bottom:12px;
       padding-bottom:8px;border-bottom:1px solid var(--line)}
-
     .rail-nav{list-style:none;display:flex;flex-direction:column;gap:2px}
-    .rail-nav a,.ctx-index a{display:flex;gap:8px;align-items:baseline;
+    .rail-nav a{display:flex;gap:8px;align-items:baseline;
       font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.02em;
       color:var(--moss);text-decoration:none;padding:6px 8px;border-radius:4px;
       border:1px solid transparent;transition:.16s}
-    .rail-nav a .n,.ctx-index a .n{color:var(--moss-dim);font-size:10px;font-weight:600}
-    .rail-nav a:hover,.ctx-index a:hover{color:var(--paper);background:var(--drab-3)}
-    .rail-nav a.active,.ctx-index a.active{color:var(--amber);border-color:var(--amber-dim);background:var(--drab-3)}
-    .rail-nav a.active .n,.ctx-index a.active .n{color:var(--amber)}
-
-    .ctx-block{margin-bottom:14px}
-    .ctx-k{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;
-      letter-spacing:.1em;color:var(--moss-dim);margin-bottom:4px}
-    .ctx-v{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--paper-2);line-height:1.4}
-    .ctx-index{list-style:none;display:flex;flex-wrap:wrap;gap:3px}
-    .ctx-index a{padding:4px 7px}
+    .rail-nav a .n{color:var(--moss-dim);font-size:10px;font-weight:600}
+    .rail-nav a:hover{color:var(--paper);background:var(--drab-3)}
+    .rail-nav a.active{color:var(--amber);border-color:var(--amber-dim);background:var(--drab-3)}
+    .rail-nav a.active .n{color:var(--amber)}
   }
 
