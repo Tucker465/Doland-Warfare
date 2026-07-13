@@ -1,0 +1,16 @@
+# The "Four Moves" — drives both the visible quickstart list and the HowTo
+# JSON-LD, from one source, so the two can never say different things.
+# `lead` is the bold lead-in phrase, `rest` completes the sentence; `text` is
+# the full plain-text version used for the schema step text.
+- lead: "Walk your land"
+  rest: "after the next rain and dump the easy standing water."
+  text: "Walk your land after the next rain and dump the easy standing water."
+- lead: "Grab Bti"
+  rest: "— \"Mosquito Dunks,\" about $10 at any farm or hardware store."
+  text: "Grab Bti — \"Mosquito Dunks,\" about $10 at any farm or hardware store."
+- lead: "Build one trap"
+  rest: "for the water you can't get rid of (pick a platform below)."
+  text: "Build one trap for the water you can't get rid of (pick a platform below)."
+- lead: "Tell a neighbor"
+  rest: "— it only works if the block does it too."
+  text: "Tell a neighbor — it only works if the block does it too."

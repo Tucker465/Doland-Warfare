@@ -15,6 +15,7 @@
 <link rel="canonical" href="{{ page.url | absolute_url }}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="manifest" href="/manifest.json">
 <!-- Open Graph / social + agent link preview metadata (public summary only). -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{{ site.title }}">
@@ -42,7 +43,56 @@
       "description": {{ page.description | default: site.description | jsonify }},
       "isPartOf": { "@id": "{{ '/' | absolute_url }}#website" },
       "inLanguage": "en"
+    },
+    {
+      "@type": "Organization",
+      "@id": "{{ '/' | absolute_url }}#organization",
+      "name": {{ site.title | jsonify }},
+      "url": "{{ '/' | absolute_url }}",
+      "description": "A free, volunteer, neighbor-to-neighbor mosquito control effort. Not affiliated with any government agency.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": {{ site.data.locale.town | jsonify }},
+        "addressRegion": {{ site.data.locale.state | jsonify }},
+        "addressCountry": "US"
+      }
     }
+    {%- if page.schema_article %}
+    ,{
+      "@type": "Article",
+      "@id": "{{ page.url | absolute_url }}#article",
+      "headline": {{ page.title | default: site.title | jsonify }},
+      "description": {{ page.description | default: site.description | jsonify }},
+      "mainEntityOfPage": { "@id": "{{ page.url | absolute_url }}#webpage" },
+      "author": { "@id": "{{ '/' | absolute_url }}#organization" },
+      "publisher": { "@id": "{{ '/' | absolute_url }}#organization" },
+      "inLanguage": "en"
+    }
+    {%- endif %}
+    {%- if page.schema_howto %}
+    ,{
+      "@type": "HowTo",
+      "@id": "{{ page.url | absolute_url }}#howto",
+      "name": "How to Stop Mosquitoes From Breeding on Your Property",
+      "description": "The four moves to knock down mosquito breeding sites on residential property, using standing-water removal and Bti larval control.",
+      "step": [
+        {%- for s in site.data.quickstart %}
+        { "@type": "HowToStep", "position": {{ forloop.index }}, "name": {{ s.lead | jsonify }}, "text": {{ s.text | jsonify }} }{% unless forloop.last %},{% endunless %}
+        {%- endfor %}
+      ]
+    }
+    {%- endif %}
+    {%- if page.schema_faq %}
+    ,{
+      "@type": "FAQPage",
+      "@id": "{{ page.url | absolute_url }}#faq",
+      "mainEntity": [
+        {%- for item in site.data.faq %}
+        { "@type": "Question", "name": {{ item.q | jsonify }}, "acceptedAnswer": { "@type": "Answer", "text": {{ item.a | jsonify }} } }{% unless forloop.last %},{% endunless %}
+        {%- endfor %}
+      ]
+    }
+    {%- endif %}
   ]
 }
 </script>

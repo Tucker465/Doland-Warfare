@@ -18,3 +18,4 @@ order_sections:
   - { num: "03", id: execution,   short: EXEC,  label: Execution }
   - { num: "04", id: sustainment, short: SUST,  label: Sustainment }
   - { num: "05", id: signal,      short: "C&S", label: "Command & Signal" }
+  - { num: "06", id: faq,         short: FAQ,   label: "Frequently Asked Questions" }

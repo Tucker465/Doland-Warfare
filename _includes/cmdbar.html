@@ -1,10 +1,13 @@
+{%- assign section_base = '' %}
+{%- unless page.url == '/' %}{% assign section_base = '/' %}{% endunless %}
 <nav class="cmdbar">
   <div class="cmdbar-inner">
-    <div class="callsign">OP: <span>{{ site.data.locale.town | upcase }}&nbsp;SKEETER&nbsp;WAR</span></div>
+    <a class="callsign" href="/">OP: <span>{{ site.data.locale.town | upcase }}&nbsp;SKEETER&nbsp;WAR</span></a>
     <div class="phasenav" id="phasenav">
       {%- for s in site.data.nav.order_sections %}
-      <a class="section-link" href="#{{ s.id }}" title="{{ s.label }}"><span class="n">{{ s.num }}</span>{{ s.short }}</a>
+      <a class="section-link" href="{{ section_base }}#{{ s.id }}" title="{{ s.label }}"><span class="n">{{ s.num }}</span>{{ s.short }}</a>
       {%- endfor %}
+      <a class="section-link{% if page.url == '/about/' %} active{% endif %}" href="/about/">ABOUT</a>
     </div>
   </div>
 </nav>
