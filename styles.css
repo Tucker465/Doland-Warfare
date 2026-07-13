@@ -322,10 +322,11 @@
 
   /* Option A — fill the width on desktop: widen the content column, cap the
      narrative paragraphs so text stays readable, and let the card grids use the
-     extra room (the two single-column groups go multi-column). Navigation stays
-     in the top command bar at every width, so nothing competes with the content
-     for the gutters. Mobile and tablet are unchanged (the original 760px column,
-     full-bleed sections, top-bar phase nav). */
+     extra room (the two single-column groups go multi-column). Mobile and tablet
+     are unchanged (the original 760px column, full-bleed sections, top-bar phase
+     nav). */
+  .section-rail{display:none}
+
   @media (min-width:1201px){
     .wrap,.cmdbar-inner{max-width:1120px}
 
@@ -336,5 +337,33 @@
        an expanded (taller) platform card doesn't stretch its row neighbour. */
     .arsenal{grid-template-columns:1fr 1fr;align-items:start}
     .fronts{grid-template-columns:repeat(3,1fr)}
+  }
+
+  /* Wide screens: once the left gutter is roomy enough beside the 1120px column,
+     put the section nav in a left rail (styled like the top phase nav — mono,
+     amber active) and drop it from the top bar so it isn't duplicated. Below
+     this width the nav stays in the top command bar. */
+  @media (min-width:1520px){
+    .cmdbar .phasenav{display:none}
+
+    .section-rail{
+      display:block;position:fixed;top:84px;width:180px;
+      left:calc(50% - 760px);
+      max-height:calc(100vh - 104px);overflow:auto;
+      background:var(--drab-2);border:1px solid var(--line);border-radius:6px;
+      padding:14px 14px 16px;z-index:40;
+    }
+    .rail-head{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;
+      letter-spacing:.16em;color:var(--moss);margin-bottom:10px;
+      padding-bottom:8px;border-bottom:1px solid var(--line)}
+    .rail-nav{list-style:none;display:flex;flex-direction:column;gap:2px}
+    .rail-nav a{display:flex;gap:8px;align-items:baseline;
+      font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.03em;
+      color:var(--moss);text-decoration:none;padding:6px 8px;border-radius:4px;
+      border:1px solid transparent;transition:.16s;white-space:nowrap}
+    .rail-nav a .n{color:var(--moss-dim);font-size:10px;font-weight:600}
+    .rail-nav a:hover{color:var(--paper);background:var(--drab-3)}
+    .rail-nav a.active{color:var(--amber);border-color:var(--amber-dim);background:var(--drab-3)}
+    .rail-nav a.active .n{color:var(--amber)}
   }
 
