@@ -16,13 +16,21 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="manifest" href="/manifest.json">
-<!-- Open Graph / social + agent link preview metadata (public summary only). -->
+<!-- Open Graph / social + agent link preview metadata (public summary only).
+     Reuses the site's one hero image site-wide for now (same call as the
+     Article JSON-LD image — no per-page images exist yet; a distinct image
+     for non-home pages is a possible future improvement, not done here). -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{{ site.title }}">
 <meta property="og:title" content="{{ page.title | default: site.title }}">
 <meta property="og:description" content="{{ page.description | default: site.description }}">
 <meta property="og:url" content="{{ page.url | absolute_url }}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="{{ '/assets/hero-1280.webp' | absolute_url }}">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="585">
+<meta property="og:image:alt" content="Operation Doland Skeeter War — mosquito in crosshairs over a South Dakota dusk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{{ '/assets/hero-1280.webp' | absolute_url }}">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
