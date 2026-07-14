@@ -150,6 +150,7 @@
   .path p{font-size:14px;color:var(--paper-2);margin:0}
 
   /* SCHEME beats */
+  .beats-head{font-family:'Oswald',sans-serif;font-weight:600;font-size:19px;text-transform:uppercase;color:var(--paper);letter-spacing:.01em;margin-bottom:4px}
   .beats{display:grid;gap:12px;margin:16px 0}
   @media(min-width:600px){.beats{grid-template-columns:repeat(3,1fr)}}
   .beat{border:1px solid var(--line);border-radius:5px;padding:16px;background:var(--drab-3);border-top:3px solid var(--amber)}
