@@ -2,7 +2,7 @@
     --drab:#191B12; --drab-2:#22251A; --drab-3:#2C3022;
     --paper:#DAD4BE; --paper-2:#C9C2A6;
     --amber:#E6A630; --amber-dim:#B9842296;
-    --rust:#C24A2B;
+    --rust:#DE826B;
     --moss:#94A074; --moss-dim:#9AA87F;
     --ink:#1E1F16; --ink-soft:#41442F;
     --line:#3A3E2C; --hero-line:rgba(218,212,190,.16);
@@ -15,6 +15,11 @@
      add visual noise for pointer users. More specific rules elsewhere (e.g.
      .platform-btn) still win over this by CSS specificity. */
   a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+  /* Offscreen until focused, so keyboard/screen-reader users can bypass the
+     header and jump straight to #main instead of tabbing through it every
+     page load; invisible to mouse/touch users, who never trigger :focus. */
+  .skip-link{position:absolute;left:12px;top:-60px;z-index:100;background:var(--amber);color:var(--drab);font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:.04em;padding:10px 16px;border-radius:4px;text-decoration:none;transition:top .16s}
+  .skip-link:focus{top:12px}
   html{scroll-behavior:smooth}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
   body{background:var(--drab);color:var(--paper);font-family:'Public Sans',system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
