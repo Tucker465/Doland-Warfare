@@ -67,10 +67,8 @@
       "mainEntityOfPage": { "@id": "{{ page.url | absolute_url }}#webpage" },
       "author": { "@id": "{{ '/' | absolute_url }}#organization" },
       "publisher": { "@id": "{{ '/' | absolute_url }}#organization" },
-      "inLanguage": "en"
-      {%- if page.preload_hero %},
+      "inLanguage": "en",
       "image": "{{ '/assets/hero-1280.webp' | absolute_url }}"
-      {%- endif %}
     }
     {%- endif %}
     {%- if page.schema_howto %}
