@@ -8,6 +8,13 @@
     --line:#3A3E2C; --hero-line:rgba(218,212,190,.16);
   }
   *{box-sizing:border-box;margin:0;padding:0}
+  /* Guaranteed-contrast keyboard focus ring, applied broadly rather than
+     trusting each browser's own default outline (inconsistent, and can be
+     low-contrast against this site's dark background). :focus-visible only
+     triggers for keyboard/programmatic focus, not mouse/touch, so it doesn't
+     add visual noise for pointer users. More specific rules elsewhere (e.g.
+     .platform-btn) still win over this by CSS specificity. */
+  a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
   html{scroll-behavior:smooth}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
   body{background:var(--drab);color:var(--paper);font-family:'Public Sans',system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
@@ -19,13 +26,13 @@
   .cmdbar-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:9px 20px}
   .callsign{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--amber);white-space:nowrap;flex-shrink:0;text-decoration:none}
   .callsign span{color:var(--moss-dim)}
-  .jumpnav{position:relative;margin-left:auto}
-  .jumpnav summary{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--moss);cursor:pointer;list-style:none;padding:6px 10px;border:1px solid var(--line);border-radius:4px;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:.16s}
+  .jumpnav{position:fixed;right:16px;bottom:16px;z-index:70}
+  .jumpnav summary{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--paper);cursor:pointer;list-style:none;min-height:48px;padding:0 18px;background:var(--drab-2);border:1px solid var(--line);border-radius:24px;white-space:nowrap;display:inline-flex;align-items:center;gap:7px;transition:.16s;box-shadow:0 4px 16px #0008}
   .jumpnav summary::-webkit-details-marker{display:none}
   .jumpnav summary:hover,.jumpnav[open] summary{color:var(--amber);border-color:var(--amber-dim)}
   .jumpnav .chev{transition:transform .16s}
   .jumpnav[open] .chev{transform:rotate(180deg)}
-  .jumpnav-list{position:absolute;top:calc(100% + 6px);right:0;min-width:230px;max-height:70vh;overflow-y:auto;background:var(--drab-2);border:1px solid var(--line);border-radius:6px;padding:6px;display:flex;flex-direction:column;gap:2px;box-shadow:0 8px 24px #0008;z-index:60}
+  .jumpnav-list{position:absolute;bottom:calc(100% + 8px);right:0;min-width:230px;max-height:60vh;overflow-y:auto;background:var(--drab-2);border:1px solid var(--line);border-radius:6px;padding:6px;display:flex;flex-direction:column;gap:2px;box-shadow:0 8px 24px #0008;z-index:70}
   .jumpnav-list a{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.02em;color:var(--moss);text-decoration:none;padding:9px 10px;border-radius:4px;display:flex;gap:8px;align-items:baseline}
   .jumpnav-list a .n{color:var(--moss-dim);font-size:10px;font-weight:600}
   .jumpnav-list a:hover{color:var(--paper);background:var(--drab-3)}
@@ -360,7 +367,7 @@
      amber active) and drop it from the top bar so it isn't duplicated. Below
      this width the nav stays in the top command bar. */
   @media (min-width:1520px){
-    .cmdbar .jumpnav{display:none}
+    .jumpnav{display:none}
 
     .section-rail{
       display:block;position:fixed;top:84px;width:180px;
