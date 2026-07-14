@@ -100,5 +100,16 @@
 <!-- Preload the LCP hero image so it starts fetching before the CSS. -->
 <link rel="preload" as="image" type="image/webp" href="/assets/hero-1280.webp" imagesrcset="/assets/hero-800.webp 800w, /assets/hero-1280.webp 1280w" imagesizes="(min-width:1201px) 1080px, 100vw" fetchpriority="high">
 {%- endif %}
+<!-- Deliberately blocking, not deferred: measured deferring styles.css via
+     media="print" swap (avoiding fonts.css/styles.css render-blocking) against
+     this dark theme and it was a net loss — the browser paints unstyled
+     (default white bg, black text, blue links) for ~100-150ms before the swap,
+     then reflows into the real layout. That reflow tanked CLS from ~0.06 to
+     0.77 and dropped the Lighthouse Performance score from 89 to 60, despite
+     FCP improving. A real fix would need true critical-CSS extraction (a hand
+     -maintained inline subset kept in sync with styles.css forever) rather
+     than deferring the whole file; not worth that maintenance burden for the
+     scores already achieved. Both files are small (~28KB + ~4KB) and
+     font-display:swap already keeps fonts from blocking text paint. -->
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/styles.css">
