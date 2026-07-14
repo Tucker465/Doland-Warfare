@@ -256,6 +256,12 @@ function shareSite(){const url=location.href;if(navigator.share){navigator.share
 const shareBtn=document.getElementById('shareBtn'); if(shareBtn) shareBtn.addEventListener('click',shareSite);
 const copyBtn=document.getElementById('copyBtn'); if(copyBtn) copyBtn.addEventListener('click',copyLink);
 
+// ---------- JUMP-TO NAV ----------
+// Native <details> stays open after a link inside it is tapped; close it so
+// the dropdown doesn't linger over the page once the user has navigated.
+const jumpnav=document.getElementById('jumpnav');
+if (jumpnav) jumpnav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ jumpnav.open=false; }));
+
 // ---------- SCROLL-SPY ----------
 // Section links live in several places now (top bar, desktop section rail,
 // context rail). Highlight every link that points at the active section.

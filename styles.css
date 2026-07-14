@@ -19,12 +19,18 @@
   .cmdbar-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:9px 20px}
   .callsign{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--amber);white-space:nowrap;flex-shrink:0;text-decoration:none}
   .callsign span{color:var(--moss-dim)}
-  .phasenav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-left:auto}
-  .phasenav::-webkit-scrollbar{display:none}
-  .phasenav a{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.04em;color:var(--moss);text-decoration:none;padding:4px 8px;border-radius:4px;white-space:nowrap;border:1px solid transparent;transition:.18s}
-  .phasenav a .n{color:var(--moss-dim);margin-right:5px}
-  .phasenav a.active,.phasenav a:hover{color:var(--drab);background:var(--amber)}
-  .phasenav a.active .n,.phasenav a:hover .n{color:var(--ink)}
+  .jumpnav{position:relative;margin-left:auto}
+  .jumpnav summary{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--moss);cursor:pointer;list-style:none;padding:6px 10px;border:1px solid var(--line);border-radius:4px;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:.16s}
+  .jumpnav summary::-webkit-details-marker{display:none}
+  .jumpnav summary:hover,.jumpnav[open] summary{color:var(--amber);border-color:var(--amber-dim)}
+  .jumpnav .chev{transition:transform .16s}
+  .jumpnav[open] .chev{transform:rotate(180deg)}
+  .jumpnav-list{position:absolute;top:calc(100% + 6px);right:0;min-width:230px;max-height:70vh;overflow-y:auto;background:var(--drab-2);border:1px solid var(--line);border-radius:6px;padding:6px;display:flex;flex-direction:column;gap:2px;box-shadow:0 8px 24px #0008;z-index:60}
+  .jumpnav-list a{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.02em;color:var(--moss);text-decoration:none;padding:9px 10px;border-radius:4px;display:flex;gap:8px;align-items:baseline}
+  .jumpnav-list a .n{color:var(--moss-dim);font-size:10px;font-weight:600}
+  .jumpnav-list a:hover{color:var(--paper);background:var(--drab-3)}
+  .jumpnav-list a.active{color:var(--amber);background:var(--drab-3)}
+  .jumpnav-list a.active .n{color:var(--amber)}
 
   /* HERO */
   .hero{position:relative;padding:30px 0 40px;border-bottom:1px solid var(--line);
@@ -354,7 +360,7 @@
      amber active) and drop it from the top bar so it isn't duplicated. Below
      this width the nav stays in the top command bar. */
   @media (min-width:1520px){
-    .cmdbar .phasenav{display:none}
+    .cmdbar .jumpnav{display:none}
 
     .section-rail{
       display:block;position:fixed;top:84px;width:180px;
