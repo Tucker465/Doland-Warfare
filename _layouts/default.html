@@ -4,11 +4,12 @@
 {% include head.html %}
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to main content</a>
 {% include cmdbar.html %}
 {% include jumpnav.html %}
 <div class="layout">
   {% include section-rail.html %}
-  <main class="main" id="main">
+  <main class="main" id="main" tabindex="-1">
     {{ content }}
   </main>
 </div>
