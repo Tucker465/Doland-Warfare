@@ -3,11 +3,19 @@
 <nav class="cmdbar">
   <div class="cmdbar-inner">
     <a class="callsign" href="/">OP: <span>{{ site.data.locale.town | upcase }}&nbsp;SKEETER&nbsp;WAR</span></a>
-    <div class="phasenav" id="phasenav">
-      {%- for s in site.data.nav.order_sections %}
-      <a class="section-link" href="{{ section_base }}#{{ s.id }}" title="{{ s.label }}"><span class="n">{{ s.num }}</span>{{ s.short }}</a>
-      {%- endfor %}
-      <a class="section-link{% if page.url == '/about/' %} active{% endif %}" href="/about/">ABOUT</a>
-    </div>
+    <!-- Below the desktop rail breakpoint, section nav is a tap-to-open dropdown
+         rather than a horizontally-scrolling strip: scroll-with-hidden-scrollbar
+         has poor discoverability (nothing hints there's more off-screen), and a
+         single obvious "JUMP TO" control is the standard, well-understood mobile
+         pattern. Native <details> needs no JS to open/close. -->
+    <details class="jumpnav" id="jumpnav">
+      <summary>JUMP TO <span class="chev" aria-hidden="true">▾</span></summary>
+      <nav class="jumpnav-list" aria-label="Section navigation">
+        {%- for s in site.data.nav.order_sections %}
+        <a class="section-link" href="{{ section_base }}#{{ s.id }}"><span class="n">{{ s.num }}</span> {{ s.label }}</a>
+        {%- endfor %}
+        <a class="section-link{% if page.url == '/about/' %} active{% endif %}" href="/about/">About</a>
+      </nav>
+    </details>
   </div>
 </nav>
