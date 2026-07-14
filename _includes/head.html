@@ -54,6 +54,7 @@
         "@type": "PostalAddress",
         "addressLocality": {{ site.data.locale.town | jsonify }},
         "addressRegion": {{ site.data.locale.state | jsonify }},
+        "postalCode": {{ site.data.locale.postal_code | jsonify }},
         "addressCountry": "US"
       }
     }
@@ -67,6 +68,9 @@
       "author": { "@id": "{{ '/' | absolute_url }}#organization" },
       "publisher": { "@id": "{{ '/' | absolute_url }}#organization" },
       "inLanguage": "en"
+      {%- if page.preload_hero %},
+      "image": "{{ '/assets/hero-1280.webp' | absolute_url }}"
+      {%- endif %}
     }
     {%- endif %}
     {%- if page.schema_howto %}
