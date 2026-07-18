@@ -198,7 +198,29 @@
   .bp .water{fill:#22443388}
   .bpwl{stroke:#6f9277;stroke-width:1;stroke-dasharray:4 3}
   .bpg{fill:none;stroke:#6f9277;stroke-width:1.1}
-  .bpdunk circle{fill:none;stroke:var(--amber);stroke-width:1.8}
+  .bpdunk circle,.bpdunk ellipse{fill:none;stroke:var(--amber);stroke-width:1.8}
+  .bpdunkmark .under{fill:#9a7d44;stroke:#6b5530;stroke-width:.8}
+  .bpdunkmark .top{fill:#ddd0a6;stroke:#9a7d44;stroke-width:1}
+  .bpdunkmark .hole{fill:#e6dfc7;stroke:#9a7d44;stroke-width:.6}
+  .tire-side{fill:#24271a}
+  .tire-top{fill:#313528}
+  .tread-grooves line{stroke:#0b0c06;stroke-width:2}
+  .tread-circ{stroke:#0b0c06;stroke-width:2.4}
+  .tire-edge{fill:none;stroke:#b8b291;stroke-width:1.3}
+  .ground-fill{fill:#181206}
+  .ground-line{stroke:#9aa079;stroke-width:1.2}
+  .ground-hatch line{stroke:#6b6238;stroke-width:1}
+  .box-front{fill:#2a3018;stroke:var(--amber);stroke-width:1.5}
+  .box-side{fill:#1e2410;stroke:var(--amber);stroke-width:1.5}
+  .box-top{fill:#3a4a22;stroke:var(--amber);stroke-width:1.5}
+  .box-inner-top{fill:#0f1508;stroke:var(--amber);stroke-width:1}
+  .box-inner-front{fill:#161c0c;stroke:var(--amber);stroke-width:.8;opacity:.6}
+  .box-inner-side{fill:#121808;stroke:var(--amber);stroke-width:.8;opacity:.6}
+  .bpramp .board{fill:#3a2f1f4d;stroke:var(--amber);stroke-width:1.5}
+  .bpramp .grain{stroke:var(--amber);stroke-width:1;opacity:.55}
+  .bpegg .raft{fill:#e8dfb8;stroke:#a89a5c;stroke-width:.9}
+  .bpegg .body{fill:var(--paper-2);stroke:var(--paper);stroke-width:.6}
+  .bpegg .legs{stroke:var(--paper-2);stroke-width:1;stroke-linecap:round}
   .bpl{stroke:#7d8a5f;stroke-width:.6}
   .bpd{fill:var(--amber)}
   .bplbl{font-family:'IBM Plex Mono',monospace;font-size:9px;fill:#bdbd9f;letter-spacing:.02em}
