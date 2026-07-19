@@ -512,9 +512,9 @@ const PLATFORMS = [
     schem: isoTire({
       cx:220, cyTop:138, outerRX:120, innerRX:64, height:46, bury:0.3,
       labels:[
-        L('WATER POOLS IN WELL','end',150,95,232,153,false),
-        L('BTI DUNK','end',95,150,202,164,true),
-        L('SET IN GROUND','start',325,210,281,203,false)
+        L('WATER POOLS IN WELL','end',165,88,218,148,false),
+        L('BTI DUNK','end',100,120,200,163,true),
+        L('SET IN GROUND','start',322,206,284,199,false)
       ]
     }),
     steps:["Tire shops pay to get rid of these — take a few off their hands.","Lay it flat or half-bury it in a ditch or low corner.","Fill the well with water + grass clippings.","Because you can't fully empty a tire, you maintain it by re-dosing — not draining.","Best emplaced in the spots that already hold water after rain."],
