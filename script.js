@@ -17,16 +17,84 @@ function L(t,anchor,tx,ty,fx,fy,amber){
   return `<line class="bpl" x1="${tx}" y1="${ty+3}" x2="${fx}" y2="${fy}"/><circle class="bpd" cx="${fx}" cy="${fy}" r="1.7"/>`+
          `<text class="bplbl${amber?' a':''}" x="${tx}" y="${ty}" text-anchor="${anchor}">${t}</text>`;
 }
-// LEGACY flat-elevation container, kept only until every platform below is
-// migrated to isoCyl/isoBox — remove once PLATFORMS has no more callers.
-function trap(o){
-  let s = o.body;
-  if(o.water) s += o.water;
-  s += `<line class="bpwl" x1="${o.wlL}" y1="${o.wl}" x2="${o.wlR}" y2="${o.wl}"/>`;
-  s += `<path class="bpg" d="M${o.dunkX-36},${o.base-12} q5,-13 10,0 M${o.dunkX-12},${o.base-9} q5,-14 10,0 M${o.dunkX+12},${o.base-13} q5,-12 10,0"/>`;
-  s += `<g class="bpdunk"><circle cx="${o.dunkX}" cy="${o.wl}" r="13"/><circle cx="${o.dunkX}" cy="${o.wl}" r="4.5"/></g>`;
-  if(o.extra) s += o.extra;
-  s += (o.labels||[]).join('');
+
+// ---------- 2D BLUEPRINT (flat orthographic elevation) ----------
+// A dimension line with end ticks and a measurement label — the "how big"
+// callout an engineering drawing uses, the flat-view counterpart to L()'s
+// descriptive leader. Horizontal runs label above the line; vertical runs
+// label to the left, so the number never sits on the line it measures.
+function dim(x1,y1,x2,y2,text){
+  const horiz = Math.abs(x2-x1) >= Math.abs(y2-y1), t=4;
+  const ticks = horiz
+    ? `M${x1},${y1-t} L${x1},${y1+t} M${x2},${y2-t} L${x2},${y2+t}`
+    : `M${x1-t},${y1} L${x1+t},${y1} M${x2-t},${y2} L${x2+t},${y2}`;
+  const tx = horiz ? (x1+x2)/2 : x1-6, ty = horiz ? y1-4 : (y1+y2)/2+3;
+  const anchor = horiz ? 'middle' : 'end';
+  return `<path class="bp2-dim" d="M${x1},${y1} L${x2},${y2} ${ticks}"/>`+
+         `<text class="bp2-dimlbl" x="${tx}" y="${ty}" text-anchor="${anchor}">${text}</text>`;
+}
+// Flat front elevation of a vessel — a straight-on orthographic view (no
+// perspective) so the builder has a measured drawing to check the 3D against.
+// The body is a trapezoid (topHW/botHW half-widths, tY..bY tall); water is a
+// level line with the volume below it filled. Optional lip (rolled rim),
+// ground line, and drawn-in build elements (dunk, ramp, brick, overflow hole)
+// are passed by the caller so the two views show the same parts.
+function elev2d(o){
+  const cx=o.cx, tY=o.topY, bY=o.botY, tHW=o.topHW, bHW=o.botHW;
+  const wy=o.waterY, wHW=tHW+(bHW-tHW)*((wy-tY)/(bY-tY));
+  let s='';
+  if(o.ground) s+=`<line class="bp2-ground" x1="46" y1="${bY}" x2="394" y2="${bY}"/>`;
+  // water volume fill, then the body outline over it
+  s+=`<path class="bp2-water" d="M${cx-wHW},${wy} L${cx+wHW},${wy} L${cx+bHW},${bY} L${cx-bHW},${bY} Z"/>`;
+  s+=`<path class="bp2-body" d="M${cx-tHW},${tY} L${cx+tHW},${tY} L${cx+bHW},${bY} L${cx-bHW},${bY} Z"/>`;
+  if(o.lip){const f=o.lip;
+    s+=`<path class="bp2-body" d="M${cx-tHW-f},${tY-3} L${cx-tHW-f},${tY} L${cx+tHW+f},${tY} L${cx+tHW+f},${tY-3}"/>`;}
+  s+=`<line class="bp2-wl" x1="${cx-wHW}" y1="${wy}" x2="${cx+wHW}" y2="${wy}"/>`;
+  if(o.extra) s+=o.extra;
+  s+=(o.dims||[]).join('');
+  s+=(o.labels||[]).join('');
+  return bp(s);
+}
+// A brick drawn flat-on (a plain rectangle with a scored face) resting on the
+// vessel floor in the 2D view.
+function brick2d(cx,by,w){
+  const h=14, x=cx-w/2, y=by-h;
+  return `<g class="bp2-brick"><rect x="${x}" y="${y}" width="${w}" height="${h}"/>`+
+         `<line x1="${x}" y1="${y+h/2}" x2="${x+w}" y2="${y+h/2}"/>`+
+         `<line x1="${cx}" y1="${y}" x2="${cx}" y2="${y+h/2}"/>`+
+         `<line x1="${x+w*.25}" y1="${y+h/2}" x2="${x+w*.25}" y2="${y+h}"/>`+
+         `<line x1="${x+w*.75}" y1="${y+h/2}" x2="${x+w*.75}" y2="${y+h}"/></g>`;
+}
+// A ramp board drawn flat-on: a thin plank from the floor up past the rim.
+function ramp2d(x1,y1,x2,y2,w){
+  const dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy),nx=-dy/len*(w/2),ny=dx/len*(w/2);
+  return `<g class="bp2-ramp"><polygon points="${x1+nx},${y1+ny} ${x2+nx},${y2+ny} ${x2-nx},${y2-ny} ${x1-nx},${y1-ny}"/>`+
+         `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/></g>`;
+}
+// Flat cross-section of a tire lying on the ground — the one vessel that isn't
+// a simple trapezoid. A wide low rubber casing dished in the middle, water
+// pooled in that central well, and the lower half sunk below the ground line
+// (hatched) since a tire is set into the earth, not stood on it.
+function tire2d(){
+  const g=180; // ground line
+  let s='';
+  // buried lower half: hatching under the ground line, behind the casing
+  let hatch=''; for(let x=70;x<=372;x+=16) hatch+=`<line x1="${x}" y1="${g}" x2="${x-10}" y2="${g+12}"/>`;
+  s+=`<g class="ground-hatch">${hatch}</g>`;
+  // rubber casing — two shoulders with a dished centre well
+  s+=`<path class="tire-side" d="M88,150 C120,120 150,122 162,140 C176,160 196,172 220,172 C244,172 264,160 278,140 C290,122 320,120 352,150 C360,196 300,214 220,214 C140,214 80,196 88,150 Z"/>`;
+  // water pooled in the well
+  s+=`<path class="bp2-water" d="M168,150 C184,166 200,171 220,171 C240,171 256,166 272,150 C258,159 242,163 220,163 C198,163 182,159 168,150 Z"/>`;
+  s+=`<path class="bp2-wl" fill="none" d="M170,151 C186,164 200,169 220,169 C240,169 254,164 270,151"/>`;
+  // bead walls of the well
+  s+=`<path class="tire-edge" d="M162,140 C170,150 166,160 168,150 M278,140 C270,150 274,160 272,150"/>`;
+  // Bti dunk floating in the pool
+  s+=`<ellipse class="bp2-dunk" cx="210" cy="166" rx="9" ry="3.5"/>`;
+  // ground line drawn last, over the casing, so the "sunk in" read is clear
+  s+=`<line class="bp2-ground" x1="46" y1="${g}" x2="394" y2="${g}"/>`;
+  s+= L('WATER POOLS IN WELL','middle',220,70,232,164,false);
+  s+= L('BTI DUNK','start',12,150,201,166,true);
+  s+= L('SET IN THE GROUND','end',428,150,300,180,false);
   return bp(s);
 }
 
@@ -83,20 +151,55 @@ function isoCyl(o){
   const bodyCls = o.dashed ? 'body dash-schem' : 'body';
   let s = `<path class="${bodyCls}" d="M${lT} A${o.topRX},${tRY} 0 1 1 ${rT} L${rB} A${o.botRX},${bRY} 0 0 1 ${lB} Z"/>`;
   s += `<ellipse class="${bodyCls}" cx="${cx}" cy="${tY}" rx="${o.topRX}" ry="${tRY}"/>`;
+  // Decorative outer detail. flange draws the wide flat rolled rim of a cheap
+  // hard-plastic kiddie pool: a filled annular ring between the basin mouth
+  // (topRX) and a wider outer edge, with short radial ribs moulded across the
+  // near half — the feature that separates a pool from a plain bucket. rim
+  // and bands are the lighter-weight alternatives used elsewhere.
+  if(o.flange){
+    const FR=o.flange, fRY=FR*R;
+    s += `<path class="pool-flange" fill-rule="evenodd" d="`+
+      `M${cx-FR},${tY} A${FR},${fRY} 0 1 1 ${cx+FR},${tY} A${FR},${fRY} 0 1 1 ${cx-FR},${tY} Z`+
+      `M${cx-o.topRX},${tY} A${o.topRX},${tRY} 0 1 1 ${cx+o.topRX},${tY} A${o.topRX},${tRY} 0 1 1 ${cx-o.topRX},${tY} Z"/>`;
+    for(let i=1;i<10;i++){
+      const a=Math.PI*(i/10), c=Math.cos(a), sn=Math.sin(a);
+      s += `<line class="pool-rib" x1="${cx+o.topRX*c}" y1="${tY+tRY*sn}" x2="${cx+FR*c}" y2="${tY+fRY*sn}"/>`;
+    }
+  }
+  if(o.rim) s += `<ellipse class="pool-rim" cx="${cx}" cy="${tY+3}" rx="${o.topRX*.9}" ry="${o.topRX*.9*R}" fill="none"/>`;
+  if(o.bands) for(const bt of o.bands){
+    const rx=o.topRX+bt*(o.botRX-o.topRX), ry=rx*R, y=tY+bt*(bY-tY);
+    s += `<path class="pool-band" fill="none" d="M${cx-rx},${y} A${rx},${ry} 0 0 0 ${cx+rx},${y}"/>`;
+  }
+  // 5-gallon-bucket detailing: a rolled reinforcing lip right at the rim and
+  // the iconic wire bail handle, hinged on two ears and arching over the top
+  // to a moulded grip — the details that read "hardware-store pail" instead of
+  // "generic tapered tub".
+  if(o.handle){
+    s += `<ellipse class="bucket-rim" cx="${cx}" cy="${tY+3.5}" rx="${o.topRX*.97}" ry="${o.topRX*.97*R}" fill="none"/>`;
+    const ex=o.topRX*.88, py=tY-46;
+    s += `<circle class="bucket-ear" cx="${cx-ex}" cy="${tY}" r="2.4"/><circle class="bucket-ear" cx="${cx+ex}" cy="${tY}" r="2.4"/>`;
+    s += `<path class="bucket-bail" fill="none" d="M${cx-ex},${tY} C${cx-ex},${tY-34} ${cx-24},${py} ${cx-16},${py} L${cx+16},${py} C${cx+24},${py} ${cx+ex},${tY-34} ${cx+ex},${tY}"/>`;
+    s += `<line class="bucket-grip" x1="${cx-15}" y1="${py}" x2="${cx+15}" y2="${py}"/>`;
+  }
   if(o.waterY!=null){
     const t=(o.waterY-tY)/(bY-tY), wRX=o.topRX+t*(o.botRX-o.topRX), wRY=wRX*R;
     s += `<ellipse class="water" cx="${cx}" cy="${o.waterY}" rx="${wRX}" ry="${wRY}"/>`;
     s += `<ellipse class="bpwl" cx="${cx}" cy="${o.waterY}" rx="${wRX}" ry="${wRY}" fill="none"/>`;
-    const dX=cx-wRX*.4, dY=o.waterY+wRY*.5; // lower-left, clear of the ramp's diagonal
+    const dX = Array.isArray(o.dunkAt)?o.dunkAt[0]:cx-wRX*.4;
+    const dY = Array.isArray(o.dunkAt)?o.dunkAt[1]:o.waterY+wRY*.5; // default lower-left, clear of the ramp's diagonal
     s += dunkMark(dX,dY,R);
     if(o.eggAt!==false){
-      // Back of the surface, clear of the dunk and the ramp — clamped to
-      // whatever room actually exists above the rim's own bottom edge, since
-      // a fixed offset put it under the rim line on wide/shallow vessels
-      // (the drum) even though it cleared easily on tall ones (the bucket).
-      const rimBottom = tY+tRY;
-      const eggY = o.waterY - Math.min(wRY*.55, (o.waterY-rimBottom)*.5);
-      s += eggScene(cx-wRX*.1, eggY);
+      if(Array.isArray(o.eggAt)) s += eggScene(o.eggAt[0],o.eggAt[1]);
+      else {
+        // Back of the surface, clear of the dunk and the ramp — clamped to
+        // whatever room actually exists above the rim's own bottom edge, since
+        // a fixed offset put it under the rim line on wide/shallow vessels
+        // (the drum) even though it cleared easily on tall ones (the bucket).
+        const rimBottom = tY+tRY;
+        const eggY = o.waterY - Math.min(wRY*.55, (o.waterY-rimBottom)*.5);
+        s += eggScene(cx-wRX*.1, eggY);
+      }
     }
     if(o.rampFrom!==false){
       // Rests on the floor on one side and crosses to the opposite rim,
@@ -241,41 +344,59 @@ function isoTire(o){
 // the insulation) instead of the tapered/rounded shapes used elsewhere.
 // halfW/halfD are the outer rim's half-width and half-depth (halfD already
 // unflattened; R is applied here same as every other shape); wall is the
-// insulation thickness, and there's no taper top-to-bottom — a chest
-// freezer's interior walls run straight, unlike a tapered bucket.
+// insulation thickness. taper (0..1) narrows the base relative to the rim —
+// 0 leaves the walls straight (a chest freezer), while a storage tote taps
+// inward toward the floor; ribs draws molded horizontal ridges down the two
+// visible walls the way a real tote is stamped.
 function isoBox(o){
   const R=.35;
-  const cx=o.cx, tY=o.topY, bY=o.botY;
+  const cx=o.cx, tY=o.topY;
   const hw=o.halfW, hd=o.halfD*R;
   const w=o.wall, wd=w*R;
   const iw=hw-w, ihd=hd-wd;
-  const H=bY-tY;
-  const tl=[cx-hw,tY], tr=[cx+hw,tY], fl=[cx-hw,tY+hd*2], fr=[cx+hw,tY+hd*2];
-  const bl=[cx-hw,tY+H], br=[cx+hw,tY+H];
-  const fbl=[cx-hw,tY+hd*2+H], fbr=[cx+hw,tY+hd*2+H];
+  const H=o.height;
+  const lip=o.lip||4;
+  const k=1-(o.taper||0);              // base scale relative to the rim
+  const bhw=hw*k, bhd=hd*k;            // outer base half-dims
+  const ibw=iw*k, ibhd=ihd*k;         // inner base half-dims
+  const bY=tY+H;
   const topFace=`M${cx},${tY-hd} L${cx+hw},${tY} L${cx},${tY+hd} L${cx-hw},${tY} Z`;
+  const lipFace=`M${cx},${tY-hd-lip*R} L${cx+hw+lip},${tY} L${cx},${tY+hd+lip*R} L${cx-hw-lip},${tY} Z`;
   const innerTop=`M${cx},${tY-ihd} L${cx+iw},${tY} L${cx},${tY+ihd} L${cx-iw},${tY} Z`;
-  const frontFace=`M${cx-hw},${tY} L${cx},${tY+hd} L${cx},${tY+hd+H} L${cx-hw},${tY+H} Z`;
-  const sideFace=`M${cx+hw},${tY} L${cx},${tY+hd} L${cx},${tY+hd+H} L${cx+hw},${tY+H} Z`;
-  const innerFront=`M${cx-iw},${tY} L${cx},${tY+ihd} L${cx},${tY+ihd+H} L${cx-iw},${tY+H} Z`;
-  const innerSide=`M${cx+iw},${tY} L${cx},${tY+ihd} L${cx},${tY+ihd+H} L${cx+iw},${tY+H} Z`;
+  const frontFace=`M${cx-hw},${tY} L${cx},${tY+hd} L${cx},${bY+bhd} L${cx-bhw},${bY} Z`;
+  const sideFace=`M${cx+hw},${tY} L${cx},${tY+hd} L${cx},${bY+bhd} L${cx+bhw},${bY} Z`;
+  const botFace=`M${cx},${bY-bhd} L${cx+bhw},${bY} L${cx},${bY+bhd} L${cx-bhw},${bY} Z`;
+  const innerFront=`M${cx-iw},${tY} L${cx},${tY+ihd} L${cx},${bY+ibhd} L${cx-ibw},${bY} Z`;
+  const innerSide=`M${cx+iw},${tY} L${cx},${tY+ihd} L${cx},${bY+ibhd} L${cx+ibw},${bY} Z`;
   let s = '';
+  s += `<path class="box-bot" d="${botFace}"/>`;
   s += `<path class="box-side" d="${sideFace}"/>`;
   s += `<path class="box-front" d="${frontFace}"/>`;
+  // molded ribs down the two visible walls, following the iso projection
+  if(o.ribs) for(const f of o.ribs){
+    const wf=hw+f*(bhw-hw), lx=cx-wf, rx=cx+wf, ey=tY+f*H;
+    const my=(tY+hd)+f*((bY+bhd)-(tY+hd));
+    s += `<path class="box-rib" d="M${lx},${ey} L${cx},${my} L${rx},${ey}"/>`;
+  }
   s += `<path class="box-inner-side" d="${innerSide}"/>`;
   s += `<path class="box-inner-front" d="${innerFront}"/>`;
+  s += `<path class="box-lip" d="${lipFace}"/>`;
   s += `<path class="box-top" d="${topFace}"/>`;
   s += `<path class="box-inner-top" d="${innerTop}"/>`;
   if(o.waterY!=null){
-    const wOff=o.waterY-tY;
-    const waterDiamond=`M${cx},${tY+wOff-ihd} L${cx+iw},${tY+wOff} L${cx},${tY+wOff+ihd} L${cx-iw},${tY+wOff} Z`;
+    const t=(o.waterY-tY)/H, wiw=iw+t*(ibw-iw), wihd=ihd+t*(ibhd-ihd);
+    const waterDiamond=`M${cx},${o.waterY-wihd} L${cx+wiw},${o.waterY} L${cx},${o.waterY+wihd} L${cx-wiw},${o.waterY} Z`;
     s += `<path class="water" d="${waterDiamond}"/>`;
     s += `<path class="bpwl" fill="none" d="${waterDiamond}"/>`;
-    const dX=cx-iw*.35, dY=o.waterY+ihd*.3;
+    const dX = Array.isArray(o.dunkAt)?o.dunkAt[0]:cx-wiw*.35;
+    const dY = Array.isArray(o.dunkAt)?o.dunkAt[1]:o.waterY+wihd*.3;
     s += dunkMark(dX,dY,R);
-    if(o.eggAt!==false) s += eggScene(cx+iw*.15, o.waterY-ihd*.4);
+    if(o.eggAt!==false){
+      if(Array.isArray(o.eggAt)) s += eggScene(o.eggAt[0],o.eggAt[1]);
+      else s += eggScene(cx+wiw*.15, o.waterY-wihd*.4);
+    }
     if(o.rampFrom!==false){
-      const rBx=cx-iw*.7, rBy=tY+ihd+H*.85;
+      const rBx=cx-ibw*.5, rBy=bY-Math.abs(bhd)-H*.06;
       const rimX=cx+iw*.6, rimY=tY-ihd*.5;
       const ux=rimX-rBx, uy=rimY-rBy, ulen=Math.hypot(ux,uy);
       const rTx=rimX+(ux/ulen)*38, rTy=rimY+(uy/ulen)*38;
@@ -293,14 +414,33 @@ const PLATFORMS = [
     icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><path class="o" d="M12 14 L16 38 L32 38 L36 14 Z"/><line class="w" x1="15" y1="24" x2="33" y2="24"/><circle class="d" cx="24" cy="24" r="3.5"/></svg>`,
     good:["Free / everywhere","Easy 15-min build","Bird-safe ramp"], warn:["Tippy in wind","Small surface"],
     schem: isoCyl({
-      cx:210, topY:88, topRX:82, botY:232, botRX:56, waterY:150,
-      extra:`<rect class="anchor" x="176" y="234" width="68" height="9"/><circle class="ann" cx="286" cy="124" r="5"/>`,
+      cx:210, topY:84, topRX:76, botY:240, botRX:67, waterY:150, handle:true, bands:[.07,.14],
+      extra:`<rect class="anchor" x="152" y="246" width="116" height="9"/><circle class="ann" cx="284" cy="126" r="5"/>`,
       labels:[
-        L('SHE LAYS HERE','end',95,90,205,138,false),
+        L('SHE LAYS HERE','end',95,92,203,140,false),
         L('BTI DUNK','end',95,150,182,163,true),
-        L('BIRD RAMP — CLIMB-OUT','end',95,210,192,210,false),
-        L('OVERFLOW — 1½" HOLE','start',330,124,291,124,false),
-        L('ANCHOR / PAVER','middle',210,280,210,244,false)
+        L('ESCAPE RAMP','end',95,208,190,206,false),
+        L('OVERFLOW — 1½" HOLE','start',330,126,289,126,false),
+        L('ANCHOR / PAVER','middle',210,284,210,256,false)
+      ]
+    }),
+    schem2d: elev2d({
+      cx:210, topY:84, botY:240, topHW:76, botHW:67, waterY:150,
+      extra: `<rect class="anchor" x="150" y="241" width="120" height="6"/>`
+        + `<line class="bucket-rim" x1="137" y1="89" x2="283" y2="89"/>`
+        + `<line class="box-rib" x1="136" y1="98" x2="284" y2="98"/>`
+        + `<line class="box-rib" x1="137" y1="107" x2="283" y2="107"/>`
+        + `<path class="bucket-bail" fill="none" d="M143,84 C143,52 175,46 193,46 L227,46 C245,46 277,52 277,84"/>`
+        + `<line class="bucket-grip" x1="193" y1="46" x2="227" y2="46"/>`
+        + ramp2d(163,237,257,75,10)
+        + `<ellipse class="bp2-dunk" cx="174" cy="150" rx="10" ry="4"/>`
+        + `<circle class="bp2-hole" cx="284" cy="118" r="4"/>`,
+      labels:[
+        L('SHE LAYS HERE','start',12,108,235,150,false),
+        L('BTI DUNK','start',12,150,174,150,true),
+        L('ESCAPE RAMP','end',428,94,251,82,false),
+        L('OVERFLOW — 1½" HOLE','end',428,130,284,120,false),
+        L('ANCHOR / PAVER','middle',210,262,210,244,false)
       ]
     }),
     steps:["Use a dark bucket (paint it black if it's pale — dark draws her in).","Fill about ¾ with water + a few handfuls of grass clippings. Let it get funky.","Leave the surface open — she has to land on the water to lay. Only if kids or pets roam nearby, cap it with coarse ½\" hardware cloth (she still flies through); never fine window screen, which keeps her out and kills the trap.","Lean a rough stick or a scrap-wood strip from the rim down into the water — a ramp so any bird or critter that falls in can climb back out.","Drill a ~1½\" overflow hole a couple inches below the rim so storms drain instead of topping it over. Screening it is optional.","Emplace it: bolt to a paver or strap to a T-post so the wind can't tip it."],
@@ -315,8 +455,20 @@ const PLATFORMS = [
       labels:[
         L('SHE LAYS HERE','end',95,90,204,138,false),
         L('BTI DUNK','end',95,150,169,152,true),
-        L('RAMP — CLIMB-OUT','end',95,210,160,194,false),
+        L('ESCAPE RAMP','end',95,210,160,194,false),
         L('DRAIN PLUG — STOP IT UP','middle',210,280,210,217,false)
+      ]
+    }),
+    schem2d: elev2d({
+      cx:210, topY:110, botY:200, topHW:125, botHW:108, waterY:150, ground:true,
+      extra: ramp2d(137,197,288,101,10)
+        + `<ellipse class="bp2-dunk" cx="151" cy="150" rx="10" ry="4"/>`
+        + `<circle class="bp2-hole" cx="210" cy="197" r="4"/>`,
+      labels:[
+        L('SHE LAYS HERE','start',12,120,240,150,false),
+        L('BTI DUNK','start',12,150,151,150,true),
+        L('ESCAPE RAMP','end',428,105,280,106,false),
+        L('DRAIN PLUG — STOP IT UP','middle',210,236,210,199,false)
       ]
     }),
     steps:["Set it roughly level somewhere shaded.","Stop up the drain first — the actual plug if it still has one, or a rubber stopper / silicone caulk if it doesn't. A slow leak drains the trap before it can do any work.","Fill with water + grass clippings; let it ferment a few days.","Leave the surface open for her to lay; if you must cover it for safety, use coarse ½\" hardware cloth — not fine window screen.","Lean a rough stick or a scrap-wood strip in from the rim — a ramp so any bird or critter that falls in can climb back out.","Service it the easy way: pull the drain plug, rinse, refill, re-dunk, then stop it back up.","That existing drain is your whole maintenance plan — use it."],
@@ -331,9 +483,23 @@ const PLATFORMS = [
       labels:[
         L('SHE LAYS HERE','end',95,90,200,130,false),
         L('BTI DUNK','end',95,150,169,168,true),
-        L('RAMP — CLIMB-OUT','end',95,210,173,210,false),
+        L('ESCAPE RAMP','end',95,210,173,210,false),
         L('OVERFLOW — 1½" HOLE','start',322,125,319,125,false),
         L('BALLAST (BRICKS)','middle',210,280,200,232,false)
+      ]
+    }),
+    schem2d: elev2d({
+      cx:210, topY:92, botY:225, topHW:106, botHW:99, waterY:150,
+      extra: ramp2d(143,222,276,83,10)
+        + brick2d(235,225,30)
+        + `<ellipse class="bp2-dunk" cx="158" cy="150" rx="10" ry="4"/>`
+        + `<circle class="bp2-hole" cx="315" cy="116" r="4"/>`,
+      labels:[
+        L('SHE LAYS HERE','start',12,110,235,150,false),
+        L('BTI DUNK','start',12,150,158,150,true),
+        L('ESCAPE RAMP','end',428,96,268,88,false),
+        L('OVERFLOW — 1½" HOLE','end',428,240,315,118,false),
+        L('BALLAST (BRICKS)','middle',175,240,235,218,false)
       ]
     }),
     steps:["Get a food-grade plastic drum (free at car washes, breweries, co-ops). Cut it in half across the middle.","Darken the inside if it's pale; line cracks with scrap billboard vinyl.","Fill with water + grass clippings.","Leave the wide surface open — it's your best catch. For a child- and pet-safe cover use coarse ½\" hardware cloth she can fly through, never fine screen. Weigh it down with bricks or bolt it to a paver.","Lean a rough stick or a scrap-wood strip from the rim into the water — a ramp so any bird or critter that falls in can climb back out.","Drill a ~1½\" overflow hole a couple inches below the rim for storms. Screening it is optional."],
@@ -348,8 +514,20 @@ const PLATFORMS = [
       labels:[
         L('SHE LAYS HERE','end',95,90,200,154,false),
         L('BTI DUNK','end',95,150,169,176,true),
-        L('RAMP — CLIMB-OUT','end',95,210,169,218,false),
+        L('ESCAPE RAMP','end',95,210,169,218,false),
         L('DRAIN PLUG','start',330,151,312,151,false)
+      ]
+    }),
+    schem2d: elev2d({
+      cx:210, topY:112, botY:224, topHW:108, botHW:96, waterY:158, ground:true,
+      extra: ramp2d(145,221,277,105,10)
+        + `<ellipse class="bp2-dunk" cx="158" cy="158" rx="10" ry="4"/>`
+        + `<circle class="bp2-hole" cx="305" cy="213" r="4"/>`,
+      labels:[
+        L('SHE LAYS HERE','start',12,124,238,158,false),
+        L('BTI DUNK','start',12,158,158,158,true),
+        L('ESCAPE RAMP','end',428,110,270,106,false),
+        L('DRAIN PLUG','end',428,244,305,215,false)
       ]
     }),
     steps:["Beg a cracked or rusted-out tank off any rancher — they'll be glad it's gone.","Look it over first: check for cracks or rusted-through spots, and patch anything you find with scrap billboard vinyl or pond-liner offcuts.","Fill with water + grass clippings; site it in shade.","Lean a rough stick or a scrap-wood strip in from the rim — a ramp so any bird or critter that falls in can climb back out.","Use the drain plug for easy servicing.","Scale your dunks to the size — one per ~100 sq ft of surface."],
@@ -366,43 +544,110 @@ const PLATFORMS = [
         L('SET IN GROUND','start',325,210,281,203,false)
       ]
     }),
+    schem2d: tire2d(),
     steps:["Tire shops pay to get rid of these — take a few off their hands.","Lay it flat or half-bury it in a ditch or low corner.","Fill the well with water + grass clippings.","Because you can't fully empty a tire, you maintain it by re-dosing — not draining.","Best emplaced in the spots that already hold water after rain."],
     kill:"1 Bti dunk, re-dosed monthly" },
+
+  { desig:"KID", name:"Kiddie Pool", vibe:"Wide, cheap, and already in the yard.",
+    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><ellipse class="o" cx="24" cy="28" rx="18" ry="7"/><ellipse class="o" cx="24" cy="24" rx="18" ry="7"/><line class="w" x1="8" y1="26" x2="40" y2="26"/><circle class="d" cx="24" cy="26" r="3"/></svg>`,
+    good:["Huge surface area","Under $10 new","Already in the yard"], warn:["Shallow = fast evaporation","Light — stake or weight it"],
+    schem: isoCyl({
+      cx:220, topY:128, topRX:146, botY:182, botRX:124, waterY:166, flange:154,
+      bands:[.42,.7], dunkAt:[188,160], eggAt:[278,179],
+      extra:`<circle class="ann" cx="292" cy="204" r="4.5"/>`+
+        `<g class="brick"><path class="brick-l" d="M211,185 L211,194 L230,201 L230,192 Z"/>`+
+        `<path class="brick-r" d="M230,192 L230,201 L249,194 L249,185 Z"/>`+
+        `<path class="brick-top" d="M230,178 L249,185 L230,192 L211,185 Z"/></g>`,
+      labels:[
+        L('SHE LAYS HERE','start',10,90,210,150,false),
+        L('BTI DUNK','start',10,148,188,160,true),
+        L('ESCAPE RAMP','end',430,92,352,138,false),
+        L('OVERFLOW — 1½" HOLE','middle',330,256,292,204,false),
+        L('BRICK — WEIGH IT DOWN','middle',150,262,224,192,false)
+      ]
+    }),
+    schem2d: elev2d({
+      cx:220, topY:150, botY:208, topHW:140, botHW:122, waterY:186, lip:8, ground:true,
+      extra: brick2d(214,208,34)
+        + ramp2d(120,206,332,140,11)
+        + `<ellipse class="bp2-dunk" cx="150" cy="186" rx="11" ry="4"/>`
+        + `<circle class="bp2-hole" cx="356" cy="165" r="4"/>`,
+      labels:[
+        L('ESCAPE RAMP','end',428,112,320,146,false),
+        L('BTI DUNK','start',12,238,150,190,true),
+        L('BRICK','middle',214,238,214,200,false),
+        L('OVERFLOW — 1½" HOLE','end',430,238,356,167,false)
+      ]
+    }),
+    steps:["Grab a hard-shell kiddie pool — the cheap round plastic kind, not an inflatable.","Set it in a shady spot and weight or stake it so wind can't flip it.","Fill with a few inches of water + grass clippings.","Drill a 1½\" overflow hole near the rim and screen it so downpours can't flush the larvae out.","Drop in a Bti dunk — the shallow water still breeds mosquitoes.","Lean a stick or scrap board from the rim into the water as an escape ramp.","Top off as needed — shallow pools evaporate fast in summer."],
+    kill:"1 Bti dunk" },
 
   { desig:"FRZ", name:"Dead Chest Freezer", vibe:"An insulated tank you got for free.",
     icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><rect class="o" x="9" y="14" width="30" height="24"/><line class="o" x1="9" y1="19" x2="39" y2="19"/><line class="w" x1="13" y1="28" x2="35" y2="28"/><circle class="d" cx="24" cy="28" r="3.2"/></svg>`,
     good:["Insulated = steady ferment, slow evaporation","Watertight","Immovable"], warn:["Big footprint"],
     schem: isoBox({
-      cx:210, topY:120, botY:250, halfW:110, halfD:80, wall:12, waterY:175,
-      extra:`<circle class="ann" cx="320" cy="220" r="5"/>`,
+      cx:230, topY:68, halfW:120, halfD:75, wall:10, height:80, lip:5, waterY:115,
+      extra:`<circle class="ann" cx="${230+120-20}" cy="${68+80-14}" r="4.5"/>`+
+        `<g class="box-lid"><path class="box-top" d="M30,210 L120,178 L180,208 L90,240 Z"/><path class="box-front" d="M30,210 L30,218 L90,248 L90,240 Z"/><path class="box-side" d="M180,208 L180,216 L90,248 L90,240 Z"/><line class="body" x1="65" y1="205" x2="140" y2="221" stroke-width=".6" opacity=".4"/></g>`,
       labels:[
-        L('INSULATED WALLS','end',95,60,120,90,false),
-        L('SHE LAYS HERE','end',95,120,195,163,false),
-        L('BTI DUNK','end',95,170,175,185,true),
-        L('RAMP — CLIMB-OUT','end',95,220,172,220,false),
-        L('LOW DRAIN','start',330,220,325,220,false)
+        L('SHE LAYS HERE','start',10,58,210,100,false),
+        L('BTI DUNK','start',10,105,185,118,true),
+        L('ESCAPE RAMP','end',430,60,300,112,false),
+        L('DRAIN — 1½" HOLE','end',430,170,340,134,false),
+        L('LID REMOVED','start',10,195,95,210,false)
       ]
     }),
-    steps:["Grab a dead chest freezer or mini-fridge off a curb / Marketplace 'free' pile.","Prop the lid open or pull it off entirely.","Fill with water + grass clippings.","Leave it open so she can reach the water; if pets or kids are near, cap with coarse ½\" hardware cloth she flies through — not fine window screen.","Lean a rough stick or a scrap-wood strip from the rim down into the water — a ramp so any bird or critter that falls in can climb back out.","Drill a low drain hole or keep a siphon hose handy for servicing."],
+    schem2d: elev2d({
+      cx:230, topY:95, botY:214, topHW:118, botHW:118, waterY:150, ground:true,
+      extra: `<rect class="bp2-body" x="40" y="218" width="76" height="8"/>`
+        + ramp2d(160,211,306,86,10)
+        + `<ellipse class="bp2-dunk" cx="180" cy="150" rx="10" ry="4"/>`
+        + `<circle class="bp2-hole" cx="346" cy="192" r="4"/>`
+        + `<path class="bp2-body" d="M118,104 L118,205 M342,104 L342,205" stroke-width="1" opacity=".45"/>`,
+      labels:[
+        L('SHE LAYS HERE','start',12,110,260,150,false),
+        L('BTI DUNK','start',12,150,180,150,true),
+        L('ESCAPE RAMP','end',428,82,300,90,false),
+        L('DRAIN — 1½" HOLE','end',428,244,346,194,false),
+        L('LID REMOVED','middle',78,245,78,222,false)
+      ]
+    }),
+    steps:["Grab a dead chest freezer or mini-fridge off a curb / Marketplace 'free' pile.","Remove the lid entirely and set it aside — a closed lid blocks her from reaching the water and defeats the whole trap. Prop it against a fence or haul it off.","Fill with water + grass clippings.","Leave it open so she can reach the water; if pets or kids are near, cap with coarse ½\" hardware cloth she flies through — not fine window screen.","Lean a rough stick or a scrap-wood strip from the rim down into the water — a ramp so any bird or critter that falls in can climb back out.","Drill a low drain hole or keep a siphon hose handy for servicing."],
     kill:"Dunks by volume (check the label)" },
 
-  { desig:"IMP", name:"Improvise", vibe:"It's the rules, not the container.",
-    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><path class="o dash-icon" d="M13 15 L16 38 L32 38 L35 15"/><text x="24" y="29" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--amber)">?</text></svg>`,
-    good:["Use anything you've already got"], warn:["Must hold ≥2 gal & not blow over"],
-    schem: trap({
-      body:`<path class="body dash-schem" d="M165,90 L177,250 L263,250 L275,90"/>`,
-      water:`<path class="water" d="M180,150 L183,247 L257,247 L260,150 Z"/>`,
-      wl:150, wlL:180, wlR:260, dunkX:220, base:250,
-      extra:`<path class="ann" d="M275,124 h14 v6"/><text x="220" y="122" font-family="'IBM Plex Mono',monospace" font-size="22" fill="#3f4a2e" text-anchor="middle">?</text>`,
+  { desig:"BIN", name:"Storage Tote", vibe:"Five bucks at any hardware store.",
+    icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><rect class="o" x="10" y="16" width="28" height="20" rx="2"/><line class="w" x1="13" y1="28" x2="35" y2="28"/><circle class="d" cx="24" cy="28" r="3"/></svg>`,
+    good:["Under $5 — deploy multiples","Opaque black = she loves it","Stackable storage when not in use"], warn:["Light when empty — ballast it"],
+    schem: isoBox({
+      cx:220, topY:95, halfW:100, halfD:65, wall:6, height:100, lip:4, taper:.22,
+      ribs:[.28,.52,.76], waterY:148, dunkAt:[180,142], eggAt:[248,155],
+      extra:`<circle class="ann" cx="313" cy="116" r="4.5"/><rect class="anchor" x="192" y="216" width="56" height="8"/>`,
       labels:[
-        L('OPEN TOP — SHE LAYS HERE','middle',220,50,220,90,false),
-        L('SCREENED OVERFLOW','start',300,118,289,124,false),
-        L('BTI DUNK','start',300,150,235,150,true),
-        L('ANY DARK VESSEL ≥ 2 GAL','middle',220,278,220,250,false)
+        L('SHE LAYS HERE','start',10,78,246,152,false),
+        L('BTI DUNK','start',10,128,180,142,true),
+        L('ESCAPE RAMP','end',430,82,285,92,false),
+        L('OVERFLOW — 1½" HOLE','end',430,138,313,117,false),
+        L('BALLAST','middle',220,280,220,216,false)
       ]
     }),
-    steps:["Any dark vessel that holds a couple gallons works: mortar tub, old cooler, water trough, tote.","Funky water + grass to lure her in.","A Bti dunk to kill the larvae — non-negotiable.","Keep the surface open so she can land and lay (coarse ½\" hardware-cloth cover only if safety needs it — never fine screen), plus a screened overflow so storms can't flush the larvae.","Anchor it against the wind, and keep it maintained."],
-    kill:"Always a Bti dunk" }
+    schem2d: elev2d({
+      cx:220, topY:95, botY:210, topHW:100, botHW:78, waterY:150,
+      extra: `<line class="box-rib" x1="127" y1="130" x2="313" y2="130"/>`
+        + `<line class="box-rib" x1="134" y1="168" x2="306" y2="168"/>`
+        + ramp2d(167,207,282,86,10)
+        + brick2d(245,210,30)
+        + `<ellipse class="bp2-dunk" cx="175" cy="150" rx="10" ry="4"/>`
+        + `<circle class="bp2-hole" cx="316" cy="116" r="4"/>`,
+      labels:[
+        L('SHE LAYS HERE','start',12,110,250,150,false),
+        L('BTI DUNK','start',12,150,175,150,true),
+        L('ESCAPE RAMP','end',428,88,278,90,false),
+        L('OVERFLOW — 1½" HOLE','end',428,240,316,118,false),
+        L('BALLAST','middle',175,240,245,203,false)
+      ]
+    }),
+    steps:["Grab a dark plastic storage tote — the black HDX or Sterilite type from any hardware store. Bigger is better.","Drill a 1½\" overflow hole near the top and screen it so storms can't flush larvae.","Fill with water + grass clippings.","Drop in a Bti dunk — non-negotiable.","Lean a stick or scrap board from the rim into the water as an escape ramp.","Weigh it down with a brick or two so the wind can't flip it."],
+    kill:"1 Bti dunk" }
 ];
 
 const arsenal = document.getElementById('arsenal');
@@ -451,8 +696,20 @@ if (arsenal) PLATFORMS.forEach((p)=>{
 
   const body = el('div','platform-body');
   const inner = el('div','pb-inner');
-  inner.appendChild(svgNode(p.schem));
-  inner.appendChild(el('p','bp-cap','FIELD SCHEMATIC — labeled for clarity.'));
+  if (p.schem2d){
+    const views = el('div','pb-views');
+    const v1 = el('figure','pb-view');
+    v1.appendChild(svgNode(p.schem));
+    v1.appendChild(el('figcaption','bp-cap','3D VIEW — labeled for clarity.'));
+    const v2 = el('figure','pb-view');
+    v2.appendChild(svgNode(p.schem2d));
+    v2.appendChild(el('figcaption','bp-cap','2D BLUEPRINT — straight-on build view.'));
+    views.appendChild(v1); views.appendChild(v2);
+    inner.appendChild(views);
+  } else {
+    inner.appendChild(svgNode(p.schem));
+    inner.appendChild(el('p','bp-cap','FIELD SCHEMATIC — labeled for clarity.'));
+  }
 
   const tags = el('div','tags');
   p.good.forEach(g=>tags.appendChild(el('span','tag good',`+ ${g}`)));
