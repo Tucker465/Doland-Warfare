@@ -15,6 +15,6 @@
 </div>
 {% include footer.html %}
 <div id="toast" role="status"></div>
-<script src="/script.js" defer></script>
+<script src="/script.js?v={{ site.time | date: '%s' }}" defer></script>
 </body>
 </html>
