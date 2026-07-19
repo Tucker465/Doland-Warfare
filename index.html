@@ -27,6 +27,14 @@ schema_faq: true
   </div>
 </header>
 
+<div class="updatebar" role="status">
+  <div class="wrap">
+    <span class="ub-tag">▲ UPDATED</span>
+    <span class="ub-msg"><b>Thank you to the whole community</b> for the feedback, the builds, and the boots-on-the-ground effort — it's working. The larval-trap builds below have been refreshed with your input: every trap now has a <b>3D view</b> and a matching <b>2D blueprint</b>, plus new kiddie-pool &amp; storage-tote builds. Last refit <b>19 JUL 2026</b>.</span>
+    <a class="ub-go" href="#execution">See the updated traps →</a>
+  </div>
+</div>
+
 <!-- 01 SITUATION -->
 <section class="order" id="situation">
   <div class="wrap">
@@ -57,35 +65,48 @@ schema_faq: true
     <div class="seasonwrap">
       <div class="sct">Campaign Season — Typical WNV Risk by Month</div>
       <div class="scs">RELATIVE RISK // SOUTH DAKOTA &amp; NORTHERN PLAINS</div>
-      <svg viewBox="0 0 440 210" role="img" aria-label="Typical West Nile risk by month, peaking in August and September">
-        <defs></defs>
+      <svg viewBox="0 0 440 200" role="img" aria-label="Typical West Nile risk by month for South Dakota: low in spring, climbing steeply through July, peaking in August and September, and ending at the first hard frost. It is now mid-July — risk is ramping up fast toward the peak.">
+        <defs>
+          <linearGradient id="riskfill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#E6A630" stop-opacity=".5"/>
+            <stop offset="1" stop-color="#E6A630" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
         <!-- gridlines -->
-        <line x1="34" y1="25" x2="34" y2="175" stroke="#2a2f1e" stroke-width="1"/>
-        <line x1="34" y1="175" x2="410" y2="175" stroke="#2a2f1e" stroke-width="1"/>
-        <line x1="34" y1="100" x2="410" y2="100" stroke="#20251700" stroke-width="0"/>
-        <!-- area -->
-        <path d="M40,175 L40,170.5 L90,167.5 L140,155 L190,115 L240,28 L290,62 L340,138 L390,169 L390,175 Z" fill="#e6a63022"/>
-        <!-- line -->
-        <path d="M40,170.5 L90,167.5 L140,155 L190,115 L240,28 L290,62 L340,138 L390,169" fill="none" stroke="#E6A630" stroke-width="2.4" stroke-linejoin="round"/>
-        <!-- peak marker -->
-        <circle cx="240" cy="28" r="3.5" fill="#E6A630"/>
+        <line x1="34" y1="175" x2="410" y2="175" stroke="#3A3E2C" stroke-width="1"/>
+        <line x1="34" y1="128" x2="410" y2="128" stroke="#2a2f1e" stroke-width="1" stroke-dasharray="2 5"/>
+        <line x1="34" y1="80" x2="410" y2="80" stroke="#2a2f1e" stroke-width="1" stroke-dasharray="2 5"/>
+        <!-- area under the curve -->
+        <path d="M40,175 L40,170.5 L90,167.5 L140,155 L190,115 L240,28 L290,62 L340,138 L390,169 L390,175 Z" fill="url(#riskfill)"/>
+        <!-- risk line -->
+        <path d="M40,170.5 L90,167.5 L140,155 L190,115 L240,28 L290,62 L340,138 L390,169" fill="none" stroke="#E6A630" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+        <!-- month dots -->
+        <g fill="#E6A630">
+          <circle cx="40" cy="170.5" r="2"/><circle cx="90" cy="167.5" r="2"/><circle cx="140" cy="155" r="2"/>
+          <circle cx="290" cy="62" r="2.4"/><circle cx="340" cy="138" r="2"/><circle cx="390" cy="169" r="2"/>
+        </g>
+        <!-- PEAK marker -->
+        <circle cx="240" cy="28" r="4.2" fill="#E6A630" stroke="#10130C" stroke-width="1.6"/>
+        <text x="240" y="17" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#E6A630" text-anchor="middle">PEAK THREAT</text>
+        <!-- YOU ARE HERE marker (mid-July) -->
+        <line x1="190" y1="36" x2="190" y2="175" stroke="#DAD4BE" stroke-width="1.2" stroke-dasharray="3 3" opacity=".6"/>
+        <circle cx="190" cy="115" r="5" fill="#DAD4BE" stroke="#10130C" stroke-width="1.8"/>
+        <text x="184" y="58" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#DAD4BE" text-anchor="end">YOU ARE HERE ▸</text>
+        <text x="184" y="70" font-family="'IBM Plex Mono',monospace" font-size="8.5" fill="#C9C2A6" text-anchor="end">MID-JULY · CLIMBING FAST</text>
+        <!-- frost -->
+        <text x="358" y="102" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="#DE826B" text-anchor="middle">FIRST FROST</text>
+        <text x="358" y="113" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="#DE826B" text-anchor="middle">= ENDGAME</text>
         <!-- month labels -->
         <g font-family="'IBM Plex Mono',monospace" font-size="11" fill="#94A074" text-anchor="middle">
           <text x="40" y="192">APR</text><text x="90" y="192">MAY</text><text x="140" y="192">JUN</text>
-          <text x="190" y="192">JUL</text><text x="240" y="192">AUG</text><text x="290" y="192">SEP</text>
+          <text x="190" y="192" fill="#DAD4BE" font-weight="600">JUL</text><text x="240" y="192">AUG</text><text x="290" y="192">SEP</text>
           <text x="340" y="192">OCT</text><text x="390" y="192">NOV</text>
         </g>
-        <!-- y label -->
-        <text x="28" y="30" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#6E7A55" text-anchor="end">HIGH</text>
+        <!-- y labels -->
+        <text x="28" y="31" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#6E7A55" text-anchor="end">HIGH</text>
         <text x="28" y="173" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#6E7A55" text-anchor="end">LOW</text>
-        <!-- annotations -->
-        <text x="150" y="92" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="#C9C2A6">ACT BEFORE</text>
-        <text x="150" y="103" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="#C9C2A6">THE PEAK ↑</text>
-        <text x="240" y="18" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#E6A630" text-anchor="middle">PEAK THREAT</text>
-        <text x="356" y="120" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="#C24A2B">FROST =</text>
-        <text x="356" y="131" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="#C24A2B">ENDGAME</text>
       </svg>
-      <div class="cap">SOURCE: CDC &amp; SD surveillance — WNV cases peak late Aug–Sept, end at first hard frost. Shape repeats yearly.</div>
+      <div class="cap">SOURCE: CDC &amp; SD surveillance — WNV cases climb through July, peak late Aug–Sept, and end at the first hard frost. Get set up now, before the peak.</div>
     </div>
     <p>Translation: the fight runs from <b>spring thaw to the first hard frost</b>, and the smart move is to be set up <b>before</b> August. Start when the snow's gone, not when you're already getting bit.</p>
 

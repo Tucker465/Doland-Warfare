@@ -72,6 +72,15 @@
   .intel-chip{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.03em;color:var(--paper-2);background:var(--drab-2);border:1px solid var(--line);border-radius:3px;padding:5px 10px}
   .intel-chip b{color:var(--amber);font-weight:600}
 
+  /* UPDATE BANNER */
+  .updatebar{background:linear-gradient(90deg,var(--amber-dim),transparent 62%),var(--drab-2);border-top:1px solid var(--amber);border-bottom:1px solid var(--amber-dim)}
+  .updatebar .wrap{display:flex;align-items:center;gap:13px;flex-wrap:wrap;padding:11px 0}
+  .ub-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.11em;color:var(--drab);background:var(--amber);padding:4px 10px;border-radius:3px;flex-shrink:0}
+  .ub-msg{font-size:14px;color:var(--paper-2);flex:1 1 240px;min-width:200px;line-height:1.45}
+  .ub-msg b{color:var(--paper);font-weight:600}
+  .ub-go{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:.03em;color:var(--amber);text-decoration:none;white-space:nowrap;border:1px solid var(--amber-dim);border-radius:4px;padding:8px 13px;transition:.16s;flex-shrink:0}
+  .ub-go:hover{background:var(--amber);color:var(--drab);border-color:var(--amber)}
+
   /* SECTIONS */
   .order{padding:44px 0;border-bottom:1px solid var(--line)}
   .order:nth-of-type(even){background:var(--drab-2)}
@@ -214,6 +223,20 @@
   .box-side{fill:#1e2410;stroke:var(--amber);stroke-width:1.5}
   .box-top{fill:#3a4a22;stroke:var(--amber);stroke-width:1.5}
   .box-inner-top{fill:#0f1508;stroke:var(--amber);stroke-width:1}
+  .box-lip{fill:#4a5a30;stroke:var(--amber);stroke-width:1.5}
+  .box-bot{fill:#1a2008;stroke:var(--amber);stroke-width:1.2}
+  .box-rib{fill:none;stroke:var(--amber);stroke-width:1;opacity:.4}
+  .pool-rim{stroke:var(--amber);stroke-width:1.4;opacity:.7}
+  .pool-band{stroke:var(--amber);stroke-width:1;opacity:.4}
+  .pool-flange{fill:#333f20;stroke:var(--amber);stroke-width:1.4}
+  .pool-rib{stroke:var(--amber);stroke-width:.8;opacity:.4}
+  .bucket-rim{stroke:var(--paper-2);stroke-width:2.4}
+  .bucket-bail{stroke:var(--paper-2);stroke-width:2;stroke-linecap:round}
+  .bucket-grip{stroke:var(--paper-2);stroke-width:4.5;stroke-linecap:round}
+  .bucket-ear{fill:#10130C;stroke:var(--paper-2);stroke-width:1.3}
+  .brick-top{fill:#4a3a22;stroke:var(--amber);stroke-width:1.1}
+  .brick-l{fill:#2a2012;stroke:var(--amber);stroke-width:1.1}
+  .brick-r{fill:#362a18;stroke:var(--amber);stroke-width:1.1}
   .box-inner-front{fill:#161c0c;stroke:var(--amber);stroke-width:.8;opacity:.6}
   .box-inner-side{fill:#121808;stroke:var(--amber);stroke-width:.8;opacity:.6}
   .bpramp .board{fill:#3a2f1f4d;stroke:var(--amber);stroke-width:1.5}
@@ -228,6 +251,25 @@
   .bp .ann{fill:none;stroke:var(--amber);stroke-width:1}
   .bp .anchor{fill:none;stroke:#9a7d44;stroke-width:1.5}
   .bp-cap{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--moss-dim);letter-spacing:.02em;margin:0 0 12px}
+  /* 2D flat blueprint */
+  .bp2-body{fill:none;stroke:var(--paper-2);stroke-width:2;stroke-linejoin:round}
+  .bp2-water{fill:#22443388;stroke:none}
+  .bp2-wl{stroke:#6f9277;stroke-width:1;stroke-dasharray:4 3}
+  .bp2-ground{stroke:#9aa079;stroke-width:1.2}
+  .bp2-dunk{fill:none;stroke:var(--amber);stroke-width:1.8}
+  .bp2-hole{fill:#10130C;stroke:var(--amber);stroke-width:1.4}
+  .bp2-ramp polygon{fill:#3a2f1f4d;stroke:var(--amber);stroke-width:1.5}
+  .bp2-ramp line{stroke:var(--amber);stroke-width:1;opacity:.55}
+  .bp2-brick rect{fill:#4a3a22;stroke:var(--amber);stroke-width:1.1}
+  .bp2-brick line{stroke:var(--amber);stroke-width:.7;opacity:.6}
+  .bp2-dim{fill:none;stroke:#8a9166;stroke-width:.7}
+  .bp2-dimlbl{font-family:'IBM Plex Mono',monospace;font-size:8.5px;fill:#c7c9a6;letter-spacing:.02em}
+  /* dual 3D + 2D view layout */
+  .pb-views{display:grid;gap:14px;margin:14px 0 6px}
+  @media(min-width:620px){.pb-views{grid-template-columns:1fr 1fr;gap:16px}}
+  .pb-view{margin:0}
+  .pb-view .bp{margin:0 0 6px}
+  .pb-view .bp-cap{margin:0}
 
   .tags{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
   .tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.02em;padding:3px 8px;border-radius:3px;border:1px solid}
