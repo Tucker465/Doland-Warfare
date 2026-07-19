@@ -71,33 +71,6 @@ function ramp2d(x1,y1,x2,y2,w){
   return `<g class="bp2-ramp"><polygon points="${x1+nx},${y1+ny} ${x2+nx},${y2+ny} ${x2-nx},${y2-ny} ${x1-nx},${y1-ny}"/>`+
          `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/></g>`;
 }
-// Flat cross-section of a tire lying on the ground — the one vessel that isn't
-// a simple trapezoid. A wide low rubber casing dished in the middle, water
-// pooled in that central well, and the lower half sunk below the ground line
-// (hatched) since a tire is set into the earth, not stood on it.
-function tire2d(){
-  const g=180; // ground line
-  let s='';
-  // buried lower half: hatching under the ground line, behind the casing
-  let hatch=''; for(let x=70;x<=372;x+=16) hatch+=`<line x1="${x}" y1="${g}" x2="${x-10}" y2="${g+12}"/>`;
-  s+=`<g class="ground-hatch">${hatch}</g>`;
-  // rubber casing — two shoulders with a dished centre well
-  s+=`<path class="tire-side" d="M88,150 C120,120 150,122 162,140 C176,160 196,172 220,172 C244,172 264,160 278,140 C290,122 320,120 352,150 C360,196 300,214 220,214 C140,214 80,196 88,150 Z"/>`;
-  // water pooled in the well
-  s+=`<path class="bp2-water" d="M168,150 C184,166 200,171 220,171 C240,171 256,166 272,150 C258,159 242,163 220,163 C198,163 182,159 168,150 Z"/>`;
-  s+=`<path class="bp2-wl" fill="none" d="M170,151 C186,164 200,169 220,169 C240,169 254,164 270,151"/>`;
-  // bead walls of the well
-  s+=`<path class="tire-edge" d="M162,140 C170,150 166,160 168,150 M278,140 C270,150 274,160 272,150"/>`;
-  // Bti dunk floating in the pool
-  s+=`<ellipse class="bp2-dunk" cx="210" cy="166" rx="9" ry="3.5"/>`;
-  // ground line drawn last, over the casing, so the "sunk in" read is clear
-  s+=`<line class="bp2-ground" x1="46" y1="${g}" x2="394" y2="${g}"/>`;
-  s+= L('WATER POOLS IN WELL','middle',220,70,232,164,false);
-  s+= L('BTI DUNK','start',12,150,201,166,true);
-  s+= L('SET IN THE GROUND','end',428,150,300,180,false);
-  return bp(s);
-}
-
 // A scrap board or long brick, angled diagonally from the container floor
 // up past the rim, so any bird or critter that falls in can actually climb
 // out over the edge — (tx,ty) and (bx,by) (both computed by the caller) are
@@ -544,7 +517,6 @@ const PLATFORMS = [
         L('SET IN GROUND','start',325,210,281,203,false)
       ]
     }),
-    schem2d: tire2d(),
     steps:["Tire shops pay to get rid of these — take a few off their hands.","Lay it flat or half-bury it in a ditch or low corner.","Fill the well with water + grass clippings.","Because you can't fully empty a tire, you maintain it by re-dosing — not draining.","Best emplaced in the spots that already hold water after rain."],
     kill:"1 Bti dunk, re-dosed monthly" },
 
