@@ -1,0 +1,17 @@
+{%- comment -%}
+  Skipped on the homepage — there's nothing to trail back from. Every other
+  page resolves its label from nav.yml via nav_key, except /about/, which
+  carries no nav_key since it isn't one of the six primary sections.
+{%- endcomment -%}
+{%- unless page.url == '/' %}
+{%- assign crumb = site.data.nav.primary | where: "key", page.nav_key | first %}
+{%- assign crumb_label = crumb.label | default: "About" %}
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="wrap">
+    <ol>
+      <li><a href="/">The Order</a></li>
+      <li aria-current="page">{{ crumb_label }}</li>
+    </ol>
+  </div>
+</nav>
+{%- endunless %}
