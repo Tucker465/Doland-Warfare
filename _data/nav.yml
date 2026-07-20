@@ -50,3 +50,16 @@ page_sections:
 
   faq:
     - { num: "01", id: faq, short: FAQ, label: "Frequently Asked Questions" }
+
+# "Keep reading" cross-links shown at the bottom of each page, keyed the same
+# as primary[].key (plus "about", which has no primary entry of its own).
+# Hand-picked per page rather than "list everything" so the suggestions stay
+# contextually relevant. Home is deliberately absent — it already links to
+# every page in its own body copy.
+related:
+  intel:    [build, faq]
+  build:    [resupply, tools, faq]
+  tools:    [build, resupply]
+  resupply: [build, tools]
+  faq:      [intel, build, resupply]
+  about:    [intel, faq]

@@ -7,11 +7,14 @@
 {%- assign crumb = site.data.nav.primary | where: "key", page.nav_key | first %}
 {%- assign crumb_label = crumb.label | default: "About" %}
 <nav class="breadcrumbs" aria-label="Breadcrumb">
-  <div class="wrap">
+  <div class="wrap bc-row">
     <ol>
       <li><a href="/">The Order</a></li>
       <li aria-current="page">{{ crumb_label }}</li>
     </ol>
+    {%- if page.last_verified %}
+    <div class="verified">VERIFIED {{ page.last_verified | date: "%d %b %Y" | upcase }}</div>
+    {%- endif %}
   </div>
 </nav>
 {%- endunless %}

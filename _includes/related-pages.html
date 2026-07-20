@@ -1,0 +1,27 @@
+{%- comment -%}
+  "Keep reading" cross-links. Skipped on home (it already links everywhere)
+  and on any page with no entry in nav.yml's `related` map.
+{%- endcomment -%}
+{%- unless page.url == '/' %}
+{%- assign rel_key = page.nav_key %}
+{%- if page.url == '/about/' %}{% assign rel_key = 'about' %}{% endif %}
+{%- assign rel_keys = site.data.nav.related[rel_key] %}
+{%- if rel_keys %}
+<section class="related-pages">
+  <div class="wrap">
+    <div class="rp-head">KEEP READING</div>
+    <div class="rp-grid">
+      {%- for k in rel_keys %}
+      {%- assign item = site.data.nav.primary | where: "key", k | first %}
+      {%- if item %}
+      <a class="rp-card" href="{{ item.url }}">
+        <span class="rp-label">{{ item.label }}</span>
+        <span class="rp-sub">{{ item.sub }}</span>
+      </a>
+      {%- endif %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+{%- endif %}
+{%- endunless %}

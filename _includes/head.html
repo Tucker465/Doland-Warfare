@@ -19,21 +19,27 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#191B12">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<!-- Open Graph / social + agent link preview metadata (public summary only).
-     Reuses the site's one hero image site-wide for now (same call as the
-     Article JSON-LD image — no per-page images exist yet; a distinct image
-     for non-home pages is a possible future improvement, not done here). -->
+{%- comment -%}
+  Open Graph / social + agent link preview metadata (public summary only).
+  Each page can set its own og_image/og_image_width/height/alt in front
+  matter (see build.html, intel.html, etc.); falls back to the site-wide
+  hero for home and any page that doesn't set one.
+{%- endcomment -%}
+{%- assign og_image = page.og_image | default: '/assets/hero-1280.webp' %}
+{%- assign og_image_width = page.og_image_width | default: 1280 %}
+{%- assign og_image_height = page.og_image_height | default: 585 %}
+{%- assign og_image_alt = page.og_image_alt | default: 'Operation Doland Skeeter War — mosquito in crosshairs over a South Dakota dusk' %}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{{ site.title }}">
 <meta property="og:title" content="{{ page.title | default: site.title }}">
 <meta property="og:description" content="{{ page.description | default: site.description }}">
 <meta property="og:url" content="{{ page.url | absolute_url }}">
-<meta property="og:image" content="{{ '/assets/hero-1280.webp' | absolute_url }}">
-<meta property="og:image:width" content="1280">
-<meta property="og:image:height" content="585">
-<meta property="og:image:alt" content="Operation Doland Skeeter War — mosquito in crosshairs over a South Dakota dusk">
+<meta property="og:image" content="{{ og_image | absolute_url }}">
+<meta property="og:image:width" content="{{ og_image_width }}">
+<meta property="og:image:height" content="{{ og_image_height }}">
+<meta property="og:image:alt" content="{{ og_image_alt }}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="{{ '/assets/hero-1280.webp' | absolute_url }}">
+<meta name="twitter:image" content="{{ og_image | absolute_url }}">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -79,7 +85,7 @@
       "author": { "@id": "{{ '/' | absolute_url }}#organization" },
       "publisher": { "@id": "{{ '/' | absolute_url }}#organization" },
       "inLanguage": "en",
-      "image": "{{ '/assets/hero-1280.webp' | absolute_url }}"
+      "image": "{{ og_image | absolute_url }}"
     }
     {%- endif %}
     {%- if page.schema_howto %}
