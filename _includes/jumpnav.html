@@ -1,5 +1,4 @@
-{%- assign section_base = '' %}
-{%- unless page.url == '/' %}{% assign section_base = '/' %}{% endunless %}
+{%- assign current_sections = site.data.nav.page_sections[page.nav_key] %}
 <!-- Fixed to the bottom-right corner rather than the top bar: thumb-reach
      research (the basis for standard floating-action-button placement in
      nearly every major mobile app) shows the top of a tall phone screen is
@@ -9,10 +8,16 @@
      <details> needs no JS to open/close. -->
 <details class="jumpnav" id="jumpnav">
   <summary><span class="chev" aria-hidden="true">▾</span> JUMP TO</summary>
-  <nav class="jumpnav-list" aria-label="Section navigation">
-    <a class="section-link" href="{{ section_base }}#top">Top</a>
-    {%- for s in site.data.nav.order_sections %}
-    <a class="section-link" href="{{ section_base }}#{{ s.id }}"><span class="n">{{ s.num }}</span> {{ s.label }}</a>
+  <nav class="jumpnav-list" aria-label="Site navigation">
+    {%- if current_sections %}
+    <a class="section-link" href="#top">Top</a>
+    {%- for s in current_sections %}
+    <a class="section-link" href="#{{ s.id }}"><span class="n">{{ s.num }}</span> {{ s.label }}</a>
+    {%- endfor %}
+    <div class="jumpnav-divider"></div>
+    {%- endif %}
+    {%- for p in site.data.nav.primary %}
+    <a class="section-link{% if page.nav_key == p.key %} active{% endif %}" href="{{ p.url }}">{{ p.label }} <span class="sub">— {{ p.sub }}</span></a>
     {%- endfor %}
     <a class="section-link{% if page.url == '/about/' %} active{% endif %}" href="/about/">About</a>
   </nav>
