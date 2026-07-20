@@ -1,0 +1,34 @@
+---
+layout: default
+title: "Debrief — FAQ | Doland Skeeter War"
+description: "Answers on standing water, Bti safety, trap effectiveness, wildlife impact, and mosquito season timing for Doland, South Dakota."
+permalink: /faq/
+nav_key: faq
+preload_hero: false
+schema_article: true
+schema_faq: true
+---
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="stamp">UNCLASSIFIED // FOR PUBLIC RELEASE</div>
+    <div class="eyebrow reveal">DEBRIEF &nbsp;//&nbsp; FAQ</div>
+    <h1 class="reveal">Frequently Asked <span class="frag">Questions</span></h1>
+    <p class="mission reveal">The questions we get most, answered straight — sourced back to the CDC, EPA, and SD Dept. of Health.</p>
+  </div>
+</header>
+
+<section class="order" id="faq">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">01</div>
+      <div class="sec-titles"><h2>Frequently Asked Questions</h2><div class="plain">Debrief.</div></div></div>
+    <div class="para-tag">PARA 6 — DEBRIEF</div>
+    <div class="faq">
+      {%- for item in site.data.faq %}
+      <details class="faq-item">
+        <summary>{{ item.q }}</summary>
+        <div class="faq-a"><p>{{ item.a }}</p></div>
+      </details>
+      {%- endfor %}
+    </div>
+  </div>
+</section>

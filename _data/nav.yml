@@ -1,21 +1,52 @@
 # Single source of truth for navigation.
 #
-# primary: top-level site sections. Phase 1 ships one page (The Order); as Build
-# Plans / Tools / Field Manual / Resupply land, add an entry here and it appears
-# in the chrome automatically — no template edits.
+# primary: top-level site sections/pages. Each has a callsign label plus a
+# plain-language sub-label, so the OPORD theme survives first contact with a
+# reader who has no idea what "Field Manual" means yet. `key` matches the
+# `nav_key` a page sets in its front matter, used to highlight the active
+# item and to look up that page's in-page section list below.
 primary:
-  - { label: "The Order", url: "/", key: order }
-  # - { label: "Build Plans",  url: "/build/",  key: build }
-  # - { label: "Tools",        url: "/tools/",  key: tools }
-  # - { label: "Field Manual", url: "/intel/",  key: intel }
-  # - { label: "Resupply",     url: "/resupply/", key: resupply }
+  - { label: "The Order",    sub: "Home",                    url: "/",          key: order }
+  - { label: "Field Manual",  sub: "Know the Threat",         url: "/intel/",    key: intel }
+  - { label: "Build Plans",   sub: "Traps & Blueprints",      url: "/build/",    key: build }
+  - { label: "Tools",         sub: "What Works, What Doesn't", url: "/tools/",   key: tools }
+  - { label: "Resupply",      sub: "Bti & Where to Buy",      url: "/resupply/", key: resupply }
+  - { label: "Debrief",       sub: "FAQ",                     url: "/faq/",      key: faq }
 
-# In-page sections of The Order (home doctrine page). Drives the top-bar phase
-# nav, the desktop section rail, and the context-rail index from one list.
-order_sections:
-  - { num: "01", id: situation,   short: SIT,   label: Situation }
-  - { num: "02", id: mission,     short: MSN,   label: Mission }
-  - { num: "03", id: execution,   short: EXEC,  label: Execution }
-  - { num: "04", id: sustainment, short: SUST,  label: Sustainment }
-  - { num: "05", id: signal,      short: "C&S", label: "Command & Signal" }
-  - { num: "06", id: faq,         short: FAQ,   label: "Frequently Asked Questions" }
+# In-page section anchors, per page. Keyed the same as `primary[].key` above.
+# Drives the top-bar jump nav and the desktop section rail for whichever page
+# is currently open — each page also sets `nav_key` in its front matter to
+# say which list applies to it.
+page_sections:
+  order:
+    - { num: "01", id: situation,   short: SIT,   label: Situation }
+    - { num: "02", id: mission,     short: MSN,   label: Mission }
+    - { num: "03", id: execution,   short: EXEC,  label: Execution }
+    - { num: "04", id: sustainment, short: SUST,  label: Sustainment }
+    - { num: "05", id: signal,      short: "C&S", label: "Command & Signal" }
+    - { num: "06", id: faq,         short: FAQ,   label: "FAQ Preview" }
+
+  intel:
+    - { num: "01", id: threat,  short: ID,   label: "Identify the Enemy" }
+    - { num: "02", id: season,  short: SEA,  label: "When She's Active" }
+    - { num: "03", id: wnv,     short: WNV,  label: "The Virus, Plain Terms" }
+    - { num: "04", id: recon,   short: RCN,  label: "Recon Your Land" }
+    - { num: "05", id: sources, short: SRC,  label: "Official Sources" }
+
+  build:
+    - { num: "01", id: lane,    short: LANE, label: "Pick Your Lane" }
+    - { num: "02", id: concept, short: CONC, label: "How Every Trap Works" }
+    - { num: "03", id: arsenal, short: ARS,  label: "Select Your Platform" }
+    - { num: "04", id: siting,  short: SITE, label: "Do Not Emplace" }
+
+  tools:
+    - { num: "01", id: fronts, short: FRNT, label: "What Works — Ranked" }
+    - { num: "02", id: myths,  short: MYTH, label: "What Doesn't Work" }
+
+  resupply:
+    - { num: "01", id: ammo,   short: AMMO, label: "Ammunition Brief — Bti" }
+    - { num: "02", id: supply, short: SUP,  label: "Where to Resupply" }
+    - { num: "03", id: tempo,  short: TMP,  label: "Maintenance Tempo" }
+
+  faq:
+    - { num: "01", id: faq, short: FAQ, label: "Frequently Asked Questions" }

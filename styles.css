@@ -51,6 +51,9 @@
   .jumpnav-list a:hover{color:var(--paper);background:var(--drab-3)}
   .jumpnav-list a.active{color:var(--amber);background:var(--drab-3)}
   .jumpnav-list a.active .n{color:var(--amber)}
+  .jumpnav-list a .sub{color:var(--moss-dim);font-size:11px}
+  .jumpnav-list a.active .sub{color:var(--amber-dim)}
+  .jumpnav-divider{height:1px;background:var(--line);margin:4px 2px}
 
   /* HERO */
   .hero{position:relative;padding:30px 0 40px;border-bottom:1px solid var(--line);
@@ -469,5 +472,18 @@
     .rail-nav a:hover{color:var(--paper);background:var(--drab-3)}
     .rail-nav a.active{color:var(--amber);border-color:var(--amber-dim);background:var(--drab-3)}
     .rail-nav a.active .n{color:var(--amber)}
+
+    /* Primary (cross-page) switcher sits above the current page's in-page
+       section list, in the same rail. A second .rail-head divides them. */
+    .rail-primary{margin-bottom:14px}
+    .rail-head-sub{margin-top:2px}
+    .primary-link{display:flex;flex-direction:column;gap:1px;
+      font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.03em;
+      color:var(--moss);text-decoration:none;padding:6px 8px;border-radius:4px;
+      border:1px solid transparent;transition:.16s}
+    .primary-link .sub{font-size:10px;letter-spacing:.02em;color:var(--moss-dim);font-weight:400}
+    .primary-link:hover{color:var(--paper);background:var(--drab-3)}
+    .primary-link.active{color:var(--amber);border-color:var(--amber-dim);background:var(--drab-3)}
+    .primary-link.active .sub{color:var(--amber-dim)}
   }
 

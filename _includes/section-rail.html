@@ -1,11 +1,18 @@
-{%- assign section_base = '' %}
-{%- unless page.url == '/' %}{% assign section_base = '/' %}{% endunless %}
-<aside class="section-rail" aria-label="Section navigation">
-  <div class="rail-head">OPORD</div>
-  <ol class="rail-nav">
-    {%- for s in site.data.nav.order_sections %}
-    <li><a class="section-link" href="{{ section_base }}#{{ s.id }}"><span class="n">{{ s.num }}</span> {{ s.label }}</a></li>
+{%- assign current_sections = site.data.nav.page_sections[page.nav_key] %}
+<aside class="section-rail" aria-label="Site navigation">
+  <div class="rail-head">OPERATION</div>
+  <ol class="rail-nav rail-primary">
+    {%- for p in site.data.nav.primary %}
+    <li><a class="primary-link{% if page.nav_key == p.key %} active{% endif %}" href="{{ p.url }}">{{ p.label }}<span class="sub">{{ p.sub }}</span></a></li>
     {%- endfor %}
-    <li><a class="section-link{% if page.url == '/about/' %} active{% endif %}" href="/about/">About</a></li>
+    <li><a class="primary-link{% if page.url == '/about/' %} active{% endif %}" href="/about/">About<span class="sub">Who We Are</span></a></li>
   </ol>
+  {%- if current_sections %}
+  <div class="rail-head rail-head-sub">{{ page.nav_key | upcase }}</div>
+  <ol class="rail-nav">
+    {%- for s in current_sections %}
+    <li><a class="section-link" href="#{{ s.id }}"><span class="n">{{ s.num }}</span> {{ s.label }}</a></li>
+    {%- endfor %}
+  </ol>
+  {%- endif %}
 </aside>
