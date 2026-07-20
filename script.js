@@ -521,6 +521,7 @@ const PLATFORMS = [
     kill:"1 Bti dunk, re-dosed monthly" },
 
   { desig:"KID", name:"Kiddie Pool", vibe:"Wide, cheap, and already in the yard.",
+    photo:{ src:"/assets/build-kiddie-pool.webp", w:900, h:900, alt:"A hard-shell kiddie pool deployed as a mosquito larval trap in a farmyard at dusk, staked with rocks and fitted with a screened overflow vent and an escape ramp stick" },
     icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><ellipse class="o" cx="24" cy="28" rx="18" ry="7"/><ellipse class="o" cx="24" cy="24" rx="18" ry="7"/><line class="w" x1="8" y1="26" x2="40" y2="26"/><circle class="d" cx="24" cy="26" r="3"/></svg>`,
     good:["Huge surface area","Under $10 new","Already in the yard"], warn:["Shallow = fast evaporation","Light — stake or weight it"],
     schem: isoCyl({
