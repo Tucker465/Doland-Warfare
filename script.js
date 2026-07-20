@@ -588,6 +588,7 @@ const PLATFORMS = [
     kill:"Dunks by volume (check the label)" },
 
   { desig:"BIN", name:"Storage Tote", vibe:"Five bucks at any hardware store.",
+    photo:{ src:"/assets/build-storage-tote.webp", w:900, h:900, alt:"A dark plastic storage tote deployed as a mosquito larval trap in a prairie field at dusk, weighted with bricks and fitted with an escape ramp" },
     icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><rect class="o" x="10" y="16" width="28" height="20" rx="2"/><line class="w" x1="13" y1="28" x2="35" y2="28"/><circle class="d" cx="24" cy="28" r="3"/></svg>`,
     good:["Under $5 — deploy multiples","Opaque black = she loves it","Stackable storage when not in use"], warn:["Light when empty — ballast it"],
     schem: isoBox({
@@ -677,6 +678,15 @@ if (arsenal) PLATFORMS.forEach((p)=>{
     v2.appendChild(svgNode(p.schem2d));
     v2.appendChild(el('figcaption','bp-cap','2D BLUEPRINT — straight-on build view.'));
     views.appendChild(v1); views.appendChild(v2);
+    if (p.photo){
+      const v3 = el('figure','pb-view pb-photo');
+      const img = document.createElement('img');
+      img.src = p.photo.src; img.width = p.photo.w; img.height = p.photo.h;
+      img.alt = p.photo.alt; img.loading = 'lazy'; img.decoding = 'async';
+      v3.appendChild(img);
+      v3.appendChild(el('figcaption','bp-cap','REFERENCE PHOTO — what it looks like in the field.'));
+      views.appendChild(v3);
+    }
     inner.appendChild(views);
   } else {
     inner.appendChild(svgNode(p.schem));
