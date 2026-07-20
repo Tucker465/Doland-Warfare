@@ -54,6 +54,14 @@
   .jumpnav-list a .sub{color:var(--moss-dim);font-size:11px}
   .jumpnav-list a.active .sub{color:var(--amber-dim)}
   .jumpnav-divider{height:1px;background:var(--line);margin:4px 2px}
+  /* Cross-page switcher links: stacked label/sub, same shape as the desktop
+     rail's primary links, so a two-word label never staggers onto a second
+     line mid-dash the way an inline "Label — Sub" row does at narrow widths. */
+  .jumpnav-list .primary-link{display:flex;flex-direction:column;gap:1px;
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.02em;
+    color:var(--moss);text-decoration:none;padding:9px 10px;border-radius:4px}
+  .jumpnav-list .primary-link .sub{font-size:11px;color:var(--moss-dim)}
+  .jumpnav-list .primary-link:hover{color:var(--paper);background:var(--drab-3)}
 
   /* HERO */
   .hero{position:relative;padding:30px 0 40px;border-bottom:1px solid var(--line);

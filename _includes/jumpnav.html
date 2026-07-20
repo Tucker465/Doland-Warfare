@@ -17,8 +17,12 @@
     <div class="jumpnav-divider"></div>
     {%- endif %}
     {%- for p in site.data.nav.primary %}
-    <a class="section-link{% if page.nav_key == p.key %} active{% endif %}" href="{{ p.url }}">{{ p.label }} <span class="sub">— {{ p.sub }}</span></a>
+    {%- unless page.nav_key == p.key %}
+    <a class="primary-link" href="{{ p.url }}">{{ p.label }}<span class="sub">{{ p.sub }}</span></a>
+    {%- endunless %}
     {%- endfor %}
-    <a class="section-link{% if page.url == '/about/' %} active{% endif %}" href="/about/">About</a>
+    {%- unless page.url == '/about/' %}
+    <a class="primary-link" href="/about/">About<span class="sub">Who We Are</span></a>
+    {%- endunless %}
   </nav>
 </details>
