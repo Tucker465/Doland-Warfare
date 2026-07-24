@@ -14,42 +14,47 @@ primary:
   - { label: "Debrief",       sub: "FAQ",                     url: "/faq/",      key: faq }
 
 # In-page section anchors, per page. Keyed the same as `primary[].key` above.
-# Drives the top-bar jump nav and the desktop section rail for whichever page
+# Drives the mobile jump nav and the desktop section rail for whichever page
 # is currently open — each page also sets `nav_key` in its front matter to
 # say which list applies to it.
+#
+# These labels are navigation, not headings: they're deliberately shorter
+# than the H2s they point at so they hold one line in the rail (~17 chars
+# of room). Lengthening one past that wraps it and makes the rail look
+# squished, so keep new entries short.
 page_sections:
   order:
-    - { num: "01", id: situation,   short: SIT,   label: Situation }
-    - { num: "02", id: mission,     short: MSN,   label: Mission }
-    - { num: "03", id: execution,   short: EXEC,  label: Execution }
-    - { num: "04", id: sustainment, short: SUST,  label: Sustainment }
-    - { num: "05", id: signal,      short: "C&S", label: "Command & Signal" }
-    - { num: "06", id: faq,         short: FAQ,   label: "FAQ Preview" }
+    - { num: "01", id: situation,   label: Situation }
+    - { num: "02", id: mission,     label: Mission }
+    - { num: "03", id: execution,   label: Execution }
+    - { num: "04", id: sustainment, label: Sustainment }
+    - { num: "05", id: signal,      label: "Command & Signal" }
+    - { num: "06", id: faq,         label: "FAQ Preview" }
 
   intel:
-    - { num: "01", id: threat,  short: ID,   label: "Identify the Enemy" }
-    - { num: "02", id: season,  short: SEA,  label: "When She's Active" }
-    - { num: "03", id: wnv,     short: WNV,  label: "The Virus, Plain Terms" }
-    - { num: "04", id: recon,   short: RCN,  label: "Recon Your Land" }
-    - { num: "05", id: sources, short: SRC,  label: "Official Sources" }
+    - { num: "01", id: threat,  label: "The Enemy" }
+    - { num: "02", id: season,  label: "Season & Risk" }
+    - { num: "03", id: wnv,     label: "The Virus" }
+    - { num: "04", id: recon,   label: "Recon Your Land" }
+    - { num: "05", id: sources, label: "Sources" }
 
   build:
-    - { num: "01", id: lane,    short: LANE, label: "Pick Your Lane" }
-    - { num: "02", id: concept, short: CONC, label: "How Every Trap Works" }
-    - { num: "03", id: arsenal, short: ARS,  label: "Select Your Platform" }
-    - { num: "04", id: siting,  short: SITE, label: "Do Not Emplace" }
+    - { num: "01", id: lane,    label: "Pick Your Lane" }
+    - { num: "02", id: concept, label: "How Traps Work" }
+    - { num: "03", id: arsenal, label: "Trap Arsenal" }
+    - { num: "04", id: siting,  label: "Do Not Emplace" }
 
   tools:
-    - { num: "01", id: fronts, short: FRNT, label: "What Works — Ranked" }
-    - { num: "02", id: myths,  short: MYTH, label: "What Doesn't Work" }
+    - { num: "01", id: fronts, label: "What Works" }
+    - { num: "02", id: myths,  label: "What Doesn't" }
 
   resupply:
-    - { num: "01", id: ammo,   short: AMMO, label: "Ammunition Brief — Bti" }
-    - { num: "02", id: supply, short: SUP,  label: "Where to Resupply" }
-    - { num: "03", id: tempo,  short: TMP,  label: "Maintenance Tempo" }
+    - { num: "01", id: ammo,   label: "What Bti Is" }
+    - { num: "02", id: supply, label: "Where to Buy" }
+    - { num: "03", id: tempo,  label: "Upkeep Tempo" }
 
   faq:
-    - { num: "01", id: faq, short: FAQ, label: "Frequently Asked Questions" }
+    - { num: "01", id: faq, label: "All Questions" }
 
 # "Keep reading" cross-links shown at the bottom of each page, keyed the same
 # as primary[].key (plus "about", which has no primary entry of its own).

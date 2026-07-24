@@ -1,18 +1,30 @@
+{%- comment -%}
+  Desktop left rail. One hierarchy, not two lists: the current page's in-page
+  sections nest directly under whichever primary item is active, the way a
+  docs sidebar does. Sub-labels are deliberately omitted here (they live in
+  the mobile jump sheet) — at rail width they wrap and double every row's
+  height, which is what pushed the rail into its own nested scrollbar.
+{%- endcomment -%}
 {%- assign current_sections = site.data.nav.page_sections[page.nav_key] %}
 <aside class="section-rail" aria-label="Site navigation">
   <div class="rail-head">OPERATION</div>
-  <ol class="rail-nav rail-primary">
+  <ul class="rail-nav">
     {%- for p in site.data.nav.primary %}
-    <li><a class="primary-link{% if page.nav_key == p.key %} active{% endif %}" href="{{ p.url }}">{{ p.label }}<span class="sub">{{ p.sub }}</span></a></li>
+    {%- assign is_active = false %}
+    {%- if page.nav_key == p.key %}{% assign is_active = true %}{% endif %}
+    <li>
+      <a class="primary-link{% if is_active %} active{% endif %}"{% if is_active %} aria-current="page"{% endif %} href="{{ p.url }}">{{ p.label }}</a>
+      {%- if is_active and current_sections %}
+      <ol class="rail-sections">
+        {%- for s in current_sections %}
+        <li><a class="section-link" href="#{{ s.id }}"><span class="n">{{ s.num }}</span> {{ s.label }}</a></li>
+        {%- endfor %}
+      </ol>
+      {%- endif %}
+    </li>
     {%- endfor %}
-    <li><a class="primary-link{% if page.url == '/about/' %} active{% endif %}" href="/about/">About<span class="sub">Who We Are</span></a></li>
-  </ol>
-  {%- if current_sections %}
-  <div class="rail-head rail-head-sub">{{ page.nav_key | upcase }}</div>
-  <ol class="rail-nav">
-    {%- for s in current_sections %}
-    <li><a class="section-link" href="#{{ s.id }}"><span class="n">{{ s.num }}</span> {{ s.label }}</a></li>
-    {%- endfor %}
-  </ol>
-  {%- endif %}
+    {%- assign about_active = false %}
+    {%- if page.url == '/about/' %}{% assign about_active = true %}{% endif %}
+    <li><a class="primary-link{% if about_active %} active{% endif %}"{% if about_active %} aria-current="page"{% endif %} href="/about/">About</a></li>
+  </ul>
 </aside>

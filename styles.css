@@ -498,47 +498,52 @@
     .rp-grid{grid-template-columns:repeat(3,1fr)}
   }
 
-  /* Wide screens: once the left gutter is roomy enough beside the 1120px column,
-     put the section nav in a left rail (styled like the top phase nav — mono,
-     amber active) and drop it from the top bar so it isn't duplicated. Below
-     this width the nav stays in the top command bar. */
-  @media (min-width:1520px){
+  /* Wide screens: once the left gutter is roomy enough beside the 1120px
+     column, put the site nav in a left rail and drop the floating jump
+     button so the two aren't duplicated. Breakpoint is 1600 rather than
+     1520 because the rail needs a 212px gutter to hold its labels on one
+     line; below that the floating jump nav takes over. */
+  @media (min-width:1600px){
     .jumpnav{display:none}
 
+    /* Wider than before (180 -> 212): at 180px the longer labels wrapped to
+       two lines, which is what made the rail look squished. No fixed height
+       or inner scroll — the nested-hierarchy structure keeps it short enough
+       to fit any realistic viewport, so the page is the only thing that
+       scrolls. */
     .section-rail{
-      display:block;position:fixed;top:84px;width:180px;
-      left:calc(50% - 760px);
-      max-height:calc(100vh - 104px);overflow-y:auto;overflow-x:hidden;
+      display:block;position:fixed;top:84px;width:212px;
+      left:calc(50% - 784px);
       background:var(--drab-2);border:1px solid var(--line);border-radius:6px;
-      padding:14px 14px 16px;z-index:40;
+      padding:14px 12px 14px;z-index:40;
     }
     .rail-head{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;
-      letter-spacing:.16em;color:var(--moss);margin-bottom:10px;
-      padding-bottom:8px;border-bottom:1px solid var(--line)}
-    .rail-nav{list-style:none;display:flex;flex-direction:column;gap:2px}
-    /* Long labels ("Frequently Asked Questions") wrap onto a second line
-       instead of forcing the rail wider or triggering a horizontal
-       scrollbar inside a vertical nav, which read as broken. */
-    .rail-nav a{display:flex;gap:8px;align-items:baseline;
-      font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.03em;
-      color:var(--moss);text-decoration:none;padding:6px 8px;border-radius:4px;
-      border:1px solid transparent;transition:.16s}
-    .rail-nav a .n{color:var(--moss-dim);font-size:10px;font-weight:600}
-    .rail-nav a:hover{color:var(--paper);background:var(--drab-3)}
-    .rail-nav a.active{color:var(--amber);border-color:var(--amber-dim);background:var(--drab-3)}
-    .rail-nav a.active .n{color:var(--amber)}
+      letter-spacing:.16em;color:var(--moss);margin-bottom:8px;
+      padding:0 8px 8px;border-bottom:1px solid var(--line)}
+    .rail-nav{list-style:none;display:flex;flex-direction:column;gap:1px}
 
-    /* Primary (cross-page) switcher sits above the current page's in-page
-       section list, in the same rail. A second .rail-head divides them. */
-    .rail-primary{margin-bottom:14px}
-    .rail-head-sub{margin-top:2px}
-    .primary-link{display:flex;flex-direction:column;gap:1px;
-      font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.03em;
-      color:var(--moss);text-decoration:none;padding:6px 8px;border-radius:4px;
-      border:1px solid transparent;transition:.16s}
-    .primary-link .sub{font-size:10px;letter-spacing:.02em;color:var(--moss-dim);font-weight:400}
+    /* Page links: the top level of the hierarchy. */
+    .primary-link{display:block;
+      font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.03em;
+      color:var(--moss);text-decoration:none;padding:7px 8px;border-radius:4px;
+      transition:.16s}
     .primary-link:hover{color:var(--paper);background:var(--drab-3)}
-    .primary-link.active{color:var(--amber);border-color:var(--amber-dim);background:var(--drab-3)}
-    .primary-link.active .sub{color:var(--amber-dim)}
+    /* Active page is the single strongest marker in the rail. */
+    .primary-link.active{color:var(--amber);font-weight:600;background:var(--drab-3)}
+
+    /* In-page sections, nested under the active page. The left rule ties them
+       visually to their parent and marks them as one level down. */
+    .rail-sections{list-style:none;display:flex;flex-direction:column;gap:1px;
+      margin:2px 0 6px;padding-left:9px;border-left:1px solid var(--line)}
+    .rail-sections a{display:flex;gap:7px;align-items:baseline;
+      font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.02em;
+      color:var(--moss);text-decoration:none;padding:5px 8px;border-radius:4px;
+      transition:.16s}
+    .rail-sections a .n{color:var(--moss-dim);font-size:9.5px;font-weight:600;flex-shrink:0}
+    .rail-sections a:hover{color:var(--paper);background:var(--drab-3)}
+    /* Scroll-spy current section: amber text only, no fill — so it never
+       competes with the active-page marker above it. */
+    .rail-sections a.active{color:var(--amber)}
+    .rail-sections a.active .n{color:var(--amber)}
   }
 
