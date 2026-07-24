@@ -486,7 +486,37 @@
   .section-rail{display:none}
 
   @media (min-width:1201px){
-    .wrap,.cmdbar-inner{max-width:1120px}
+    /* Desktop shell. The rail is a real grid column rather than a panel
+       floating in the gutter beside a centred column: the gutter approach
+       only worked when the viewport happened to be wide enough to leave
+       one (>=1600px), which meant common laptop widths (1440, 1512, 1536)
+       got no rail at all and fell back to the mobile jump button. In the
+       flow it is available at every desktop width.
+
+       --shell/--rail-w/--rail-gap also drive the top bar and breadcrumb
+       alignment below, so all the chrome lines up with the content column
+       instead of the viewport centre. */
+    /* Shell = padding + rail + gap + the 1120px content column, so the
+       content track is pinned to exactly 1120 and never drifts. */
+    :root{--shell:1400px; --shell-pad:20px; --rail-w:212px; --rail-gap:28px;
+      --col-offset:calc(var(--shell-pad) + var(--rail-w) + var(--rail-gap))}
+
+    .jumpnav{display:none}
+
+    .layout{display:grid;grid-template-columns:var(--rail-w) minmax(0,1120px);
+      gap:var(--rail-gap);align-items:start;
+      max-width:var(--shell);margin:0 auto;padding:0 var(--shell-pad)}
+    /* min-width:0 stops the wide card grids and blueprints from forcing the
+       content column past its track and overflowing the page. */
+    .main{min-width:0}
+
+    /* Chrome outside .layout, realigned to the content column. The extra
+       20px matches .wrap's own horizontal padding, so the wordmark and
+       breadcrumb sit on the same left edge as the body text. */
+    .cmdbar-inner,.breadcrumbs .wrap{max-width:var(--shell);
+      padding-left:calc(var(--col-offset) + 20px);padding-right:var(--shell-pad)}
+
+    .wrap{max-width:1120px}
 
     /* Keep narrative text at a readable measure inside the wide column. */
     .order p{max-width:42em}
@@ -498,22 +528,14 @@
     .rp-grid{grid-template-columns:repeat(3,1fr)}
   }
 
-  /* Wide screens: once the left gutter is roomy enough beside the 1120px
-     column, put the site nav in a left rail and drop the floating jump
-     button so the two aren't duplicated. Breakpoint is 1600 rather than
-     1520 because the rail needs a 212px gutter to hold its labels on one
-     line; below that the floating jump nav takes over. */
-  @media (min-width:1600px){
-    .jumpnav{display:none}
-
-    /* Wider than before (180 -> 212): at 180px the longer labels wrapped to
-       two lines, which is what made the rail look squished. No fixed height
-       or inner scroll — the nested-hierarchy structure keeps it short enough
-       to fit any realistic viewport, so the page is the only thing that
-       scrolls. */
+  /* Desktop rail. Sticky inside its grid column rather than fixed to the
+     viewport, so it needs no left/width math and can never collide with the
+     content column. No fixed height or inner scroll — the nested hierarchy
+     keeps it short (roughly 300-480px) so the page is the only thing that
+     scrolls. */
+  @media (min-width:1201px){
     .section-rail{
-      display:block;position:fixed;top:84px;width:212px;
-      left:calc(50% - 784px);
+      display:block;position:sticky;top:84px;
       background:var(--drab-2);border:1px solid var(--line);border-radius:6px;
       padding:14px 12px 14px;z-index:40;
     }
