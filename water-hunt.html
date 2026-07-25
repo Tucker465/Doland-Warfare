@@ -67,8 +67,12 @@ permalink: /water-hunt/
 </head>
 <body>
 <div class="screenbar" role="note">
-  <span>This page is built to be printed. One sheet, black and white is fine.</span>
-  <a class="backlink" href="/kids/">← Back to Skeeter School</a>
+  <span class="sb-msg">Built to be printed — one sheet, black and white is fine.
+    <b>This bar is screen-only and won't appear on the printout.</b></span>
+  <span class="sb-actions">
+    <button type="button" id="printBtn" class="printbtn" hidden>Print this sheet</button>
+    <a class="backlink" href="/kids/">← Back to Skeeter School</a>
+  </span>
 </div>
 
 <main class="sheet">
@@ -146,5 +150,6 @@ permalink: /water-hunt/
     </div>
   </footer>
 </main>
+<script src="/water-hunt.js?v={{ site.time | date: '%s' }}" defer></script>
 </body>
 </html>
