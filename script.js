@@ -666,7 +666,9 @@ if (arsenal) PLATFORMS.forEach((p)=>{
   const chev = el('span','chev','▸'); chev.setAttribute('aria-hidden','true');
   cue.appendChild(chev);
   btn.appendChild(cue);
-  card.appendChild(btn);
+  const btnHeading = el('h3','platform-h');
+  btnHeading.appendChild(btn);
+  card.appendChild(btnHeading);
 
   const body = el('div','platform-body');
   const inner = el('div','pb-inner');

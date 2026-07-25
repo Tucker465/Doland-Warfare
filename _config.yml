@@ -29,5 +29,11 @@ collections:
 
 # jekyll-sitemap is on the GitHub Pages allowlist; it generates /sitemap.xml
 # from published pages/collections and keeps it current as new content is added.
+#
+# jekyll-redirect-from is also allowlisted; it turns a `redirect_from:` entry in
+# a page's front matter into a stub page at the old URL that forwards to the new
+# one. Used to retire /doland-skeeter-war-flyer.html in favour of /flyer/ without
+# breaking the printed flyers and QR codes already out in the wild.
 plugins:
   - jekyll-sitemap
+  - jekyll-redirect-from

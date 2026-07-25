@@ -1,15 +1,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Content Security Policy. Single-origin: all scripts, styles, fonts, and
-     images are served from this origin, so no external origins are allowed. A
-     matching policy is also delivered as a real response header via a Cloudflare
-     Transform Rule; keep the two in sync. frame-ancestors is intentionally NOT
-     in this meta tag: browsers ignore it in a <meta> CSP (and log a console
-     warning), so clickjacking protection is enforced only by the Cloudflare
-     header, which keeps frame-ancestors 'self'. Adding ANY external resource
-     (script/img/font/fetch/iframe) requires updating the matching directive
-     here AND in the Cloudflare rule. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+{%- comment -%} Content Security Policy is delivered as a real response header by a
+     Cloudflare Transform Rule, NOT from this file. There used to be a
+     <meta http-equiv="Content-Security-Policy"> here as a belt-and-braces
+     fallback; it has been removed on purpose.
+
+     The header always wins when both are present, so the meta tag never
+     actually enforced anything — but it could never carry frame-ancestors
+     (browsers ignore that directive in meta by spec), which meant scanners
+     correctly reported the two policies as "different values" and flagged
+     the mismatch. It was a permanent source of false findings and a second
+     copy of the policy to keep in sync, in exchange for zero enforcement.
+
+     The policy shipped by the Transform Rule is:
+       default-src 'self'; script-src 'self'; style-src 'self';
+       font-src 'self'; img-src 'self'; connect-src 'self'; base-uri 'self';
+       form-action 'self'; frame-ancestors 'self'; object-src 'none';
+       upgrade-insecure-requests
+
+     Everything is single-origin, so adding ANY external resource
+     (script/img/font/fetch/iframe) means updating the Cloudflare rule.
+     Note there is no 'unsafe-inline': inline <script> AND inline <style>
+     elements are both blocked, including <style> inside inline SVG.
+
+     /water-hunt/ is layout:null and does not use this include, so it keeps
+     its own meta CSP — without one it would ship no policy at all if the
+     Transform Rule were ever removed. {%- endcomment -%}
+
 <title>{{ page.title | default: site.title }}</title>
 <meta name="description" content="{{ page.description | default: site.description }}">
 <link rel="canonical" href="{{ page.url | absolute_url }}">
@@ -18,7 +35,11 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#191B12">
-<meta name="referrer" content="strict-origin-when-cross-origin">
+{%- comment -%} No <meta name="referrer"> here on purpose. Referrer-Policy is delivered
+     by the same Cloudflare Transform Rule as the CSP, with the same value
+     (strict-origin-when-cross-origin), and the header takes precedence. The
+     duplicate meta tag enforced nothing and only added a second place to
+     forget to update. Security headers have one home: the Transform Rule. {%- endcomment -%}
 {%- comment -%}
   Open Graph / social + agent link preview metadata (public summary only).
   Each page can set its own og_image/og_image_width/height/alt in front
@@ -133,7 +154,9 @@
     {%- endif %}
     {%- unless page.url == '/' %}
     {%- assign crumb = site.data.nav.primary | where: "key", page.nav_key | first %}
-    {%- assign crumb_label = crumb.label | default: "About" %}
+    {%- comment -%} See _includes/breadcrumbs.html for why this is not a
+        hardcoded fallback. {%- endcomment -%}
+    {%- assign crumb_label = crumb.label | default: page.crumb | default: page.title %}
     ,{
       "@type": "BreadcrumbList",
       "@id": "{{ page.url | absolute_url }}#breadcrumb",
@@ -150,7 +173,24 @@
 <!-- Preload the LCP hero image so it starts fetching before the CSS. -->
 <link rel="preload" as="image" type="image/webp" href="/assets/hero-1280.webp" imagesrcset="/assets/hero-800.webp 800w, /assets/hero-1080.webp 1080w, /assets/hero-1280.webp 1280w" imagesizes="(min-width:1400px) 1080px, (min-width:1201px) calc(100vw - 320px), 100vw" fetchpriority="high">
 {%- endif %}
-<!-- Deliberately blocking, not deferred: measured deferring styles.css via
+{%- comment -%} Preload only the faces that actually render above the fold on every page:
+     Oswald 700 (the hero h1 and every section h2), Oswald 600 (buttons and
+     card titles), Public Sans 400 (body copy) and IBM Plex Mono 400 (the
+     stamp, eyebrow and intel chips). Without these the browser cannot even
+     start fetching a font until it has downloaded and parsed fonts.css, which
+     is discovered later in the document.
+
+     This matters most for Oswald, which is font-display:optional (see the
+     long note in fonts/fonts.css): optional gives a ~100ms block period and no
+     swap, so if the font loses that race the page renders in the fallback for
+     the whole visit. Preloading is what makes it win. Deliberately NOT
+     preloading the remaining faces — every preload competes with the LCP hero
+     image for bandwidth, and the rest are below the fold or swap harmlessly. {%- endcomment -%}
+<link rel="preload" as="font" type="font/woff2" href="/fonts/oswald-700-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/oswald-600-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/public-sans-400-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/ibm-plex-mono-400-latin.woff2" crossorigin>
+{%- comment -%} Deliberately blocking, not deferred: measured deferring styles.css via
      media="print" swap (avoiding fonts.css/styles.css render-blocking) against
      this dark theme and it was a net loss — the browser paints unstyled
      (default white bg, black text, blue links) for ~100-150ms before the swap,
@@ -160,6 +200,6 @@
      -maintained inline subset kept in sync with styles.css forever) rather
      than deferring the whole file; not worth that maintenance burden for the
      scores already achieved. Both files are small (~28KB + ~4KB) and
-     font-display:swap already keeps fonts from blocking text paint. -->
+     font-display:swap already keeps fonts from blocking text paint. {%- endcomment -%}
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/styles.css?v={{ site.time | date: '%s' }}">

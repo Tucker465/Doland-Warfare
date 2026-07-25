@@ -1,11 +1,40 @@
+---
+layout: null
+permalink: /flyer/
+# The old URL is printed on flyers and encoded in QR codes that are already
+# taped up around town, so it has to keep working. jekyll-redirect-from leaves
+# a stub there that forwards here.
+redirect_from:
+  - /doland-skeeter-war-flyer.html
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Doland Skeeter War — Flyer</title>
+<!-- layout:null page — see the note in _includes/head.html. The Cloudflare
+     Transform Rule delivers the enforcing CSP header; this meta is the
+     fallback if that rule ever goes away. frame-ancestors is omitted because
+     browsers ignore it in meta by spec. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests">
+<title>Printable Mosquito Flyer — Doland Skeeter War</title>
 <meta name="description" content="Printable one-page field guide: kill standing water and run simple, wildlife-safe Bti larval traps to knock down West Nile mosquitoes in Doland, SD.">
-<link rel="canonical" href="https://dolandskeeterwar.com/doland-skeeter-war-flyer.html">
+<link rel="canonical" href="https://dolandskeeterwar.com/flyer/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<meta name="theme-color" content="#191B12">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="{{ site.title }}">
+<meta property="og:title" content="Printable Mosquito Flyer — Doland Skeeter War">
+<meta property="og:description" content="A free printable one-page field guide for knocking down West Nile mosquitoes: kill standing water, run wildlife-safe Bti larval traps.">
+<meta property="og:url" content="https://dolandskeeterwar.com/flyer/">
+<meta property="og:image" content="https://dolandskeeterwar.com/assets/hero-1280.webp">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="585">
+<meta property="og:image:alt" content="Operation Doland Skeeter War — mosquito in crosshairs over a South Dakota dusk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://dolandskeeterwar.com/assets/hero-1280.webp">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/flyer.css">
 </head>

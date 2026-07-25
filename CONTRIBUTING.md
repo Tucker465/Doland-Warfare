@@ -72,6 +72,36 @@ that the printable fit on one page, that an image was correctly sized, that
 contrast was fine. Where a number decides the outcome — pixel heights, contrast
 ratios, file sizes — measure it and paste the number into the commit message.
 
+## Measure the right thing, on the right connection
+
+Measuring is not enough if the environment cannot produce the failure.
+
+Local Lighthouse reported **CLS 0.000** on every page while the live site was
+actually scoring **0.266** on mobile — a failed Core Web Vital. The test was
+run correctly; it simply could not reproduce the bug. On localhost the fonts
+arrive in ~0ms, so `font-display: swap` never fires and the reflow it causes
+does not exist. No amount of re-running that test would ever have found it.
+
+Then the *fix* repeated the mistake one level down. Font metrics were measured
+properly — Oswald renders 17% narrower than its fallback, Public Sans within 3%
+— and the small-delta faces were left on `swap` on the strength of those
+numbers. Throttled testing then failed `/build/` at 0.1023, traced to the
+Public Sans swap. The ratios were measured against *this container's* fallback
+(DejaVu Sans), not the Arial or Roboto a real phone uses. A number measured
+against the wrong baseline is not evidence.
+
+So:
+
+- **Before trusting a green result, ask what would have to be true for this
+  test to fail.** If the answer is "a condition my environment never creates",
+  the result means nothing.
+- **Throttle the network** for anything about loading, layout stability, or
+  perceived speed. `bin/verify.py` now does this and gates on CLS 0.1.
+- **Metric overrides (`size-adjust`, `ascent-override`) were considered and
+  rejected** for exactly this reason: they must be tuned to one platform's
+  fallback font and are wrong on every other. `font-display: optional` needs no
+  such guess, so all nine faces use it. Do not put them back to `swap`.
+
 ## Accessibility
 
 WCAG AA is the floor. Two traps the naive check misses, both of which produced
@@ -89,3 +119,22 @@ wrong answers here:
 - **CSS/JS are not minified.** It needs a build step GitHub Pages will not run,
   and the gain after gzip is small.
 - **Cache lifetimes** are a Cloudflare rule, not a repo change.
+- **Security headers live in the Cloudflare Transform Rule, not in markup.**
+  The `<meta>` CSP and `<meta name="referrer">` were removed from
+  `_includes/head.html`. The header always wins when both are present, and the
+  meta CSP could never carry `frame-ancestors` (browsers ignore it there), so
+  it enforced nothing while making scanners correctly report the two policies
+  as different. Pages with `layout: null` (`/water-hunt/`, `/flyer/`) keep
+  their own meta CSP, because they bypass the shared head and would otherwise
+  ship no policy at all if the rule were ever removed.
+- **Scanner findings are triaged, not obeyed.** `/security-policy/` documents
+  what this project declines and why. Before acting on an audit item, confirm
+  it against the code: recent reports have claimed Bootstrap (not present),
+  HTTP/1.1 (it serves HTTP/3), and a CSP mismatch that was a spec behaviour.
+  Equally, do not dismiss a report without reading all of it — the same batch
+  contained a real unfriendly-URL finding and a real flat-heading finding that
+  a first skim missed.
+- **Off-page SEO recommendations are declined on purpose.** Social profiles, a
+  business address and phone, Local Business Schema, and analytics all conflict
+  with the anonymity stated in `about.html`. The "Links: F" grade is a backlink
+  score; it is earned by the flyer and the printable, not by a code change.

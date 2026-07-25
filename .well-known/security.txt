@@ -1,7 +1,14 @@
 # Security contact for dolandskeeterwar.com — RFC 9116
 # https://www.rfc-editor.org/rfc/rfc9116
+#
+# No Encryption field on purpose: publishing one requires a PGP key we
+# actually hold and can decrypt with. We do not have one, and pointing at a
+# key nobody controls would be worse than omitting the field. Plain email is
+# fine — this is a static site with no accounts and no user data, so there is
+# nothing confidential to send us.
 
 Contact: mailto:security@dolandskeeterwar.com
 Expires: 2027-07-11T00:00:00.000Z
 Preferred-Languages: en
 Canonical: https://dolandskeeterwar.com/.well-known/security.txt
+Policy: https://dolandskeeterwar.com/security-policy/

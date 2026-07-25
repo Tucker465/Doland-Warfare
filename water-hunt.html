@@ -7,7 +7,13 @@ permalink: /water-hunt/
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+<!-- This page is layout:null, so it does not get _includes/head.html. The
+     Cloudflare Transform Rule still delivers the real CSP header (which wins
+     over this tag); this meta is the fallback that keeps a policy on the page
+     if that rule is ever removed. It matches the header except for
+     frame-ancestors, which browsers ignore in meta by spec — clickjacking
+     protection comes from the header's frame-ancestors 'self'. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests">
 <title>Printable Mosquito Water Hunt for Kids | Doland Skeeter War</title>
 <meta name="description" content="A free one-page printable mosquito water-hunt checklist for kids 8–14. Tick boxes, keep score, and find the standing water before it hatches.">
 <link rel="canonical" href="https://dolandskeeterwar.com/water-hunt/">
@@ -16,7 +22,6 @@ permalink: /water-hunt/
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#191B12">
 <meta name="robots" content="index,follow">
-<meta name="referrer" content="strict-origin-when-cross-origin">
 <!-- This sheet is the most shareable thing on the site — a teacher or club
      leader pastes the link into an email or a group chat — so it needs its
      own preview card rather than falling back to a bare link. -->

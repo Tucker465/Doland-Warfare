@@ -6,13 +6,76 @@
    shipped (verified by auditing which .woff2 files the browser fetches across
    every page). latin-ext and unused weights were dropped: no visible text on
    this site uses characters outside latin, and the following were confirmed
-   unused: Oswald 500, Public Sans 500. */
+   unused: Oswald 500, Public Sans 500.
+
+   ---------------------------------------------------------------------------
+   font-display: why Oswald differs from the other two
+   ---------------------------------------------------------------------------
+   Every face here used to be `swap`. That was measured as the cause of a
+   Cumulative Layout Shift of 0.266 on mobile (Google's "needs improvement"
+   threshold is 0.1) in a third-party audit run from a real network. Local
+   Lighthouse runs reported CLS 0 and completely hid the problem, because on
+   localhost the .woff2 files arrive in ~0ms and the swap never visibly fires.
+   Do not trust a local CLS number for fonts.
+
+   Measured advance-width ratio of each webfont against the fallback it swaps
+   from, at matched weight (see bin/verify.py --fonts):
+
+     Oswald 700          82.8%   <- 17% narrower than the fallback
+     Oswald 600          81.0%
+     Public Sans 400    103.2%
+     Public Sans 600      99.2%
+     Public Sans 700    100.5%
+     IBM Plex Mono all   99.7%
+
+   Oswald is the outlier by an order of magnitude, and it is used for the
+   things whose size makes a reflow worst: the hero h1 at clamp(44px, 13.5vw,
+   86px) and the section h2s. A 17% width change on a three-line 86px heading
+   moves every pixel below it.
+
+   So Oswald is `optional`: the browser gets a ~100ms block period and NO swap
+   period. If the font has not arrived by then it uses the fallback for that
+   page view and never swaps it in — which makes font-driven layout shift
+   structurally impossible rather than merely small. The two above-the-fold
+   Oswald faces are preloaded in _includes/head.html, so it wins that race on
+   essentially every real visit and the fallback is a rare-worst-case, not the
+   normal experience.
+
+   Public Sans and IBM Plex Mono are `optional` as well, and that was NOT the
+   first attempt. They measure within ~3% of the fallback, so the first pass
+   left them on `swap` on the theory that a 3% swap is visually negligible.
+   Throttled testing killed that theory: /build/ still shifted 0.1023 on a
+   390px viewport, and the trace showed a single late reflow at t=7.6s inside
+   the update bar, caused by the Public Sans swap moving everything above it
+   up by ~21px — one line box.
+
+   The measurement was not wrong, it was measured against the wrong thing.
+   Those ratios come from Chromium's fallback in the build container (DejaVu
+   Sans), not from the Arial or Roboto that a real phone falls back to. There
+   is no portable ratio to tune against, which is exactly why metric overrides
+   (size-adjust / ascent-override) were rejected here: they would be tuned to
+   one platform's fallback and wrong on the others.
+
+   `optional` needs no such tuning. It gives a ~100ms block period and NO swap
+   period, so a late font is simply not used for that page view. That makes
+   font-driven layout shift structurally impossible instead of merely small,
+   on every platform, without guessing anyone's fallback metrics.
+
+   The cost is real and accepted: on a genuinely slow first visit the page
+   renders in system fonts for that visit. It is fully readable and correctly
+   laid out — just not the intended typeface. Every later page view uses the
+   cached fonts immediately, because `optional` takes a cached font with no
+   block period at all. For an audience on rural mobile data, "readable
+   instantly and never reflows" beats "correct typeface, but the text jumps".
+
+   Guarded by: bin/verify.py --cls, which fails the build if any page exceeds
+   CLS 0.1 with the network throttled. Do not put these back to `swap`. */
 
 @font-face {
   font-family: 'Oswald';
   font-style: normal;
   font-weight: 600;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/oswald-600-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
@@ -20,7 +83,7 @@
   font-family: 'Oswald';
   font-style: normal;
   font-weight: 700;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/oswald-700-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
@@ -28,7 +91,7 @@
   font-family: 'Public Sans';
   font-style: italic;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/public-sans-400-italic-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
@@ -36,7 +99,7 @@
   font-family: 'Public Sans';
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/public-sans-400-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
@@ -44,7 +107,7 @@
   font-family: 'Public Sans';
   font-style: normal;
   font-weight: 600;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/public-sans-600-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
@@ -52,7 +115,7 @@
   font-family: 'Public Sans';
   font-style: normal;
   font-weight: 700;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/public-sans-700-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
@@ -60,7 +123,7 @@
   font-family: 'IBM Plex Mono';
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/ibm-plex-mono-400-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
@@ -68,7 +131,7 @@
   font-family: 'IBM Plex Mono';
   font-style: normal;
   font-weight: 500;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/ibm-plex-mono-500-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
@@ -76,7 +139,7 @@
   font-family: 'IBM Plex Mono';
   font-style: normal;
   font-weight: 600;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/ibm-plex-mono-600-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }

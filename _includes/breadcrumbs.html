@@ -1,11 +1,17 @@
 {%- comment -%}
-  Skipped on the homepage — there's nothing to trail back from. Every other
-  page resolves its label from nav.yml via nav_key, except /about/, which
-  carries no nav_key since it isn't one of the six primary sections.
+  Skipped on the homepage — there's nothing to trail back from.
+
+  A page in the primary nav resolves its label from nav.yml via nav_key. Pages
+  outside the primary nav (/about/, /security-policy/) set a `crumb:` in their
+  front matter instead. This used to fall back to the literal string "About",
+  which was fine while /about/ was the only such page and silently wrong the
+  moment a second one existed — including in the BreadcrumbList structured
+  data, which would have told search engines the security policy was called
+  "About". Any new page outside the primary nav must set `crumb:`.
 {%- endcomment -%}
 {%- unless page.url == '/' %}
 {%- assign crumb = site.data.nav.primary | where: "key", page.nav_key | first %}
-{%- assign crumb_label = crumb.label | default: "About" %}
+{%- assign crumb_label = crumb.label | default: page.crumb | default: page.title %}
 <nav class="breadcrumbs" aria-label="Breadcrumb">
   <div class="wrap bc-row">
     <ol>

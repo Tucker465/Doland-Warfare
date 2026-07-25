@@ -31,6 +31,13 @@ FORBIDDEN = re.compile(base64.b64decode(
 VIEWPORTS = [(320, 720), (390, 844), (768, 1024), (1440, 900), (1920, 1080)]
 # Worst realistic printable height: Letter, 0.75in margins, browser header+footer.
 PRINT_BUDGET_PX = 872
+# Google's "good" Cumulative Layout Shift threshold. Anything above this is a
+# ranking factor, not a cosmetic nit.
+CLS_BUDGET = 0.1
+# Deliberately harsher than Lighthouse's mobile default (~1.6Mbps). The whole
+# point of this check is to lose races that localhost always wins.
+SLOW_NET = {"offline": False, "downloadThroughput": 400 * 1024 // 8,
+            "uploadThroughput": 400 * 1024 // 8, "latency": 400}
 PRINT_WIDTHS = [320, 390, 430, 560, 650, 730, 816]
 
 results: list[tuple[bool, str, str]] = []
@@ -349,6 +356,54 @@ def browser_checks(site: pathlib.Path):
                 pg.close()
         check(not over, f"printables fit one page (<={PRINT_BUDGET_PX}px) at every layout width",
               "two-page printout when printed from a phone", "\n".join(over))
+
+        # --- layout stability on a slow connection -------------------------
+        # INCIDENT: a third-party audit measured CLS 0.266 on mobile — a failed
+        # Core Web Vital — while local Lighthouse runs reported 0.000 and
+        # showed nothing at all. The cause was font-display:swap: on localhost
+        # the .woff2 files arrive in ~0ms, so the swap never fires and the
+        # reflow it causes is invisible to every unthrottled test. A local CLS
+        # number is meaningless for fonts unless the network is throttled.
+        #
+        # This check exists to make that class of bug impossible to ship again,
+        # for fonts or anything else that lands late (injected DOM, lazy
+        # images, web components). It throttles the network hard, then reads
+        # the real layout-shift entries the browser recorded.
+        shifty = []
+        for u in urls:
+            ctx = b.new_context(viewport={"width": 390, "height": 844},
+                                device_scale_factor=3, is_mobile=True, has_touch=True)
+            pg = ctx.new_page()
+            ctx.new_cdp_session(pg).send("Network.emulateNetworkConditions", SLOW_NET)
+            try:
+                pg.goto(base + u, wait_until="load", timeout=90_000)
+            except Exception as e:
+                shifty.append(f"{u}: page did not load under throttling ({e})")
+                ctx.close(); continue
+            r = pg.evaluate("""
+                new Promise((resolve) => {
+                  let cls = 0; const src = new Set();
+                  new PerformanceObserver((l) => {
+                    for (const e of l.getEntries()) {
+                      if (e.hadRecentInput) continue;
+                      cls += e.value;
+                      for (const s of (e.sources || [])) {
+                        const n = s.node; if (!n) continue;
+                        const el = n.nodeType === 3 ? n.parentElement : n;
+                        if (el) src.add(el.tagName + (typeof el.className === 'string' && el.className
+                          ? '.' + el.className.trim().split(/\\s+/)[0] : ''));
+                      }
+                    }
+                  }).observe({type: 'layout-shift', buffered: true});
+                  setTimeout(() => resolve({cls: +cls.toFixed(4), src: [...src].slice(0, 5)}), 6000);
+                });
+            """)
+            if r["cls"] > CLS_BUDGET:
+                shifty.append(f"{u}: CLS {r['cls']} > {CLS_BUDGET} — shifted: {', '.join(r['src']) or 'unknown'}")
+            ctx.close()
+        check(not shifty, f"CLS stays under {CLS_BUDGET} on a throttled connection",
+              "font swap reflowing the page — invisible to any unthrottled test",
+              "\n".join(shifty))
 
         # --- progressive enhancement ---------------------------------------
         # INCIDENT: an interactive quiz replaced a static list; with JS off the

@@ -1,0 +1,81 @@
+---
+layout: default
+title: "Security & Vulnerability Disclosure | Doland Skeeter War"
+description: "How to report a security issue with dolandskeeterwar.com, what is in scope, and what to expect. A static site with no accounts, no data collection, and no cookies."
+permalink: /security-policy/
+crumb: "Security Policy"
+preload_hero: false
+og_image: /assets/og-about.webp
+og_image_width: 1200
+og_image_height: 630
+og_image_alt: "Security & Vulnerability Disclosure: Operation Doland Skeeter War"
+last_verified: "2026-07-25"
+robots: "index,follow"
+---
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="stamp">UNCLASSIFIED // FOR PUBLIC RELEASE</div>
+    <div class="eyebrow">SECURITY &nbsp;//&nbsp; VULNERABILITY DISCLOSURE</div>
+    <h1>Report a <span class="frag">Problem</span></h1>
+    <p class="mission">This is the policy referenced by our <a class="u-amber" href="/.well-known/security.txt">security.txt</a>. If you found something wrong with this website, here is how to tell us.</p>
+  </div>
+</header>
+
+<section class="order" id="reporting">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">//</div>
+      <div class="sec-titles"><h2>How to Report</h2><div class="plain">One address. Plain email is fine.</div></div></div>
+    <div class="para-tag">FILE 1 — REPORTING</div>
+    <p class="lead">Email <b>security@dolandskeeterwar.com</b>. Include the URL, what you did, and what happened. A screenshot or a <code>curl</code> command beats a paragraph of description.</p>
+    <p>We are volunteers, not a security team. Expect a human reply within about a week. There is no bug bounty, no swag, and no money — this is a neighborhood mosquito project with a $10 budget. What we can offer is that we will actually read it, actually fix it, and credit you by whatever name you like if you want the credit.</p>
+    <p>Please report in English if you can. Reports in other languages are still welcome; they will just take longer.</p>
+  </div>
+</section>
+
+<section class="order" id="scope">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">//</div>
+      <div class="sec-titles"><h2>What's In Scope</h2><div class="plain">There is less here than you think.</div></div></div>
+    <div class="para-tag">FILE 2 — SCOPE</div>
+    <p>Everything under <b>dolandskeeterwar.com</b> is in scope. Before you spend time on it, know what this site actually is:</p>
+    <div class="fronts">
+      <div class="front"><h3 class="ft"><span class="num">01</span> It is entirely static</h3><p>Hand-written HTML, CSS, and JavaScript built by Jekyll and served from a CDN. There is no application server, no database, and no backend to reach.</p></div>
+      <div class="front"><h3 class="ft"><span class="num">02</span> There are no accounts</h3><p>No login, no session, no password reset, no roles. Nothing to escalate to, because there are no privilege levels at all.</p></div>
+      <div class="front"><h3 class="ft"><span class="num">03</span> There is no user data</h3><p>No forms that submit anywhere, no analytics, no tracking pixels, no cookies of any kind. The site stores nothing about you, so there is nothing to breach.</p></div>
+      <div class="front"><h3 class="ft"><span class="num">04</span> Everything is single-origin</h3><p>Every script, style, font, and image is served from this domain. No third-party scripts, no CDN libraries, no embedded iframes.</p></div>
+    </div>
+    <p class="u-mt-14">Given that, the findings we are genuinely interested in are: a way to inject or execute script on a page, a way to modify content that reaches other visitors, a Content Security Policy or header bypass, a subdomain or DNS takeover, and anything that would let someone impersonate this site.</p>
+  </div>
+</section>
+
+<section class="order" id="out-of-scope">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">//</div>
+      <div class="sec-titles"><h2>What We'll Decline</h2><div class="plain">Politely, but we will.</div></div></div>
+    <div class="para-tag">FILE 3 — OUT OF SCOPE</div>
+    <div class="nogo">
+      <h3 class="nt">⚠ THESE WILL BE CLOSED WITHOUT A FIX</h3>
+      <ul>
+        <li><span><b>Automated scanner output with no working example.</b> A grade from a headers tool is not a vulnerability. Show us the impact.</span></li>
+        <li><span><b>Missing headers that do nothing here.</b> Cookie flags on a site with no cookies, CSRF tokens on a site with no forms, and similar.</span></li>
+        <li><span><b>Missing SPF/DKIM/DMARC findings.</b> The domain publishes <code>v=spf1 -all</code> and DMARC <code>p=reject</code> precisely because it never sends mail.</span></li>
+        <li><span><b>The <code>server: cloudflare</code> header.</b> We know. We are not able to remove it, and it is not an exploit.</span></li>
+        <li><span><b>Denial of service, load testing, or automated scanning that generates real traffic.</b> Please do not. Read the source instead — it is a public repository.</span></li>
+        <li><span><b>Social engineering, or anything aimed at the people involved rather than the site.</b> Contributors here are deliberately anonymous. Leave them alone.</span></li>
+        <li><span><b>Compliance-framework gaps.</b> SOC 2, PCI DSS, HIPAA, and ISO 27001 do not apply to a volunteer site that handles no data and takes no payments.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="order" id="safe-harbor">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">//</div>
+      <div class="sec-titles"><h2>Safe Harbour</h2><div class="plain">Test in good faith, and we're fine.</div></div></div>
+    <div class="para-tag">FILE 4 — GOOD-FAITH RESEARCH</div>
+    <p>If you are researching in good faith, we will not pursue or support any action against you. Good faith means: you stop as soon as you have confirmed the issue, you do not access or modify anyone else's data, you do not degrade the site for other visitors, and you give us a reasonable chance to fix it before publishing.</p>
+    <p>We have no embargo period to impose and no legal department to route you through. Tell us, give us a couple of weeks, then write it up wherever you like.</p>
+    <p>This policy is not legal advice and does not authorise you to break any law that applies to you.</p>
+    <p><a class="u-amber" href="/about/">← More about who runs this</a></p>
+  </div>
+</section>

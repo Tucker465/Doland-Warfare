@@ -13,7 +13,8 @@
 - [Skeeter School](https://dolandskeeterwar.com/kids/): the children's section, written for roughly ages 8-14 in plain language. Verified mosquito facts, an illustrated four-stage life-cycle diagram, an age-appropriate West Nile explanation, a backyard water hunt, safety rules, and an interactive quiz.
 - [Water Hunt checklist](https://dolandskeeterwar.com/water-hunt/): a free one-page printable scavenger-hunt scorecard for kids — tick boxes for common standing-water sources, a tally, bonus points, and safety rules. Sized for one sheet and suitable for a classroom or 4-H meeting.
 - [About](https://dolandskeeterwar.com/about/): who runs this and where the facts come from.
-- [Printable flyer](https://dolandskeeterwar.com/doland-skeeter-war-flyer.html): a one-page printable summary for posting or handing out.
+- [Printable flyer](https://dolandskeeterwar.com/flyer/): a one-page printable summary for posting or handing out.
+- [Security policy](https://dolandskeeterwar.com/security-policy/): how to report a security problem with the website itself, what is in and out of scope, and the good-faith research terms. Referenced by /.well-known/security.txt.
 
 ## Notes
 

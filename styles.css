@@ -219,6 +219,11 @@
   /* ARSENAL */
   .arsenal{display:grid;gap:10px;margin-top:8px}
   .platform{border:1px solid var(--line);border-radius:6px;background:var(--drab-3);overflow:hidden}
+  /* Each trap's toggle button is wrapped in an <h3> so the accordion follows
+     the standard ARIA pattern and the traps show up in the document outline.
+     The heading is purely structural — it must not impose its own type size
+     on the button it contains. */
+  .platform-h{font-size:inherit;font-weight:inherit;line-height:inherit}
   .platform.open{border-color:var(--amber-dim)}
   .platform-btn{width:100%;text-align:left;background:none;border:none;cursor:pointer;color:var(--paper);padding:15px 16px;display:flex;align-items:center;gap:13px}
   .platform-btn:focus-visible{outline:2px solid var(--amber);outline-offset:-2px}
@@ -416,6 +421,7 @@
   .foot-stamp{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--moss);border:1px solid var(--moss-dim);border-radius:2px;padding:4px 11px;display:inline-block;margin-bottom:16px}
   footer p{font-size:13px;color:var(--moss);max-width:36em;margin:0 auto 8px}
   footer .url{color:var(--amber);font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px}
+  footer .foot-links{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:var(--moss-dim);margin-top:16px}
   footer .dtg{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--moss-dim);letter-spacing:.08em;margin-top:14px}
 
   .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
@@ -436,6 +442,7 @@
   .faq{display:grid;gap:8px;margin-top:8px}
   .faq-item{border:1px solid var(--line);border-radius:6px;background:var(--drab-3)}
   .faq-item summary{font-family:'Oswald',sans-serif;font-weight:600;font-size:16px;color:var(--paper);cursor:pointer;padding:14px 16px;list-style:none;display:flex;gap:10px;align-items:baseline}
+  .faq-item summary h3{font:inherit;letter-spacing:inherit;color:inherit}
   .faq-item summary::-webkit-details-marker{display:none}
   .faq-item summary::before{content:"▸";color:var(--amber);flex-shrink:0}
   .faq-item[open] summary::before{content:"▾"}

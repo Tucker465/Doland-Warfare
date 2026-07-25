@@ -99,7 +99,7 @@ schema_howto: true
 
     <div class="para-tag">PARA 3 — TODAY'S ORDERS</div>
     <div class="quickstart">
-      <div class="qt">▸ FOUR MOVES — START TODAY</div>
+      <h3 class="qt">▸ FOUR MOVES — START TODAY</h3>
       <ul class="qsteps">
         {%- for step in site.data.quickstart %}
         <li><span><b>{{ step.lead }}</b> {{ step.rest }}</span></li>
@@ -134,12 +134,12 @@ schema_howto: true
     <div class="signal-hit">Recruiting your neighbors isn't being nice. <em>It's covering your own flank.</em></div>
 
     <div class="share-box">
-      <div class="sbt">SIGNAL — PASS IT ON</div>
+      <h3 class="sbt">SIGNAL — PASS IT ON</h3>
       <p>Send this to <b>three neighbors</b> today. That's the whole job — three people, who tell three more. That's how a block gets covered.</p>
       <div class="share-row">
         <button id="shareBtn" type="button">Share this page</button>
         <button id="copyBtn" class="ghost" type="button">Copy link</button>
-        <a class="ghost" href="/doland-skeeter-war-flyer.html" target="_blank" rel="noopener noreferrer">Print a flyer ↗</a>
+        <a class="ghost" href="/flyer/" target="_blank" rel="noopener noreferrer">Print a flyer ↗</a>
       </div>
     </div>
     <p>Got kids in the house, or a classroom or 4-H group to keep busy? Send them to <a class="u-amber" href="/kids/">Skeeter School</a> — mosquito facts, a quiz, and a <a class="u-amber" href="/water-hunt/">printable water-hunt checklist</a> they can carry around the yard.</p>
@@ -157,7 +157,7 @@ schema_howto: true
       {%- assign preview_faq = site.data.faq | slice: 0, 3 %}
       {%- for item in preview_faq %}
       <details class="faq-item">
-        <summary>{{ item.q }}</summary>
+        <summary><h3>{{ item.q }}</h3></summary>
         <div class="faq-a"><p>{{ item.a }}</p></div>
       </details>
       {%- endfor %}

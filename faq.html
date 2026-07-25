@@ -30,7 +30,7 @@ last_verified: "2026-07-20"
     <div class="faq">
       {%- for item in site.data.faq %}
       <details class="faq-item">
-        <summary>{{ item.q }}</summary>
+        <summary><h3>{{ item.q }}</h3></summary>
         <div class="faq-a"><p>{{ item.a }}</p></div>
       </details>
       {%- endfor %}
