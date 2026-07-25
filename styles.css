@@ -472,6 +472,97 @@
 .dash-schem{stroke-dasharray:6 4}
 
 /* ============================================================================
+   SKEETER SCHOOL (/kids/)
+   The kids page runs on the site's existing paper palette — the same
+   --paper/--ink surface .paperbox already uses — rather than the dark
+   stencil chrome. It reads as a printed booklet sitting on the desk:
+   softer for an 8-to-14-year-old, but built from tokens already in the
+   design system, so it still belongs to this site.
+
+   Also drops the uppercase headings, opens up the corner radii, and
+   trades the rust alarm box for a warm one. Accent is #6b4f10 rather
+   than --amber: amber on cream is only ~2.4:1, while this clears 5:1,
+   so the small mono labels stay legible.
+   Everything is scoped to .kids-page (set via body_class front matter)
+   so no other page is touched.
+   ============================================================================ */
+  .kids-page{--k-ink:var(--ink); --k-soft:var(--ink-soft); --k-gold:#6b4f10;
+    --k-card:#e6dfc7; --k-edge:#c4bb9b; --k-surface:var(--paper)}
+
+  /* Surfaces */
+  .kids-page .hero,
+  .kids-page .order{background:var(--k-surface);color:var(--k-ink);
+    border:1px solid var(--k-edge);border-radius:16px;margin:14px 0;padding:30px 0}
+  .kids-page .hero{padding-top:26px}
+  .kids-page .order{border-bottom:1px solid var(--k-edge)}
+
+  /* Headings — sentence case instead of stencil caps */
+  .kids-page .hero h1,
+  .kids-page .sec-titles h2,
+  .kids-page .signal-hit{text-transform:none;color:var(--k-ink)}
+  .kids-page .hero h1{font-size:clamp(38px,10vw,68px);line-height:1}
+  .kids-page .hero h1 .frag,
+  .kids-page .sec-num{color:var(--k-gold)}
+  .kids-page .sec-titles .plain,
+  .kids-page .hero .eyebrow{color:var(--k-gold)}
+  .kids-page .signal-hit{font-size:clamp(20px,5vw,28px);line-height:1.2}
+  .kids-page .signal-hit em{color:var(--k-gold);font-style:normal}
+
+  /* Body copy — a touch larger and looser than the adult pages */
+  .kids-page .hero .mission,
+  .kids-page .order p,
+  .kids-page .order .lead{color:var(--k-soft);font-size:17px;line-height:1.62}
+  .kids-page .order .lead{color:var(--k-ink);font-weight:500}
+  .kids-page .order p b,.kids-page .order .lead b{color:var(--k-ink)}
+  .kids-page .stamp{color:var(--k-gold);border-color:var(--k-edge);
+    border-radius:999px;padding:4px 12px;letter-spacing:.1em}
+
+  /* Cards */
+  .kids-page .front,.kids-page .beat,.kids-page .faq-item,
+  .kids-page .recon,.kids-page .quickstart,.kids-page .supply,
+  .kids-page .paperbox{background:var(--k-card);border:1px solid var(--k-edge);
+    border-radius:12px;color:var(--k-soft)}
+  .kids-page .paperbox{background:#f1ecdc}
+  .kids-page .beat{border-top:3px solid var(--k-gold)}
+  .kids-page .front .ft,.kids-page .beat .bk,.kids-page .paperbox h3,
+  .kids-page .recon .rh,.kids-page .quickstart .qt,.kids-page .supply .sl,
+  .kids-page .paperbox .rt{color:var(--k-gold);text-transform:none}
+  /* Muted, but still >=4.5:1 on the #e6dfc7 card — a lighter warm grey
+     tested at 2.99:1 and failed. */
+  .kids-page .front .ft .num{color:#665d41}
+  .kids-page .front p,.kids-page .beat p,.kids-page .recon p,
+  .kids-page .paperbox p,.kids-page .faq-a p{color:var(--k-soft)}
+  .kids-page .front p b,.kids-page .beat p b,.kids-page .paperbox p b,
+  .kids-page .faq-a p b{color:var(--k-ink)}
+
+  /* Numbered mission steps */
+  .kids-page .qsteps li::before{background:var(--k-gold);color:var(--paper)}
+  .kids-page .qsteps li span{color:var(--k-soft);font-size:16px}
+  .kids-page .qsteps li b{color:var(--k-ink)}
+  .kids-page .reclist li{color:var(--k-soft)}
+  .kids-page .reclist li::before{color:var(--k-gold)}
+
+  /* Quiz */
+  .kids-page .faq-item summary{color:var(--k-ink)}
+  .kids-page .faq-item summary::before{color:var(--k-gold)}
+
+  /* Safety box — warm and calm rather than an alarm */
+  .kids-page .warnbox{background:#f1e4c4;border-color:#c9a44e;
+    border-left:5px solid #c9a44e;border-radius:12px}
+  .kids-page .warnbox .wt{color:#7a5a12}
+  .kids-page .warnbox p{color:var(--k-soft)}
+  .kids-page .warnbox p b{color:var(--k-ink)}
+
+  /* Links and source cards */
+  .kids-page .buy a{background:#f1ecdc;border-color:var(--k-edge)}
+  .kids-page .buy a:hover{border-color:var(--k-gold)}
+  .kids-page .buy .bn{color:var(--k-gold)}
+  .kids-page .buy .bd{color:var(--k-soft)}
+  .kids-page .note-line{color:var(--k-soft);border-left-color:var(--k-edge)}
+  .kids-page .order a.u-amber,.kids-page .note-line a{color:var(--k-gold)}
+  .kids-page a:focus-visible,.kids-page summary:focus-visible{outline-color:var(--k-gold)}
+
+/* ============================================================================
    RESPONSIVE SHELL (Phase 1)
    Mobile & tablet render exactly as before: .layout/.main are pass-through
    wrappers and the side rails are hidden, so the content keeps its full-bleed
