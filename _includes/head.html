@@ -88,6 +88,25 @@
       "image": "{{ og_image | absolute_url }}"
     }
     {%- endif %}
+    {%- if page.schema_learning %}
+    ,{
+      "@type": "LearningResource",
+      "@id": "{{ page.url | absolute_url }}#learning",
+      "name": {{ page.title | jsonify }},
+      "description": {{ page.description | jsonify }},
+      "url": "{{ page.url | absolute_url }}",
+      "inLanguage": "en",
+      "isAccessibleForFree": true,
+      "learningResourceType": {{ page.learning_type | default: "Reading" | jsonify }},
+      "educationalUse": "Self study",
+      "typicalAgeRange": {{ page.learning_age | default: "8-14" | jsonify }},
+      {%- if page.learning_teaches %}
+      "teaches": {{ page.learning_teaches | jsonify }},
+      {%- endif %}
+      "isPartOf": { "@id": "{{ '/' | absolute_url }}#website" },
+      "publisher": { "@id": "{{ '/' | absolute_url }}#organization" }
+    }
+    {%- endif %}
     {%- if page.schema_howto %}
     ,{
       "@type": "HowTo",

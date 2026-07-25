@@ -1,13 +1,23 @@
 # Operation: Doland Skeeter War
 
-> A neighbor-to-neighbor field guide for knocking down West Nile-carrying mosquitoes in and around Doland, South Dakota. It teaches residents two proven defenses: eliminate standing water, and turn the water you keep into simple, wildlife-safe larval traps dosed with Bti (Mosquito Dunks and Bits). It is written in a plain-language military operation-order (OPORD) style.
+> A neighbor-to-neighbor field guide for knocking down West Nile-carrying mosquitoes in and around Doland, South Dakota. It teaches residents two proven defenses: eliminate standing water, and turn the water you keep into simple, wildlife-safe larval traps dosed with Bti (Mosquito Dunks and Bits). The main guide is written in a plain-language military operation-order (OPORD) style; the children's section is not.
 
 ## Pages
 
-- [The Order (home)](https://dolandskeeterwar.com/): the full operation order — Situation (why West Nile matters locally), Mission, Execution (trap build plans for buckets, tubs, drums, stock tanks, tires, and improvised vessels), Sustainment (resupply and upkeep), and Command & Signal.
+- [The Order (home)](https://dolandskeeterwar.com/): the operation order in brief — the threat, the mission, the four moves to start today, and how to recruit neighbors. Links out to the detailed sections below.
+- [Field Manual](https://dolandskeeterwar.com/intel/): the threat in detail — identifying *Culex tarsalis*, when West Nile risk peaks by month, what the virus does in plain terms, how to survey your own property for breeding sites, and official sources.
+- [Build Plans](https://dolandskeeterwar.com/build/): larval trap build plans for buckets, old tubs and sinks, halved food drums, stock tanks, tires, kiddie pools, dead chest freezers, and storage totes. Each has a 3D view and a matching 2D blueprint. Also covers how every trap works (lure, kill, contain) and where traps must not be placed.
+- [Tools](https://dolandskeeterwar.com/tools/): the layered defense ranked by how much it actually matters, plus the gadgets that do not work (bug zappers, ultrasonic repellers, dragonfly decoys, bat houses for mosquito control).
+- [Resupply](https://dolandskeeterwar.com/resupply/): what Bti is and why it is safe, Dunks versus Bits, where to buy locally for about $10, and the weekly and monthly upkeep a trap needs.
+- [Debrief (FAQ)](https://dolandskeeterwar.com/faq/): common questions about standing water, Bti safety around kids and pets, trap effectiveness, wildlife, and seasonal timing.
+- [Skeeter School](https://dolandskeeterwar.com/kids/): the children's section, written for roughly ages 8-14 in plain language. Verified mosquito facts, an illustrated four-stage life-cycle diagram, an age-appropriate West Nile explanation, a backyard water hunt, safety rules, and an interactive quiz.
+- [Water Hunt checklist](https://dolandskeeterwar.com/water-hunt/): a free one-page printable scavenger-hunt scorecard for kids — tick boxes for common standing-water sources, a tally, bonus points, and safety rules. Sized for one sheet and suitable for a classroom or 4-H meeting.
+- [About](https://dolandskeeterwar.com/about/): who runs this and where the facts come from.
 - [Printable flyer](https://dolandskeeterwar.com/doland-skeeter-war-flyer.html): a one-page printable summary for posting or handing out.
 
 ## Notes
 
 - This is a free, volunteer, neighbor-to-neighbor effort — not an official program and not affiliated with any government agency.
 - Guidance is general and educational. Always read and follow product labels; for West Nile Virus questions consult a clinician or the South Dakota Department of Health.
+- Factual claims trace to the CDC, the EPA, the American Mosquito Control Association, and the South Dakota Department of Health. Each content page carries a "verified" date.
+- Nothing here is sold, and the store links are not affiliate links.
