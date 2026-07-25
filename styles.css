@@ -593,7 +593,16 @@
    so no other page is touched.
    ============================================================================ */
   .kids-page{--k-ink:var(--ink); --k-soft:var(--ink-soft); --k-gold:#6b4f10;
-    --k-card:#e6dfc7; --k-edge:#c4bb9b; --k-surface:var(--paper)}
+    --k-card:#e6dfc7; --k-edge:#c4bb9b; --k-surface:var(--paper);
+    /* The same teal-to-green run as the Skeeter School panel in the home
+       page announcement strip, so arriving here feels like the same place.
+       Used only as a FILL behind white text — never as text on the cream
+       surface, where the green end measures 3.84:1 and fails AA. When a teal
+       is needed as text, that is what --k-teal is for (5.68:1 on the card,
+       5.11:1 on the page, 6.42:1 on the pale box). */
+    --k-grad:linear-gradient(135deg,#1F6F78,#2E7D32);
+    --k-grad-hover:linear-gradient(135deg,#25818C,#36913B);
+    --k-teal:#1B5E52; --k-sun:#FFD34E}
 
   /* Surfaces */
   .kids-page .hero,
@@ -607,8 +616,13 @@
   .kids-page .sec-titles h2,
   .kids-page .signal-hit{text-transform:none;color:var(--k-ink)}
   .kids-page .hero h1{font-size:clamp(38px,10vw,68px);line-height:1}
-  .kids-page .hero h1 .frag,
-  .kids-page .sec-num{color:var(--k-gold)}
+  .kids-page .hero h1 .frag{color:var(--k-gold)}
+  /* Section numbers become filled badges rather than big gold numerals.
+     Repeated six times down a long page, they are the main thing giving it
+     a colour rhythm instead of one unbroken field of beige. */
+  .kids-page .sec-num{color:#fff;background:var(--k-grad);
+    font-size:clamp(23px,5.5vw,31px);line-height:1;
+    border-radius:12px;padding:9px 13px;align-self:flex-start}
   .kids-page .sec-titles .plain,
   .kids-page .hero .eyebrow{color:var(--k-gold)}
   .kids-page .signal-hit{font-size:clamp(20px,5vw,28px);line-height:1.2}
@@ -620,8 +634,10 @@
   .kids-page .order .lead{color:var(--k-soft);font-size:17px;line-height:1.62}
   .kids-page .order .lead{color:var(--k-ink);font-weight:500}
   .kids-page .order p b,.kids-page .order .lead b{color:var(--k-ink)}
-  .kids-page .stamp{color:var(--k-gold);border-color:var(--k-edge);
-    border-radius:999px;padding:4px 12px;letter-spacing:.1em}
+  /* Matches the "New - for kids" chip on the home page banner, so the pill a
+     visitor tapped there is the first thing they see again here. */
+  .kids-page .stamp{color:#fff;background:var(--k-grad);border:none;
+    border-radius:999px;padding:6px 14px;letter-spacing:.1em}
 
   /* Cards */
   .kids-page .front,.kids-page .beat,.kids-page .faq-item,
@@ -629,10 +645,18 @@
   .kids-page .paperbox{background:var(--k-card);border:1px solid var(--k-edge);
     border-radius:12px;color:var(--k-soft)}
   .kids-page .paperbox{background:#f1ecdc}
-  .kids-page .beat{border-top:3px solid var(--k-gold)}
-  .kids-page .front .ft,.kids-page .beat .bk,.kids-page .paperbox h3,
-  .kids-page .recon .rh,.kids-page .quickstart .qt,.kids-page .supply .sl,
-  .kids-page .paperbox .rt{color:var(--k-gold);text-transform:none}
+  /* A painted cap rather than border-top, so the four life-cycle stages read
+     as a set. overflow:hidden lets the bar follow the 12px corner radius. */
+  .kids-page .beat{border-top:1px solid var(--k-edge);position:relative;
+    overflow:hidden;padding-top:18px}
+  .kids-page .beat::before{content:"";position:absolute;inset:0 0 auto 0;
+    height:5px;background:var(--k-grad)}
+  .kids-page .front .ft,.kids-page .paperbox h3,
+  .kids-page .supply .sl{color:var(--k-gold);text-transform:none}
+  /* The small mono labels that head a box move to teal, so gold and teal
+     alternate down the page instead of every accent being the same brown. */
+  .kids-page .beat .bk,.kids-page .recon .rh,
+  .kids-page .quickstart .qt{color:var(--k-teal);text-transform:none}
   /* Muted, but still >=4.5:1 on the #e6dfc7 card — a lighter warm grey
      tested at 2.99:1 and failed. */
   .kids-page .front .ft .num{color:#665d41}
@@ -648,7 +672,12 @@
      rows, opening a gap between the heading and its paragraph. */
   .kids-page .front:has(.fact-icon){display:grid;grid-template-columns:auto 1fr;
     column-gap:13px;row-gap:2px;align-items:start;align-content:start}
-  .kids-page .fact-icon{width:36px;height:36px;grid-row:1/3;margin-top:1px}
+  /* Each fact icon sits in a filled disc. The icon strokes are set as a
+     presentation attribute in the markup (#6b4f10); a CSS `stroke` wins over
+     that, so they flip to white here without touching eleven inline SVGs. */
+  .kids-page .fact-icon{width:46px;height:46px;grid-row:1/3;margin-top:1px;
+    background:var(--k-grad);border-radius:50%;padding:8px}
+  .kids-page .fact-icon g{stroke:#fff}
   .kids-page .front .fact-icon + .ft{margin-bottom:2px}
 
   /* Life-cycle diagram — capped so the hand-set type inside the SVG keeps a
@@ -659,7 +688,7 @@
     max-width:34em;margin:10px auto 0;font-style:italic}
 
   /* Numbered mission steps */
-  .kids-page .qsteps li::before{background:var(--k-gold);color:var(--paper)}
+  .kids-page .qsteps li::before{background:var(--k-grad);color:#fff;border-radius:8px}
   .kids-page .qsteps li span{color:var(--k-soft);font-size:16px}
   .kids-page .qsteps li b{color:var(--k-ink)}
   .kids-page .reclist li{color:var(--k-soft)}
@@ -742,15 +771,24 @@
     font-size:13px;display:flex;align-items:center;justify-content:center}
 
   /* Printable-checklist call-out */
-  .kids-page .hunt-card-link{display:flex;align-items:center;gap:14px;
-    background:#f1e4c4;border:2px solid #c9a44e;border-radius:12px;
-    padding:15px 17px;margin:16px 0;text-decoration:none;transition:.16s}
-  .kids-page .hunt-card-link:hover{background:#f7edd4;transform:translateY(-1px)}
-  .kids-page .hunt-card-link svg{width:38px;height:38px;flex-shrink:0}
-  .kids-page .hunt-card-link span{font-size:15.5px;color:var(--k-soft);line-height:1.5}
+  /* The one thing on this page a teacher or a parent is most likely to want,
+     so it gets the full fill and is the only element here that is entirely
+     gradient. The icon strokes flip to white the same way the fact icons do.
+     White heading 5.13:1, pale body 4.81:1, sun arrow 3.58:1 (large). */
+  .kids-page .hunt-card-link{display:flex;align-items:center;gap:15px;
+    background:var(--k-grad);border:none;border-radius:14px;
+    padding:17px 19px;margin:16px 0;text-decoration:none;transition:.16s;
+    box-shadow:0 3px 0 #17423B}
+  .kids-page .hunt-card-link:hover{background:var(--k-grad-hover);transform:translateY(-2px);
+    box-shadow:0 5px 0 #17423B}
+  .kids-page .hunt-card-link svg{width:40px;height:40px;flex-shrink:0}
+  .kids-page .hunt-card-link svg g,.kids-page .hunt-card-link svg path,
+  .kids-page .hunt-card-link svg rect,.kids-page .hunt-card-link svg line{stroke:#fff}
+  .kids-page .hunt-card-link span{font-size:15.5px;color:#EDFBF4;line-height:1.5}
   .kids-page .hunt-card-link span b{display:block;font-family:'Oswald',sans-serif;
-    font-weight:700;font-size:18px;color:var(--k-ink);margin-bottom:2px}
-  .kids-page .hunt-card-link .go{font-size:24px;color:var(--k-gold);flex-shrink:0}
+    font-weight:700;font-size:19px;color:#fff;margin-bottom:2px}
+  .kids-page .hunt-card-link .go{font-size:26px;color:var(--k-sun);flex-shrink:0}
+  .kids-page .hunt-card-link:focus-visible{outline:3px solid var(--k-ink);outline-offset:3px}
 
   /* Quiz */
   .kids-page .quiz{background:var(--k-card);border:1px solid var(--k-edge);
@@ -759,7 +797,7 @@
     font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;color:#665d41}
   .kids-page .quiz-score{color:var(--k-gold);font-weight:600}
   .kids-page .quiz-bar{height:6px;border-radius:99px;background:#d2c9a9;margin:9px 0 16px;overflow:hidden}
-  .kids-page .quiz-bar span{display:block;height:100%;background:var(--k-gold);
+  .kids-page .quiz-bar span{display:block;height:100%;background:var(--k-grad);
     border-radius:99px;transition:width .3s ease}
   .kids-page .quiz-q{font-family:'Oswald',sans-serif;font-weight:700;
     font-size:clamp(19px,4.6vw,23px);line-height:1.25;color:var(--k-ink);margin-bottom:14px}
@@ -781,13 +819,15 @@
     color:var(--k-ink);margin-bottom:4px}
   .kids-page .quiz-why{font-size:15.5px;color:var(--k-soft);margin-bottom:14px;line-height:1.55}
   .kids-page .quiz-next{font-family:'Oswald',sans-serif;font-weight:600;font-size:16px;
-    letter-spacing:.02em;color:var(--paper);background:var(--k-gold);border:none;
-    border-radius:8px;padding:12px 20px;cursor:pointer;min-height:48px;transition:.14s}
-  .kids-page .quiz-next:hover{background:#543d0c}
+    letter-spacing:.02em;color:#fff;background:var(--k-grad);border:none;
+    border-radius:10px;padding:12px 22px;cursor:pointer;min-height:48px;transition:.14s}
+  .kids-page .quiz-next:hover{background:var(--k-grad-hover)}
   .kids-page .quiz-done{text-align:center;padding:8px 0}
   .kids-page .quiz-done:focus{outline:none}
+  /* --k-teal, not the gradient: this is text on the cream card, where the
+     gradient's green end only reaches 3.84:1. Teal measures 5.68:1. */
   .kids-page .quiz-done-score{font-family:'Oswald',sans-serif;font-weight:700;
-    font-size:clamp(40px,11vw,58px);line-height:1;color:var(--k-gold)}
+    font-size:clamp(40px,11vw,58px);line-height:1;color:var(--k-teal)}
   .kids-page .quiz-rank{font-family:'Oswald',sans-serif;font-weight:700;
     font-size:clamp(21px,5.5vw,27px);color:var(--k-ink);margin-top:6px}
   .kids-page .quiz-note{font-size:16px;color:var(--k-soft);margin:8px auto 16px;max-width:30em}
