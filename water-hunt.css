@@ -100,25 +100,34 @@ h2{font-family:'Oswald',sans-serif;font-weight:700;font-size:17px;
   section,.foot{break-inside:avoid}
   a{text-decoration:none;color:inherit}
 
-  /* Fit to one page of Letter without shrinking it so far that a child
-     cannot write in it. Measured against 970px of usable height (11in less
-     the 0.45in margins): this lands around 930px, so it stays on one sheet
-     with a little slack, and the tick boxes and tally cells keep enough
-     room to actually mark. */
-  h1{font-size:32px}
-  .sub{font-size:14px}
-  h2{font-size:17px;margin:12px 0 6px}
-  .how li,.rules li{font-size:13.5px;line-height:1.4}
-  .how ol{gap:1px}
-  .grid{gap:6px 22px}
-  .grid li{font-size:14px;padding-bottom:4px}
-  .box{width:17px;height:17px}
-  .tally{height:20px}
-  .bonus-list li{font-size:14px}
-  .score{margin-top:9px;padding:8px 13px}
-  .score i{height:26px}
-  .rules{margin-top:12px;padding:10px 13px}
-  .rules ul{gap:2px}
-  .foot{margin-top:12px;padding-top:10px}
-  .qr img{width:74px;height:74px}
+  /* Fit one page of Letter under REAL print settings, not just ideal ones.
+     Sizing this against my own 0.45in @page margin was the mistake: most
+     browsers default to 0.5in and add a header/footer, which leaves about
+     912px of usable height rather than 970. At the old sizes the sheet ran
+     16-24px over in exactly that configuration and spilled a second, nearly
+     empty page. Target is now ~860px, so it survives the worst common case
+     with room to spare — while keeping the tick boxes and tally cells big
+     enough for a child to actually mark. */
+  h1{font-size:29px}
+  .sub{font-size:13px}
+  h2{font-size:16px;margin:9px 0 4px}
+  .how li,.rules li{font-size:12.5px;line-height:1.32}
+  .how ol{gap:0}
+  .grid{gap:4px 22px}
+  .grid li{font-size:13.5px;padding-bottom:3px}
+  .box{width:16px;height:16px}
+  .tally{height:19px}
+  .bonus-list{gap:4px}
+  .bonus-list li{font-size:13.5px}
+  .score{margin-top:7px;padding:6px 12px}
+  .score i{height:24px}
+  .score span{font-size:15px}
+  .rules{margin-top:9px;padding:8px 12px}
+  .rules ul{gap:1px}
+  .foot{margin-top:9px;padding-top:8px}
+  .qr img{width:64px;height:64px}
+  .big{font-size:15px}
+  .fine{font-size:10.5px}
+  .head{padding-bottom:8px}
+  .field i{height:14px}
 }

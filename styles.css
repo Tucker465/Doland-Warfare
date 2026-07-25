@@ -489,7 +489,9 @@
   .kb-words{min-width:0}
   .kb-new{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;
     font-weight:600;letter-spacing:.12em;text-transform:uppercase;
-    color:#f4efe0;background:#5f8aa8;border-radius:99px;padding:4px 11px;margin-bottom:7px}
+    /* #5f8aa8 (the site's water blue) only reaches 3.21:1 behind this cream
+       at 11px, which fails AA. Darkened to clear 4.5:1. */
+    color:#f4efe0;background:#3d6480;border-radius:99px;padding:4px 11px;margin-bottom:7px}
   .kidsbanner h2{font-family:'Oswald',sans-serif;font-weight:700;
     font-size:clamp(26px,6vw,36px);line-height:1.05;color:#1E1F16;letter-spacing:.01em}
   .kidsbanner p{font-size:16px;line-height:1.5;color:#41442F;margin-top:6px;max-width:46em}

@@ -521,7 +521,7 @@ const PLATFORMS = [
     kill:"1 Bti dunk, re-dosed monthly" },
 
   { desig:"KID", name:"Kiddie Pool", vibe:"Wide, cheap, and already in the yard.",
-    photo:{ src:"/assets/build-kiddie-pool.webp", w:900, h:900, alt:"A hard-shell kiddie pool deployed as a mosquito larval trap in a farmyard at dusk, staked with rocks and fitted with a screened overflow vent and an escape ramp stick" },
+    photo:{ src:"/assets/build-kiddie-pool-840.webp", srcset:"/assets/build-kiddie-pool-420.webp 420w, /assets/build-kiddie-pool-840.webp 840w", sizes:"420px", w:840, h:840, alt:"A hard-shell kiddie pool deployed as a mosquito larval trap in a farmyard at dusk, staked with rocks and fitted with a screened overflow vent and an escape ramp stick" },
     icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><ellipse class="o" cx="24" cy="28" rx="18" ry="7"/><ellipse class="o" cx="24" cy="24" rx="18" ry="7"/><line class="w" x1="8" y1="26" x2="40" y2="26"/><circle class="d" cx="24" cy="26" r="3"/></svg>`,
     good:["Huge surface area","Under $10 new","Already in the yard"], warn:["Shallow = fast evaporation","Light — stake or weight it"],
     schem: isoCyl({
@@ -589,7 +589,7 @@ const PLATFORMS = [
     kill:"Dunks by volume (check the label)" },
 
   { desig:"BIN", name:"Storage Tote", vibe:"Five bucks at any hardware store.",
-    photo:{ src:"/assets/build-storage-tote.webp", w:900, h:900, alt:"A dark plastic storage tote deployed as a mosquito larval trap in a prairie field at dusk, weighted with bricks and fitted with an escape ramp" },
+    photo:{ src:"/assets/build-storage-tote-840.webp", srcset:"/assets/build-storage-tote-420.webp 420w, /assets/build-storage-tote-840.webp 840w", sizes:"420px", w:840, h:840, alt:"A dark plastic storage tote deployed as a mosquito larval trap in a prairie field at dusk, weighted with bricks and fitted with an escape ramp" },
     icon:`<svg class="pf-thumb" viewBox="0 0 48 48" aria-hidden="true"><rect class="o" x="10" y="16" width="28" height="20" rx="2"/><line class="w" x1="13" y1="28" x2="35" y2="28"/><circle class="d" cx="24" cy="28" r="3"/></svg>`,
     good:["Under $5 — deploy multiples","Opaque black = she loves it","Stackable storage when not in use"], warn:["Light when empty — ballast it"],
     schem: isoBox({
@@ -683,6 +683,10 @@ if (arsenal) PLATFORMS.forEach((p)=>{
       const v3 = el('figure','pb-view pb-photo');
       const img = document.createElement('img');
       img.src = p.photo.src; img.width = p.photo.w; img.height = p.photo.h;
+      // srcset/sizes let the browser pick the 420w file for the 420px slot
+      // instead of always pulling the 2x one.
+      if (p.photo.srcset) img.srcset = p.photo.srcset;
+      if (p.photo.sizes) img.sizes = p.photo.sizes;
       img.alt = p.photo.alt; img.loading = 'lazy'; img.decoding = 'async';
       v3.appendChild(img);
       v3.appendChild(el('figcaption','bp-cap','REFERENCE PHOTO — what it looks like in the field.'));

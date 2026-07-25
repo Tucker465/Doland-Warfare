@@ -148,7 +148,7 @@
 </script>
 {%- if page.preload_hero %}
 <!-- Preload the LCP hero image so it starts fetching before the CSS. -->
-<link rel="preload" as="image" type="image/webp" href="/assets/hero-1280.webp" imagesrcset="/assets/hero-800.webp 800w, /assets/hero-1280.webp 1280w" imagesizes="(min-width:1201px) 1080px, 100vw" fetchpriority="high">
+<link rel="preload" as="image" type="image/webp" href="/assets/hero-1280.webp" imagesrcset="/assets/hero-800.webp 800w, /assets/hero-1080.webp 1080w, /assets/hero-1280.webp 1280w" imagesizes="(min-width:1400px) 1080px, (min-width:1201px) calc(100vw - 320px), 100vw" fetchpriority="high">
 {%- endif %}
 <!-- Deliberately blocking, not deferred: measured deferring styles.css via
      media="print" swap (avoiding fonts.css/styles.css render-blocking) against
