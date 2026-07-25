@@ -835,6 +835,36 @@
     .kids-page .quiz-bar span{transition:none}
   }
 
+  /* ---- pronunciation respellings ----------------------------------------
+     Words like siphon, pupa, larva and proboscis are the point of the page,
+     so they cannot be swapped for easier ones — but an 8-year-old who cannot
+     say a word tends to stop reading at it. Each one carries a plain-English
+     respelling (SY-fun, PYOO-puh) in small caps-and-hyphens, not IPA, which
+     needs no key to read.
+
+     aria-hidden because this is a VISUAL aid. A screen reader already
+     pronounces "siphon" correctly; reading "S-Y-fun" after it would be
+     noise. The word itself stays in the accessibility tree untouched.
+
+     Sits on the baseline of the sentence around it and never wraps away from
+     its word — white-space:nowrap keeps "(PYOO-puh)" whole. */
+  /* The one-line key that tells a reader what the green bits are. */
+  .kids-page .saynote{background:#f1ecdc;border:1px dashed var(--k-edge);
+    border-radius:10px;padding:11px 14px;margin:14px 0 4px;
+    font-size:15.5px !important;color:var(--k-soft)}
+  .kids-page .saynote b{color:var(--k-ink)}
+  .kids-page .say{font-family:'IBM Plex Mono',monospace;font-size:.78em;
+    font-weight:600;letter-spacing:.01em;color:var(--k-teal);white-space:nowrap}
+  .kids-page .say::before{content:"("}
+  .kids-page .say::after{content:")"}
+  /* Inside the life-cycle card headings the respelling must not inherit
+     Oswald's weight or size, or it stops reading as an aside. */
+  .kids-page .bk .say{font-size:13px;font-weight:500}
+  /* SVG equivalents. The anatomy diagram sets type as <text>, so these are
+     fill rather than color. */
+  .kids-page .an-say-svg{font-family:'IBM Plex Mono',monospace;font-size:12.5px;
+    font-weight:500;fill:#1B5E52}
+
   /* Safety box — warm and calm rather than an alarm */
   .kids-page .warnbox{background:#f1e4c4;border-color:#c9a44e;
     border-left:5px solid #c9a44e;border-radius:12px}
