@@ -170,8 +170,29 @@
 }
 </script>
 {%- if page.preload_hero %}
-<!-- Preload the LCP hero image so it starts fetching before the CSS. -->
-<link rel="preload" as="image" type="image/webp" href="/assets/hero-1280.webp" imagesrcset="/assets/hero-800.webp 800w, /assets/hero-1080.webp 1080w, /assets/hero-1280.webp 1280w" imagesizes="(min-width:1400px) 1080px, (min-width:1201px) calc(100vw - 320px), 100vw" fetchpriority="high">
+{%- comment -%}
+  Preload the hero so it starts fetching before the CSS — but ONLY at widths
+  where it is still the LCP element.
+
+  The announcement strip above the hero pushed the image below the fold on a
+  phone. Measured at 400kbps/400ms, the LCP element differs by device:
+
+    desktop 1440px : IMG.hero-img   6432ms  <- preload earns its place
+    phone    390px : H1.reveal      7580ms  <- preload is pure cost
+
+  and the home page was the SLOWEST of all eight pages on the phone (7580ms
+  vs 5908ms for /faq/, which reaches its h1 the same way) precisely because a
+  high-priority image fetch sat ahead of the CSS and fonts in the queue. Fonts
+  losing that race matters here: they are font-display:optional, so a late
+  font is simply never used for that visit (see fonts/fonts.css).
+
+  `media` on a preload link is honoured by the preload scanner, so the fetch
+  never starts on narrow viewports. 881px matches the strip's own stacking
+  breakpoint (880px) — the exact width at which the hero stops being the
+  first thing on the page. Phones still load the image normally from the
+  <img> srcset; it just no longer jumps the queue.
+{%- endcomment -%}
+<link rel="preload" as="image" type="image/webp" media="(min-width: 881px)" href="/assets/hero-1280.webp" imagesrcset="/assets/hero-800.webp 800w, /assets/hero-1080.webp 1080w, /assets/hero-1280.webp 1280w" imagesizes="(min-width:1400px) 1080px, (min-width:1201px) calc(100vw - 320px), 100vw" fetchpriority="high">
 {%- endif %}
 {%- comment -%} Preload only the faces that actually render above the fold on every page:
      Oswald 700 (the hero h1 and every section h2), Oswald 600 (buttons and

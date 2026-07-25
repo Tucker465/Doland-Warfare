@@ -5,14 +5,21 @@
 # reader who has no idea what "Field Manual" means yet. `key` matches the
 # `nav_key` a page sets in its front matter, used to highlight the active
 # item and to look up that page's in-page section list below.
+#
+# `accent: kids` marks an entry that must NOT read as one more olive OPORD
+# section. Skeeter School sits second — directly under Home, above the adult
+# material — because a parent or a teacher landing here needs to find it
+# without reading the whole rail, and it carries its own colour in both the
+# desktop rail and the mobile jump sheet so it is findable by scanning rather
+# than by reading. Order and colour here are deliberate; don't sort this list.
 primary:
-  - { label: "The Order",    sub: "Home",                    url: "/",          key: order }
-  - { label: "Field Manual",  sub: "Know the Threat",         url: "/intel/",    key: intel }
-  - { label: "Build Plans",   sub: "Traps & Blueprints",      url: "/build/",    key: build }
-  - { label: "Tools",         sub: "What Works, What Doesn't", url: "/tools/",   key: tools }
-  - { label: "Resupply",      sub: "Bti & Where to Buy",      url: "/resupply/", key: resupply }
-  - { label: "Debrief",       sub: "FAQ",                     url: "/faq/",      key: faq }
-  - { label: "Skeeter School", sub: "Mosquito Facts for Kids", url: "/kids/",    key: kids }
+  - { label: "The Order",     sub: "Home",                     url: "/",          key: order }
+  - { label: "Skeeter School", sub: "Mosquito Facts for Kids", url: "/kids/",     key: kids, accent: kids }
+  - { label: "Field Manual",  sub: "Know the Threat",          url: "/intel/",    key: intel }
+  - { label: "Build Plans",   sub: "Traps & Blueprints",       url: "/build/",    key: build }
+  - { label: "Tools",         sub: "What Works, What Doesn't", url: "/tools/",    key: tools }
+  - { label: "Resupply",      sub: "Bti & Where to Buy",       url: "/resupply/", key: resupply }
+  - { label: "Debrief",       sub: "FAQ",                      url: "/faq/",      key: faq }
 
 # In-page section anchors, per page. Keyed the same as `primary[].key` above.
 # Drives the mobile jump nav and the desktop section rail for whichever page

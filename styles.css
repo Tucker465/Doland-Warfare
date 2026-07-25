@@ -84,6 +84,16 @@
     color:var(--moss);text-decoration:none;padding:9px 10px;border-radius:4px}
   .jumpnav-list .primary-link .sub{font-size:11px;color:var(--moss-dim)}
   .jumpnav-list .primary-link:hover{color:var(--paper);background:var(--drab-3)}
+  /* Skeeter School carries its own colour in the jump sheet for the same
+     reason it does in the desktop rail: a parent scanning a list of seven
+     olive OPORD labels should be able to spot the one written for their kid
+     without reading any of them. Teal on the dark panel, matched to the
+     announcement strip at the top of the home page so the two read as the
+     same destination. Measured 7.41:1 on the panel's #17352F fill. */
+  .jumpnav-list .primary-link.accent-kids{color:#6FD4B4;
+    background:#17352F;border:1px solid #2C6A5B}
+  .jumpnav-list .primary-link.accent-kids .sub{color:#A8DCC9}
+  .jumpnav-list .primary-link.accent-kids:hover{color:#fff;background:#1F4A40}
 
   /* HERO */
   .hero{position:relative;padding:30px 0 40px;border-bottom:1px solid var(--line);
@@ -487,38 +497,84 @@
 .dash-schem{stroke-dasharray:6 4}
 
 /* ============================================================================
-   KIDS ANNOUNCEMENT BANNER (home page)
-   Wears the Skeeter School palette — warm cream, gold, rounded — rather than
-   the site's olive stencil, so against the dark page it reads instantly as a
-   different kind of thing and previews the section it links to.
+   TOP ANNOUNCEMENT STRIP (home page, above the hero)
+
+   Replaces two separate bars that both sat BELOW a full-bleed hero image,
+   where a phone visitor met a screen and a half of artwork before reaching
+   either one. This sits above the hero so it is the first thing on the page.
+
+   Two panels in one strip. The left panel stays in the site's olive/amber
+   OPORD language. The right panel deliberately does not: it runs a bright
+   teal-to-green gradient with a sunshine-yellow button, which is the only
+   place on the site using those hues. That contrast is the whole point — a
+   child or a parent should be able to find it by colour alone, without
+   reading a word of the military framing around it.
+
+   Contrast (measured, WCAG AA needs 4.5:1 for body text):
+     #FFFFFF on #1F6F78 (gradient start) ....... 5.83:1
+     #FFFFFF on #2E7D32 (gradient end) ......... 5.13:1
+     #EDFBF4 on #2E7D32 (sub-label, worst) ..... 4.81:1
+     #12332C on #FFD34E (the button) ........... 9.56:1
+   Both gradient endpoints clear AA, so every point along it does too. The
+   automated checker cannot read gradients, so those numbers are stated here
+   rather than left to it — see CONTRIBUTING.md.
    ============================================================================ */
-  .kidsbanner{background:linear-gradient(180deg,#f1ecdc,#e6dfc7);
-    border-top:3px solid #c9a44e;border-bottom:3px solid #c9a44e}
-  .kb-inner{display:grid;grid-template-columns:auto 1fr;gap:14px 18px;
-    align-items:center;padding-top:20px;padding-bottom:20px}
-  .kb-art{width:76px;height:76px;grid-row:1/3}
-  .kb-words{min-width:0}
-  .kb-new{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;
-    font-weight:600;letter-spacing:.12em;text-transform:uppercase;
-    /* #5f8aa8 (the site's water blue) only reaches 3.21:1 behind this cream
-       at 11px, which fails AA. Darkened to clear 4.5:1. */
-    color:#f4efe0;background:#3d6480;border-radius:99px;padding:4px 11px;margin-bottom:7px}
-  .kidsbanner h2{font-family:'Oswald',sans-serif;font-weight:700;
-    font-size:clamp(26px,6vw,36px);line-height:1.05;color:#1E1F16;letter-spacing:.01em}
-  .kidsbanner p{font-size:16px;line-height:1.5;color:#41442F;margin-top:6px;max-width:46em}
-  .kb-actions{grid-column:2;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
-  .kb-btn{font-family:'Oswald',sans-serif;font-weight:600;font-size:16px;letter-spacing:.02em;
-    color:#f4efe0;background:#6b4f10;border-radius:8px;padding:12px 20px;
-    text-decoration:none;min-height:48px;display:inline-flex;align-items:center;transition:.16s}
-  .kb-btn:hover{background:#543d0c;transform:translateY(-1px)}
-  .kb-alt{font-size:15px;font-weight:600;color:#6b4f10;text-decoration:underline;
-    text-underline-offset:3px;padding:6px 0}
-  .kb-alt:hover{color:#543d0c}
-  .kidsbanner a:focus-visible{outline:2px solid #1E1F16;outline-offset:3px}
+  .topbanner{border-bottom:1px solid var(--line)}
+  .tb-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:0;align-items:stretch}
+
+  /* --- operations panel (olive, stays on-theme) --- */
+  .tb-op{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;
+    background:linear-gradient(90deg,var(--amber-dim),transparent 70%),var(--drab-2);
+    border-left:3px solid var(--amber);padding:13px 18px 13px 15px}
+  .tb-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;
+    letter-spacing:.11em;color:var(--drab);background:var(--amber);
+    padding:4px 10px;border-radius:3px;flex-shrink:0;align-self:flex-start}
+  .tb-msg{font-size:13.5px;line-height:1.45;color:var(--paper-2);flex:1 1 210px;min-width:0}
+  .tb-msg b{color:var(--paper);font-weight:600}
+  .tb-go{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;
+    letter-spacing:.03em;color:var(--amber);text-decoration:none;
+    border:1px solid var(--amber-dim);border-radius:4px;padding:9px 13px;
+    min-height:44px;display:inline-flex;align-items:center;transition:.16s;flex-shrink:0}
+  .tb-go:hover{background:var(--amber);color:var(--drab);border-color:var(--amber)}
+
+  /* --- kids panel (the loud one) --- */
+  .tb-kids{display:grid;grid-template-columns:auto 1fr;gap:8px 13px;align-items:center;
+    background:linear-gradient(135deg,#1F6F78,#2E7D32);
+    border-left:3px solid #FFD34E;padding:13px 18px}
+  .tb-art{width:58px;height:58px;grid-row:1/3;flex-shrink:0}
+  .tb-kwords{min-width:0}
+  .tb-new{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;
+    font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+    color:#12332C;background:#FFD34E;border-radius:99px;padding:3px 9px;margin-bottom:5px}
+  .tb-ktitle{font-family:'Oswald',sans-serif;font-weight:700;font-size:23px;
+    line-height:1.02;color:#fff;letter-spacing:.01em}
+  .tb-ksub{font-size:13px;line-height:1.4;color:#EDFBF4;margin-top:3px}
+  .tb-kactions{grid-column:2;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+  .tb-kbtn{font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;letter-spacing:.02em;
+    color:#12332C;background:#FFD34E;border-radius:8px;padding:11px 17px;
+    text-decoration:none;min-height:44px;display:inline-flex;align-items:center;transition:.16s}
+  .tb-kbtn:hover{background:#FFDE7A;transform:translateY(-1px)}
+  .tb-kalt{font-size:13.5px;font-weight:600;color:#fff;text-decoration:underline;
+    text-underline-offset:3px;padding:5px 0;min-height:32px;display:inline-flex;align-items:center}
+  .tb-kalt:hover{color:#FFD34E}
+  .tb-kids a:focus-visible{outline:2px solid #fff;outline-offset:3px}
+
+  /* Below ~880px the two panels cannot both hold a readable line length side
+     by side, so they stack — kids panel FIRST, because on a phone the top of
+     the screen is the only thing seen without a deliberate scroll and the
+     kids route is what this change exists to surface. */
+  @media (max-width:880px){
+    .tb-grid{grid-template-columns:1fr}
+    .tb-kids{order:-1;border-left:none;border-bottom:3px solid #FFD34E}
+    .tb-op{border-left:none}
+  }
   @media (max-width:560px){
-    .kb-inner{grid-template-columns:1fr;gap:12px}
-    .kb-art{width:64px;height:64px;grid-row:auto}
-    .kb-actions{grid-column:1}
+    .tb-kids{grid-template-columns:auto 1fr;gap:7px 11px;padding:12px 15px}
+    .tb-art{width:46px;height:46px}
+    .tb-ktitle{font-size:20px}
+    .tb-kactions{grid-column:1/-1;margin-top:2px}
+    .tb-op{padding:12px 15px}
+    .tb-msg{font-size:13px}
   }
 
 /* ============================================================================
@@ -840,6 +896,20 @@
     .primary-link:hover{color:var(--paper);background:var(--drab-3)}
     /* Active page is the single strongest marker in the rail. */
     .primary-link.active{color:var(--amber);font-weight:600;background:var(--drab-3)}
+    /* Skeeter School: second in the rail, and the only entry that is not
+       olive. The KIDS flag does the work at a glance; the teal keeps it
+       readable as a link rather than as a warning. Measured 7.41:1 on the
+       link's own #17352F fill; the active state is 6.95:1. */
+    .primary-link.accent-kids{color:#6FD4B4;background:#17352F;
+      border:1px solid #2C6A5B;display:flex;align-items:center;gap:7px}
+    .primary-link.accent-kids:hover{color:#fff;background:#1F4A40;border-color:#3E8E7A}
+    /* The active marker must still win on /kids/ itself, or the current page
+       stops being obvious the moment you are on it. */
+    .primary-link.accent-kids.active{color:#FFD34E;background:#1F4A40;
+      border-color:#FFD34E;font-weight:600}
+    .rail-flag{font-family:'IBM Plex Mono',monospace;font-size:8.5px;font-weight:700;
+      letter-spacing:.1em;color:#12332C;background:#FFD34E;border-radius:99px;
+      padding:2px 6px;margin-left:auto;flex-shrink:0}
 
     /* In-page sections, nested under the active page. The left rule ties them
        visually to their parent and marks them as one level down. */

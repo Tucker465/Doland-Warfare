@@ -13,7 +13,7 @@
     {%- assign is_active = false %}
     {%- if page.nav_key == p.key %}{% assign is_active = true %}{% endif %}
     <li>
-      <a class="primary-link{% if is_active %} active{% endif %}"{% if is_active %} aria-current="page"{% endif %} href="{{ p.url }}">{{ p.label }}</a>
+      <a class="primary-link{% if p.accent %} accent-{{ p.accent }}{% endif %}{% if is_active %} active{% endif %}"{% if is_active %} aria-current="page"{% endif %} href="{{ p.url }}">{{ p.label }}{% if p.accent == 'kids' %}<span class="rail-flag">KIDS</span>{% endif %}</a>
       {%- if is_active and current_sections %}
       <ol class="rail-sections">
         {%- for s in current_sections %}

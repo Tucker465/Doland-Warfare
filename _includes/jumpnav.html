@@ -9,6 +9,19 @@
 <details class="jumpnav" id="jumpnav">
   <summary><span class="chev" aria-hidden="true">▾</span> JUMP TO</summary>
   <nav class="jumpnav-list" aria-label="Site navigation">
+    {%- comment -%}
+      Skeeter School is pinned ABOVE the in-page section list rather than
+      taking its turn among the cross-page links at the bottom. In the normal
+      order it landed eighth in the panel — past six section links — which is
+      not "findable" for a parent or a kid on a phone. Pinning it puts it in
+      the first thing the panel shows. It is skipped here when you are already
+      on /kids/, and the loop below skips it too so it never appears twice.
+    {%- endcomment -%}
+    {%- assign kids_nav = site.data.nav.primary | where: "key", "kids" | first %}
+    {%- if kids_nav and page.nav_key != 'kids' %}
+    <a class="primary-link accent-kids pinned" href="{{ kids_nav.url }}">{{ kids_nav.label }}<span class="sub">{{ kids_nav.sub }}</span></a>
+    <div class="jumpnav-divider"></div>
+    {%- endif %}
     {%- if current_sections %}
     <a class="section-link" href="#top">Top</a>
     {%- for s in current_sections %}
@@ -17,8 +30,8 @@
     <div class="jumpnav-divider"></div>
     {%- endif %}
     {%- for p in site.data.nav.primary %}
-    {%- unless page.nav_key == p.key %}
-    <a class="primary-link" href="{{ p.url }}">{{ p.label }}<span class="sub">{{ p.sub }}</span></a>
+    {%- unless page.nav_key == p.key or p.key == 'kids' %}
+    <a class="primary-link{% if p.accent %} accent-{{ p.accent }}{% endif %}" href="{{ p.url }}">{{ p.label }}<span class="sub">{{ p.sub }}</span></a>
     {%- endunless %}
     {%- endfor %}
     {%- unless page.url == '/about/' %}
