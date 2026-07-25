@@ -763,3 +763,156 @@ document.querySelectorAll('.order').forEach(s=>spy.observe(s));
 // ---------- REVEAL ----------
 const revs=document.querySelectorAll('.reveal');
 requestAnimationFrame(()=>revs.forEach((el,i)=>setTimeout(()=>el.classList.add('in'),80*i)));
+
+// ---------- SKEETER SCHOOL QUIZ (/kids/) ----------
+// Progressive enhancement: the page ships a plain <details> question-and-
+// answer list that works with no JS at all. When this runs, that list is
+// swapped for an interactive quiz — one question at a time, immediate
+// feedback with the reason, a running score, and a rank at the end.
+// Everything is built with createElement/textContent (no innerHTML sink)
+// and wired with addEventListener, so it satisfies the site's strict CSP.
+const KID_QUIZ = [
+  { q:"Which mosquitoes bite people?",
+    choices:["Only the females","Only the males","Both, equally"], correct:0,
+    why:"Only females bite. They need blood to make their eggs. Males drink flower nectar their whole lives." },
+  { q:"How long does it take an egg to become a flying adult?",
+    choices:["About 7 to 10 days","About 3 months","About one year"], correct:0,
+    why:"7 to 10 days in warm water. That is why dumping standing water once a week works so well." },
+  { q:"How much standing water does a mosquito need to breed?",
+    choices:["A whole pond","About a bottle cap","At least a bathtub"], correct:1,
+    why:"About a bottle cap full, sitting still for a week. A forgotten toy in the yard is plenty." },
+  { q:"How many of the four life stages happen in water?",
+    choices:["One","Two","Three"], correct:2,
+    why:"Three. Egg, larva, and pupa all live in water. Only the adult flies. That is the whole reason dumping water works." },
+  { q:"Why does a box fan on the porch keep mosquitoes off you?",
+    choices:["The noise scares them","They cannot fly against the wind","The light confuses them"], correct:1,
+    why:"They are slow — about 1 mile per hour. Moving air is faster than they are, so they cannot reach you through it." },
+  { q:"How does a mosquito find you in the dark?",
+    choices:["She smells the gas you breathe out","She hears your footsteps","She sees your clothes"], correct:0,
+    why:"She smells the carbon dioxide you breathe out, from about 35 metres away, then follows it to you." },
+  { q:"What does a mosquito larva use its siphon for?",
+    choices:["Eating","Breathing","Swimming"], correct:1,
+    why:"Breathing. The siphon is a little tube on its tail that reaches up to the surface for air." },
+  { q:"What is the single best thing you can do about mosquitoes?",
+    choices:["Put up a bat house","Buy a bug zapper","Dump standing water"], correct:2,
+    why:"Dump standing water. It is free, it takes about fifteen minutes, and it beats every gadget you can buy." }
+];
+
+const KID_RANKS = [
+  { min:1.0,  name:"Mosquito Expert",   note:"A perfect score. You know more about this than most grown-ups do." },
+  { min:0.75, name:"Water Detective",   note:"Really strong. You are ready to go run the hunt." },
+  { min:0.5,  name:"Junior Scout",      note:"Good start. Skim the facts again and try once more." },
+  { min:0.0,  name:"Fresh Recruit",     note:"No worries — read the page through, then come back and beat your score." }
+];
+
+(function initKidQuiz(){
+  // The mount point only exists on /kids/, so its presence is the guard —
+  // a flag would need an inline script, which the CSP forbids.
+  const mount = document.getElementById('quiz-app');
+  if (!mount) return;
+
+  const fallback = document.getElementById('quiz-fallback');
+  if (fallback) fallback.hidden = true;
+  mount.hidden = false;
+
+  let i = 0, score = 0, answered = false;
+
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  };
+
+  function render(){
+    mount.textContent = '';
+    const item = KID_QUIZ[i];
+    answered = false;
+
+    const head = el('div','quiz-head');
+    head.appendChild(el('span','quiz-count',`Question ${i+1} of ${KID_QUIZ.length}`));
+    head.appendChild(el('span','quiz-score',`Score ${score}`));
+    mount.appendChild(head);
+
+    const bar = el('div','quiz-bar');
+    const fill = el('span');
+    fill.style.width = Math.round((i / KID_QUIZ.length) * 100) + '%';
+    bar.appendChild(fill);
+    mount.appendChild(bar);
+
+    // tabindex -1 so focus can be moved here between questions; a <p> is not
+    // focusable otherwise and the focus call would silently do nothing.
+    const q = el('p','quiz-q',item.q);
+    q.setAttribute('tabindex','-1');
+    mount.appendChild(q);
+
+    const list = el('div','quiz-choices');
+    item.choices.forEach((choice, idx) => {
+      const btn = el('button','quiz-choice',choice);
+      btn.type = 'button';
+      btn.addEventListener('click', () => pick(idx, list, item));
+      list.appendChild(btn);
+    });
+    mount.appendChild(list);
+
+    // Feedback is a live region so a screen reader announces the result
+    // without the user having to hunt for it.
+    const fb = el('div','quiz-feedback');
+    fb.id = 'quiz-feedback';
+    fb.setAttribute('role','status');
+    fb.setAttribute('aria-live','polite');
+    mount.appendChild(fb);
+  }
+
+  function pick(idx, list, item){
+    if (answered) return;
+    answered = true;
+    const right = idx === item.correct;
+    if (right) score++;
+
+    Array.from(list.children).forEach((b, n) => {
+      b.disabled = true;
+      if (n === item.correct) b.classList.add('is-right');
+      else if (n === idx) b.classList.add('is-wrong');
+    });
+
+    const fb = document.getElementById('quiz-feedback');
+    fb.textContent = '';
+    fb.appendChild(el('p','quiz-verdict', right ? 'Correct!' : 'Not quite.'));
+    fb.appendChild(el('p','quiz-why', item.why));
+    fb.classList.add(right ? 'is-right' : 'is-wrong');
+
+    const next = el('button','quiz-next', i === KID_QUIZ.length - 1 ? 'See my score →' : 'Next question →');
+    next.type = 'button';
+    next.addEventListener('click', () => {
+      i++;
+      if (i < KID_QUIZ.length) { render(); mount.querySelector('.quiz-q').focus(); }
+      else finish();
+    });
+    fb.appendChild(next);
+    next.focus();
+  }
+
+  function finish(){
+    mount.textContent = '';
+    const pct = score / KID_QUIZ.length;
+    const rank = KID_RANKS.find(r => pct >= r.min);
+
+    const box = el('div','quiz-done');
+    box.appendChild(el('div','quiz-done-score',`${score} / ${KID_QUIZ.length}`));
+    box.appendChild(el('div','quiz-rank',rank.name));
+    box.appendChild(el('p','quiz-note',rank.note));
+
+    const again = el('button','quiz-next','Try again');
+    again.type = 'button';
+    again.addEventListener('click', () => { i = 0; score = 0; render(); mount.querySelector('.quiz-q').focus(); });
+    box.appendChild(again);
+
+    mount.appendChild(box);
+    box.setAttribute('role','status');
+    box.setAttribute('tabindex','-1');
+    box.focus();
+  }
+
+  render();
+})();

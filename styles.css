@@ -8,6 +8,10 @@
     --line:#3A3E2C; --hero-line:rgba(218,212,190,.16);
   }
   *{box-sizing:border-box;margin:0;padding:0}
+  /* The UA's [hidden]{display:none} is a plain element rule, so any class that
+     sets display (.faq is display:grid) silently beats it and the element
+     stays visible. Enforce it so the `hidden` property actually hides things. */
+  [hidden]{display:none !important}
   /* Guaranteed-contrast keyboard focus ring, applied broadly rather than
      trusting each browser's own default outline (inconsistent, and can be
      low-contrast against this site's dark background). :focus-visible only
@@ -535,6 +539,23 @@
   .kids-page .front p b,.kids-page .beat p b,.kids-page .paperbox p b,
   .kids-page .faq-a p b{color:var(--k-ink)}
 
+  /* Fact-card glyphs. The card becomes a two-column grid (icon | text) so a
+     long heading wraps beside the icon rather than under it. */
+  /* align-content:start matters — cards are stretched to match the tallest in
+     their row, and without it grid hands that leftover height to the auto
+     rows, opening a gap between the heading and its paragraph. */
+  .kids-page .front:has(.fact-icon){display:grid;grid-template-columns:auto 1fr;
+    column-gap:13px;row-gap:2px;align-items:start;align-content:start}
+  .kids-page .fact-icon{width:36px;height:36px;grid-row:1/3;margin-top:1px}
+  .kids-page .front .fact-icon + .ft{margin-bottom:2px}
+
+  /* Life-cycle diagram — capped so the hand-set type inside the SVG keeps a
+     sensible rendered size on wide screens instead of ballooning. */
+  .kids-page .lifecycle-fig{margin:18px 0 6px}
+  .kids-page .lifecycle-svg{display:block;width:100%;max-width:460px;height:auto;margin:0 auto}
+  .kids-page .lifecycle-fig figcaption{text-align:center;font-size:15px;color:var(--k-soft);
+    max-width:34em;margin:10px auto 0;font-style:italic}
+
   /* Numbered mission steps */
   .kids-page .qsteps li::before{background:var(--k-gold);color:var(--paper)}
   .kids-page .qsteps li span{color:var(--k-soft);font-size:16px}
@@ -545,6 +566,60 @@
   /* Quiz */
   .kids-page .faq-item summary{color:var(--k-ink)}
   .kids-page .faq-item summary::before{color:var(--k-gold)}
+
+  /* Printable-checklist call-out */
+  .kids-page .hunt-card-link{display:flex;align-items:center;gap:14px;
+    background:#f1e4c4;border:2px solid #c9a44e;border-radius:12px;
+    padding:15px 17px;margin:16px 0;text-decoration:none;transition:.16s}
+  .kids-page .hunt-card-link:hover{background:#f7edd4;transform:translateY(-1px)}
+  .kids-page .hunt-card-link svg{width:38px;height:38px;flex-shrink:0}
+  .kids-page .hunt-card-link span{font-size:15.5px;color:var(--k-soft);line-height:1.5}
+  .kids-page .hunt-card-link span b{display:block;font-family:'Oswald',sans-serif;
+    font-weight:700;font-size:18px;color:var(--k-ink);margin-bottom:2px}
+  .kids-page .hunt-card-link .go{font-size:24px;color:var(--k-gold);flex-shrink:0}
+
+  /* Quiz */
+  .kids-page .quiz{background:var(--k-card);border:1px solid var(--k-edge);
+    border-radius:12px;padding:20px}
+  .kids-page .quiz-head{display:flex;justify-content:space-between;align-items:baseline;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;color:#665d41}
+  .kids-page .quiz-score{color:var(--k-gold);font-weight:600}
+  .kids-page .quiz-bar{height:6px;border-radius:99px;background:#d2c9a9;margin:9px 0 16px;overflow:hidden}
+  .kids-page .quiz-bar span{display:block;height:100%;background:var(--k-gold);
+    border-radius:99px;transition:width .3s ease}
+  .kids-page .quiz-q{font-family:'Oswald',sans-serif;font-weight:700;
+    font-size:clamp(19px,4.6vw,23px);line-height:1.25;color:var(--k-ink);margin-bottom:14px}
+  .kids-page .quiz-q:focus{outline:none}
+  .kids-page .quiz-choices{display:grid;gap:9px}
+  .kids-page .quiz-choice{font-family:'Public Sans',system-ui,sans-serif;font-size:16px;
+    text-align:left;color:var(--k-ink);background:#f4efe0;border:1.5px solid var(--k-edge);
+    border-radius:10px;padding:13px 15px;cursor:pointer;transition:.14s;min-height:48px}
+  .kids-page .quiz-choice:hover:not(:disabled){border-color:var(--k-gold);background:#faf6ea}
+  .kids-page .quiz-choice:disabled{cursor:default;opacity:.75}
+  /* Right/wrong carry an icon as well as colour, so the result is not
+     conveyed by colour alone. */
+  .kids-page .quiz-choice.is-right{background:#dbe7cf;border-color:#5e7a3c;color:#22301a;opacity:1}
+  .kids-page .quiz-choice.is-right::before{content:"✓ ";font-weight:700;color:#43602a}
+  .kids-page .quiz-choice.is-wrong{background:#f0dcd4;border-color:#a9603f;color:#3a1f14;opacity:1}
+  .kids-page .quiz-choice.is-wrong::before{content:"✕ ";font-weight:700;color:#8c451f}
+  .kids-page .quiz-feedback:not(:empty){margin-top:16px;padding-top:14px;border-top:1px dashed var(--k-edge)}
+  .kids-page .quiz-verdict{font-family:'Oswald',sans-serif;font-weight:700;font-size:19px;
+    color:var(--k-ink);margin-bottom:4px}
+  .kids-page .quiz-why{font-size:15.5px;color:var(--k-soft);margin-bottom:14px;line-height:1.55}
+  .kids-page .quiz-next{font-family:'Oswald',sans-serif;font-weight:600;font-size:16px;
+    letter-spacing:.02em;color:var(--paper);background:var(--k-gold);border:none;
+    border-radius:8px;padding:12px 20px;cursor:pointer;min-height:48px;transition:.14s}
+  .kids-page .quiz-next:hover{background:#543d0c}
+  .kids-page .quiz-done{text-align:center;padding:8px 0}
+  .kids-page .quiz-done:focus{outline:none}
+  .kids-page .quiz-done-score{font-family:'Oswald',sans-serif;font-weight:700;
+    font-size:clamp(40px,11vw,58px);line-height:1;color:var(--k-gold)}
+  .kids-page .quiz-rank{font-family:'Oswald',sans-serif;font-weight:700;
+    font-size:clamp(21px,5.5vw,27px);color:var(--k-ink);margin-top:6px}
+  .kids-page .quiz-note{font-size:16px;color:var(--k-soft);margin:8px auto 16px;max-width:30em}
+  @media (prefers-reduced-motion:reduce){
+    .kids-page .quiz-bar span{transition:none}
+  }
 
   /* Safety box — warm and calm rather than an alarm */
   .kids-page .warnbox{background:#f1e4c4;border-color:#c9a44e;
