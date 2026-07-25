@@ -12,6 +12,7 @@ primary:
   - { label: "Tools",         sub: "What Works, What Doesn't", url: "/tools/",   key: tools }
   - { label: "Resupply",      sub: "Bti & Where to Buy",      url: "/resupply/", key: resupply }
   - { label: "Debrief",       sub: "FAQ",                     url: "/faq/",      key: faq }
+  - { label: "Skeeter School", sub: "Mosquito Facts for Kids", url: "/kids/",    key: kids }
 
 # In-page section anchors, per page. Keyed the same as `primary[].key` above.
 # Drives the mobile jump nav and the desktop section rail for whichever page
@@ -56,15 +57,24 @@ page_sections:
   faq:
     - { num: "01", id: faq, label: "All Questions" }
 
+  kids:
+    - { num: "01", id: facts,     label: "Wild Facts" }
+    - { num: "02", id: lifecycle, label: "Life Cycle" }
+    - { num: "03", id: whyhere,   label: "Why We Care" }
+    - { num: "04", id: mission,   label: "Your Mission" }
+    - { num: "05", id: quiz,      label: "Check Yourself" }
+    - { num: "06", id: sources,   label: "Sources" }
+
 # "Keep reading" cross-links shown at the bottom of each page, keyed the same
 # as primary[].key (plus "about", which has no primary entry of its own).
 # Hand-picked per page rather than "list everything" so the suggestions stay
 # contextually relevant. Home is deliberately absent — it already links to
 # every page in its own body copy.
 related:
-  intel:    [build, faq]
+  intel:    [build, kids, faq]
   build:    [resupply, tools, faq]
   tools:    [build, resupply]
   resupply: [build, tools]
-  faq:      [intel, build, resupply]
+  faq:      [intel, build, kids]
+  kids:     [intel, build, faq]
   about:    [intel, faq]
