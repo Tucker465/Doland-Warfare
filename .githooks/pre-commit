@@ -1,0 +1,64 @@
+#!/bin/sh
+# Fast guardrails on every commit. The full suite (bin/verify.py) is a manual
+# step before pushing; this tier only covers what must never slip through and
+# is quick enough to run every time.
+#
+# Bypass with --no-verify only if you know exactly why.
+
+EXPECT_NAME="Doland Skeeter War"
+EXPECT_EMAIL="webmaster@dolandskeeterwar.com"
+
+name=$(git config user.name)
+email=$(git config user.email)
+if [ "$name" != "$EXPECT_NAME" ] || [ "$email" != "$EXPECT_EMAIL" ]; then
+  echo "pre-commit: wrong commit identity: $name <$email>"
+  echo "            expected: $EXPECT_NAME <$EXPECT_EMAIL>"
+  echo "            fix: git config user.name \"$EXPECT_NAME\""
+  echo "                 git config user.email \"$EXPECT_EMAIL\""
+  exit 1
+fi
+
+# Attribution / personal identifiers in anything being committed.
+# Encoded so this hook is not itself a mention of what it is looking for.
+pattern=$(printf %s 'Y2xhdWRlfGFudGhyb3BpY3xvcGVuYWl8Y2hhdGdwdHxjb3BpbG90fGNvLWF1dGhvcmVkLWJ5fGdlbmVyYXRlZCB3aXRofGFpLWdlbmVyYXRlZHxwcml2YXRlcmVsYXl8YXBwbGVpZA==' | base64 -d)
+staged=$(git diff --cached --name-only --diff-filter=ACM |
+         grep -viE '\.(webp|png|jpg|ico|woff2|pdf)$' || true)
+if [ -n "$staged" ]; then
+  hits=$(echo "$staged" | xargs -r grep -inE "$pattern" 2>/dev/null || true)
+  if [ -n "$hits" ]; then
+    echo "pre-commit: attribution or personal identifiers found in staged changes:"
+    echo "$hits" | head -10
+    exit 1
+  fi
+fi
+
+# nav.yml promises sections; make sure the pages still define them. This is the
+# check that would have caught an entire quiz section being deleted.
+if command -v python3 >/dev/null 2>&1; then
+  python3 - <<'PY' || exit 1
+import re, sys, pathlib
+try: import yaml
+except ImportError: sys.exit(0)
+nav = yaml.safe_load(pathlib.Path("_data/nav.yml").read_text())
+urls = {p["key"]: p["url"] for p in nav["primary"]}
+src = {"/": "index.html"}
+for k, u in urls.items():
+    if u != "/":
+        for c in (f"{u.strip('/')}.html", f"{k}.html"):
+            if pathlib.Path(c).exists(): src[u] = c; break
+bad = []
+for key, sections in (nav.get("page_sections") or {}).items():
+    f = src.get(urls.get(key, ""))
+    if not f: continue
+    html = pathlib.Path(f).read_text()
+    for s in sections:
+        if f'id="{s["id"]}"' not in html:
+            bad.append(f'{f}: nav.yml lists section "{s["id"]}" but it is not in the page')
+if bad:
+    print("pre-commit: nav.yml references sections that no longer exist:")
+    [print("  " + b) for b in bad]
+    sys.exit(1)
+PY
+fi
+
+echo "pre-commit: identity, attribution and section checks passed"

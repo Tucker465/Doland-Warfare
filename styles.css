@@ -328,9 +328,13 @@
   .steps{list-style:none;counter-reset:s;display:grid;gap:9px;margin:10px 0 0}
   .steps li{display:flex;gap:11px;font-size:14.5px;color:var(--paper-2)}
   .steps li::before{counter-increment:s;content:counter(s,decimal-leading-zero);font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;color:var(--amber);flex-shrink:0;padding-top:1px}
-  .kill-line{display:flex;align-items:center;gap:9px;margin-top:14px;background:var(--amber-dim);border:1px solid var(--amber);border-radius:4px;padding:9px 12px}
-  .kill-line .kx{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--amber);flex-shrink:0}
-  .kill-line span.t{font-size:13.5px;color:var(--paper)}
+  /* --amber-dim is 59% alpha, which composites to a mid brown here. Amber text
+     on it came to 2.70:1 and the body text to 3.86:1, both under AA. Using an
+     opaque dark base instead keeps the amber banding but lets the text sit at
+     full strength. */
+  .kill-line{display:flex;align-items:center;gap:9px;margin-top:14px;background:#3a2f14;border:1px solid var(--amber);border-radius:4px;padding:9px 12px}
+  .kill-line .kx{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:11px;letter-spacing:.1em;color:#F0B94A;flex-shrink:0}
+  .kill-line span.t{font-size:13.5px;color:#F2ECD8}
 
   /* DO NOT EMPLACE */
   .nogo{border:1px solid #8a3a23;border-left:4px solid var(--rust);border-radius:6px;background:#241510;padding:16px 18px;margin:14px 0}
