@@ -1172,3 +1172,145 @@ function seasonSlot(x, w, peakShown){
     'through July, peaking in August and September, and ending at the first hard frost. ' +
     `It is now ${part.toLowerCase()}-${monthName} — ${here.say}.`);
 })();
+
+
+// ---------- TRAP MAP: PAN, ZOOM, SITE DETAILS ----------
+(function initTrapMap() {
+  var vp = document.getElementById('map-viewport');
+  if (!vp) return;
+  var svg = document.getElementById('town-map');
+  var container = document.getElementById('map-container');
+  var panel = document.getElementById('site-panel');
+  var spId = document.getElementById('sp-id');
+  var spPri = document.getElementById('sp-pri');
+  var spName = document.getElementById('sp-name');
+  var spBody = document.getElementById('sp-body');
+  var spClose = document.getElementById('sp-close');
+
+  var scale = 1, tx = 0, ty = 0, minS = 0.5, maxS = 4;
+  var dragging = false, startX = 0, startY = 0, startTx = 0, startTy = 0;
+
+  function apply() {
+    svg.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+    svg.style.transformOrigin = '0 0';
+  }
+
+  function clampPan() {
+    var sw = svg.getBoundingClientRect().width / scale;
+    var sh = svg.getBoundingClientRect().height / scale;
+    var vw = vp.clientWidth;
+    var vh = vp.clientHeight;
+    var maxTx = 0, maxTy = 0;
+    var minTx = vw - sw * scale;
+    var minTy = vh - sh * scale;
+    if (minTx > 0) { tx = minTx / 2; }
+    else { tx = Math.max(minTx, Math.min(maxTx, tx)); }
+    if (minTy > 0) { ty = minTy / 2; }
+    else { ty = Math.max(minTy, Math.min(maxTy, ty)); }
+  }
+
+  function zoom(delta) {
+    var prev = scale;
+    scale = Math.max(minS, Math.min(maxS, scale + delta));
+    var cx = vp.clientWidth / 2;
+    var cy = vp.clientHeight / 2;
+    tx = cx - (cx - tx) * (scale / prev);
+    ty = cy - (cy - ty) * (scale / prev);
+    clampPan();
+    apply();
+  }
+
+  function reset() { scale = 1; tx = 0; ty = 0; apply(); }
+
+  document.getElementById('map-zin').addEventListener('click', function() { zoom(0.3); });
+  document.getElementById('map-zout').addEventListener('click', function() { zoom(-0.3); });
+  document.getElementById('map-reset').addEventListener('click', reset);
+
+  vp.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    zoom(e.deltaY < 0 ? 0.15 : -0.15);
+  }, {passive: false});
+
+  vp.addEventListener('pointerdown', function(e) {
+    dragging = true; startX = e.clientX; startY = e.clientY;
+    startTx = tx; startTy = ty;
+    vp.setPointerCapture(e.pointerId);
+  });
+  vp.addEventListener('pointermove', function(e) {
+    if (!dragging) return;
+    tx = startTx + (e.clientX - startX);
+    ty = startTy + (e.clientY - startY);
+    clampPan(); apply();
+  });
+  vp.addEventListener('pointerup', function() { dragging = false; });
+  vp.addEventListener('pointercancel', function() { dragging = false; });
+
+  container.addEventListener('keydown', function(e) {
+    var step = 40;
+    if (e.key === 'ArrowLeft') { tx += step; clampPan(); apply(); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { tx -= step; clampPan(); apply(); e.preventDefault(); }
+    if (e.key === 'ArrowUp') { ty += step; clampPan(); apply(); e.preventDefault(); }
+    if (e.key === 'ArrowDown') { ty -= step; clampPan(); apply(); e.preventDefault(); }
+    if (e.key === '+' || e.key === '=') { zoom(0.3); e.preventDefault(); }
+    if (e.key === '-') { zoom(-0.3); e.preventDefault(); }
+    if (e.key === '0') { reset(); e.preventDefault(); }
+  });
+
+  var siteData = {
+    T1:  {pri:'PRIORITY 1', name:'South edge — lagoon drainage intercept',
+          body:'<p><b>Score: 18/20.</b> Directly north of the wastewater lagoon. Prevailing S/SSE wind pushes gravid females from the lagoon straight through this corridor. Highest-value single site.</p><p>Trap: storage tote or half-barrel with Bti. Shelter against a fenceline.</p>'},
+    T2:  {pri:'PRIORITY 1', name:'SE residential edge — lagoon downwind belt',
+          body:'<p><b>Score: 18/20.</b> Second-line intercept behind T1. Catches females before they reach the SE residential blocks.</p><p>Trap: kiddie pool or bucket at a backyard edge.</p>'},
+    T3:  {pri:'PRIORITY 1', name:'School buffer — south side',
+          body:'<p><b>Score: 16/20.</b> Protects the school — the most important gathering area. Place on south edge of school property near fences, never on the playground.</p><p>Trap: bucket, secured and out of reach of children.</p>'},
+    T4:  {pri:'PRIORITY 1', name:'Town center — US-212 / SD-37 corridor',
+          body:'<p><b>Score: 14/20.</b> Highway ditches collect runoff. Central location extends the interception belt.</p><p>Trap: bucket or tote, staked against mowing.</p>'},
+    T5:  {pri:'PRIORITY 2', name:'West side — park buffer',
+          body:'<p><b>Score: 15/20.</b> Shields the park and ballfield from crosswind dispersal. Trees create attractive microhabitat.</p><p>Trap: bucket or kiddie pool at park perimeter.</p>'},
+    T6:  {pri:'PRIORITY 2', name:'NW low area — source reduction + trap',
+          body:'<p><b>Score: 15/20.</b> Persistent low spot holding water after rain. Drain if possible; otherwise Bti-treat directly and trap nearby.</p><p>Trap: Bti granules in the water + bucket 10–20 ft away.</p>'},
+    T7:  {pri:'PRIORITY 2', name:'East residential edge',
+          body:'<p><b>Score: 13/20.</b> Open to agricultural land. Wind shifts push adults from stock tanks and wheel ruts into residential blocks.</p><p>Trap: storage tote near a fenceline.</p>'},
+    T8:  {pri:'PRIORITY 2', name:'South-central residential',
+          body:'<p><b>Score: 14/20.</b> Interior gap-filler for backyard container habitat. Source-reduce first, then trap.</p><p>Trap: bucket at a backyard edge.</p>'},
+    T9:  {pri:'PRIORITY 2', name:'North edge — school approach',
+          body:'<p><b>Score: 14/20.</b> Second-line school protection from the west. Cross-references T3.</p><p>Trap: bucket near a tree line or fence.</p>'},
+    T10: {pri:'PRIORITY 3', name:'NE corner — extended coverage',
+          body:'<p><b>Score: 10/20.</b> Closes NE gap, backstops the school from the east. Lower priority — prevailing wind pushes away from here.</p><p>Trap: bucket.</p>'},
+    T11: {pri:'PRIORITY 3', name:'SW residential — south perimeter',
+          body:'<p><b>Score: 12/20.</b> Closes the south gap between T1 and the cemetery. Near the drainage ditch.</p><p>Trap: bucket or storage tote.</p>'},
+    T12: {pri:'PRIORITY 3', name:'West edge — cemetery buffer',
+          body:'<p><b>Score: 11/20.</b> Cemetery flower vases and birdbaths are larval habitat. Trees provide preferred shade.</p><p>Trap: bucket. Dump vase water weekly.</p>'},
+    T13: {pri:'PRIORITY 3', name:'East US-212 — highway corridor',
+          body:'<p><b>Score: 10/20.</b> Highway ditches hold water for days. Extends the east perimeter.</p><p>Trap: bucket, staked or weighted.</p>'}
+  };
+
+  function showSite(id) {
+    var d = siteData[id];
+    if (!d) return;
+    spId.textContent = id;
+    spPri.textContent = d.pri;
+    spName.textContent = d.name;
+    spBody.innerHTML = d.body;
+    panel.hidden = false;
+    panel.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+    var brief = document.getElementById('brief-' + id);
+    if (brief) brief.open = true;
+  }
+
+  svg.addEventListener('click', function(e) {
+    var site = e.target.closest('.trap-site');
+    if (!site) return;
+    showSite(site.getAttribute('data-site'));
+  });
+
+  svg.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var site = e.target.closest('.trap-site');
+    if (!site) return;
+    e.preventDefault();
+    showSite(site.getAttribute('data-site'));
+  });
+
+  spClose.addEventListener('click', function() { panel.hidden = true; });
+})();

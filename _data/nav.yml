@@ -18,6 +18,7 @@ primary:
   - { label: "Field Manual",  sub: "Know the Threat",          url: "/intel/",    key: intel }
   - { label: "Build Plans",   sub: "Traps & Blueprints",       url: "/build/",    key: build }
   - { label: "Tools",         sub: "What Works, What Doesn't", url: "/tools/",    key: tools }
+  - { label: "Trap Map",       sub: "Where to Place Traps",     url: "/trap-map/", key: trapmap }
   - { label: "Resupply",      sub: "Bti & Where to Buy",       url: "/resupply/", key: resupply }
   - { label: "Debrief",       sub: "FAQ",                      url: "/faq/",      key: faq }
 
@@ -64,6 +65,15 @@ page_sections:
   faq:
     - { num: "01", id: faq, label: "All Questions" }
 
+  trapmap:
+    - { num: "01", id: doctrine,  label: "Doctrine" }
+    - { num: "02", id: map,       label: "The Map" }
+    - { num: "03", id: sites,     label: "Site Briefs" }
+    - { num: "04", id: layers,    label: "Three Layers" }
+    - { num: "05", id: wind,      label: "Wind & Timing" }
+    - { num: "06", id: deploy,    label: "Deploy" }
+    - { num: "07", id: sources,   label: "Sources" }
+
   kids:
     - { num: "01", id: facts,     label: "Wild Facts" }
     - { num: "02", id: lifecycle, label: "Life Cycle" }
@@ -78,8 +88,9 @@ page_sections:
 # contextually relevant. Home is deliberately absent — it already links to
 # every page in its own body copy.
 related:
-  intel:    [build, kids, faq]
-  build:    [resupply, tools, faq]
+  intel:    [build, trapmap, faq]
+  build:    [trapmap, resupply, tools]
+  trapmap:  [build, intel, resupply]
   tools:    [build, resupply]
   resupply: [build, tools]
   faq:      [intel, build, kids]

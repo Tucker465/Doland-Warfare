@@ -1,0 +1,591 @@
+---
+layout: default
+title: "Trap Map — Placement Intelligence | Doland Skeeter War"
+description: "Interactive map of strategic larval trap placement sites for Doland, SD — scored by water sources, wind, proximity to homes and the school, and vector science."
+permalink: /trap-map/
+nav_key: trapmap
+preload_hero: false
+schema_article: true
+og_image: /assets/og-intel.webp
+og_image_width: 1200
+og_image_height: 630
+og_image_alt: "Trap Map — Placement Intelligence: Operation Doland Skeeter War"
+last_verified: "2026-08-17"
+---
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="stamp">UNCLASSIFIED // FOR PUBLIC RELEASE</div>
+    <div class="eyebrow reveal">TRAP MAP &nbsp;//&nbsp; PLACEMENT INTELLIGENCE</div>
+    <h1 class="reveal">Place Your <span class="frag">Traps</span></h1>
+    <p class="mission reveal">Intelligence-driven trap placement for {{ site.data.locale.town }}, SD. Every site scored by water source, wind, proximity to homes, the school, and gathering areas.</p>
+  </div>
+</header>
+
+<div class="updatebar" role="status">
+  <div class="wrap">
+    <span class="ub-tag">&#9650; FOG MACHINE DOWN</span>
+    <span class="ub-msg">The town fog machine is out of service. <b>Larval traps are our primary defense</b> until it's repaired. This map shows where traps do the most good — use it to coordinate placement across town.</span>
+    <a class="ub-go" href="#map">Jump to the map →</a>
+  </div>
+</div>
+
+<section class="order" id="doctrine">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">01</div>
+      <div class="sec-titles"><h2>Placement Doctrine</h2><div class="plain">Why these sites.</div></div></div>
+    <div class="para-tag">PARA 2A — INTELLIGENCE BASIS</div>
+    <p class="lead">With the fog machine down, we're fighting larvae — not adults. Every trap site on this map was chosen by layering four factors:</p>
+    <div class="beats">
+      <div class="beat"><h3 class="bk">Water</h3><p>Proximity to known or likely larval habitat — ditches, low spots, the lagoon, stock water, and persistent standing water after rain.</p></div>
+      <div class="beat"><h3 class="bk">Wind</h3><p>Summer prevailing winds in eastern SD blow S to SSE. Traps placed <b>downwind</b> of water sources intercept gravid females heading toward homes.</p></div>
+      <div class="beat"><h3 class="bk">Cover</h3><p>Culex tarsalis seeks shaded, sheltered water. Traps placed in partial shade near fences, sheds, tree lines and outbuildings outperform full-sun sites.</p></div>
+    </div>
+    <div class="beats" style="margin-top:10px">
+      <div class="beat"><h3 class="bk">Buffer</h3><p>Traps must sit at property edges — <b>away</b> from where people sit, sleep, or play — but <b>between</b> water sources and gathering areas. The school, park, ballfield, and residential blocks define the buffer.</p></div>
+    </div>
+    <p>Cx. tarsalis disperses <b>1–3 km</b> from larval sites on average, up to 10+ miles in open country. In a town this size (0.59 sq mi), every water source is within dispersal range of every home. That means <b>distributed trapping</b> — many small traps across town — beats a few big ones in one spot.</p>
+  </div>
+</section>
+
+<section class="order" id="map">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">02</div>
+      <div class="sec-titles"><h2>The Map</h2><div class="plain">Tap a site for details.</div></div></div>
+    <div class="para-tag">PARA 2B — OPERATIONAL MAP // {{ site.data.locale.town }}, {{ site.data.locale.state }}</div>
+
+    <div class="map-legend">
+      <div class="ml-row"><span class="ml-dot ml-pri"></span> Priority 1 — highest-value sites</div>
+      <div class="ml-row"><span class="ml-dot ml-sec"></span> Priority 2 — strong supporting sites</div>
+      <div class="ml-row"><span class="ml-dot ml-ter"></span> Priority 3 — extend coverage</div>
+      <div class="ml-row"><span class="ml-dot ml-land"></span> Landmarks &amp; gathering areas</div>
+      <div class="ml-row"><span class="ml-dot ml-water"></span> Water / larval habitat</div>
+    </div>
+
+    <div class="map-container" id="map-container" role="application" aria-label="Interactive trap placement map of Doland, SD. Use arrow keys to pan, plus and minus to zoom." tabindex="0">
+      <div class="map-controls">
+        <button type="button" class="map-btn" id="map-zin" aria-label="Zoom in">+</button>
+        <button type="button" class="map-btn" id="map-zout" aria-label="Zoom out">−</button>
+        <button type="button" class="map-btn map-btn-reset" id="map-reset" aria-label="Reset view">⟲</button>
+      </div>
+      <div class="map-viewport" id="map-viewport">
+        <svg id="town-map" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800" role="img" aria-label="Street map of Doland, South Dakota showing trap placement sites">
+          <defs>
+            <pattern id="grid-pat" width="50" height="50" patternUnits="userSpaceOnUse">
+              <path d="M50 0 L0 0 L0 50" fill="none" stroke="#2a2f1e" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="1000" height="800" fill="#10130C"/>
+          <rect width="1000" height="800" fill="url(#grid-pat)" opacity=".4"/>
+
+          <!-- TOWN BOUNDARY -->
+          <rect x="160" y="80" width="680" height="620" rx="6" fill="none" stroke="#3A3E2C" stroke-width="1.5" stroke-dasharray="8 4"/>
+
+          <!-- HIGHWAYS -->
+          <line x1="0" y1="380" x2="1000" y2="380" stroke="#4a5030" stroke-width="8"/>
+          <text x="30" y="374" class="map-road-lbl">US-212 →</text>
+          <line x1="500" y1="0" x2="500" y2="800" stroke="#4a5030" stroke-width="6"/>
+          <text x="506" y="30" class="map-road-lbl">SD-37 ↓</text>
+
+          <!-- STREET GRID — simplified Doland grid aligned to true N/S E/W -->
+          <g stroke="#2C3022" stroke-width="1.5">
+            <!-- E-W streets -->
+            <line x1="180" y1="180" x2="820" y2="180"/>
+            <line x1="180" y1="260" x2="820" y2="260"/>
+            <line x1="180" y1="340" x2="820" y2="340"/>
+            <line x1="180" y1="460" x2="820" y2="460"/>
+            <line x1="180" y1="540" x2="820" y2="540"/>
+            <line x1="180" y1="620" x2="820" y2="620"/>
+            <!-- N-S streets -->
+            <line x1="260" y1="100" x2="260" y2="680"/>
+            <line x1="340" y1="100" x2="340" y2="680"/>
+            <line x1="420" y1="100" x2="420" y2="680"/>
+            <line x1="580" y1="100" x2="580" y2="680"/>
+            <line x1="660" y1="100" x2="660" y2="680"/>
+            <line x1="740" y1="100" x2="740" y2="680"/>
+          </g>
+
+          <!-- BLOCK FILLS — residential density shading -->
+          <g fill="#1e2210" opacity=".4">
+            <rect x="260" y="180" width="80" height="80" rx="2"/>
+            <rect x="340" y="180" width="80" height="80" rx="2"/>
+            <rect x="420" y="180" width="80" height="80" rx="2"/>
+            <rect x="580" y="180" width="80" height="80" rx="2"/>
+            <rect x="660" y="180" width="80" height="80" rx="2"/>
+            <rect x="260" y="260" width="80" height="80" rx="2"/>
+            <rect x="340" y="260" width="80" height="80" rx="2"/>
+            <rect x="420" y="260" width="80" height="80" rx="2"/>
+            <rect x="580" y="260" width="80" height="80" rx="2"/>
+            <rect x="660" y="260" width="80" height="80" rx="2"/>
+            <rect x="740" y="260" width="80" height="80" rx="2"/>
+            <rect x="260" y="460" width="80" height="80" rx="2"/>
+            <rect x="340" y="460" width="80" height="80" rx="2"/>
+            <rect x="420" y="460" width="80" height="80" rx="2"/>
+            <rect x="580" y="460" width="80" height="80" rx="2"/>
+            <rect x="660" y="460" width="80" height="80" rx="2"/>
+            <rect x="260" y="540" width="80" height="80" rx="2"/>
+            <rect x="340" y="540" width="80" height="80" rx="2"/>
+            <rect x="580" y="540" width="80" height="80" rx="2"/>
+            <rect x="660" y="540" width="80" height="80" rx="2"/>
+          </g>
+
+          <!-- WATER FEATURES -->
+          <g class="water-features">
+            <!-- Wastewater lagoon — SE of town -->
+            <ellipse cx="860" cy="650" rx="55" ry="35" fill="#1a3a3a" stroke="#3a6a5a" stroke-width="1.5"/>
+            <text x="860" y="655" class="map-water-lbl">LAGOON</text>
+            <!-- Drainage ditch — runs along south edge -->
+            <path d="M180 680 Q400 690 600 685 Q750 680 860 650" fill="none" stroke="#3a6a5a" stroke-width="2" stroke-dasharray="6 3"/>
+            <text x="400" y="700" class="map-water-lbl">drainage</text>
+            <!-- Low area NW — collects runoff -->
+            <ellipse cx="210" cy="150" rx="30" ry="18" fill="#1a3a3a" stroke="#3a6a5a" stroke-width="1" opacity=".7"/>
+            <text x="210" y="154" class="map-water-lbl" font-size="8">low area</text>
+          </g>
+
+          <!-- WIND ROSE — prevailing S/SSE summer winds -->
+          <g transform="translate(920,120)">
+            <circle cx="0" cy="0" r="32" fill="none" stroke="#3A3E2C" stroke-width="1"/>
+            <line x1="0" y1="-30" x2="0" y2="30" stroke="#2C3022" stroke-width=".8"/>
+            <line x1="-30" y1="0" x2="30" y2="0" stroke="#2C3022" stroke-width=".8"/>
+            <text x="0" y="-35" class="map-wind-lbl" text-anchor="middle">N</text>
+            <text x="0" y="43" class="map-wind-lbl" text-anchor="middle">S</text>
+            <text x="37" y="4" class="map-wind-lbl" text-anchor="start">E</text>
+            <text x="-37" y="4" class="map-wind-lbl" text-anchor="end">W</text>
+            <!-- Prevailing wind arrow: from S/SSE -->
+            <polygon points="0,28 -6,18 -2,18 -2,-22 2,-22 2,18 6,18" fill="#94A074" opacity=".8" transform="rotate(170)"/>
+            <text x="0" y="55" class="map-wind-note" text-anchor="middle">PREVAILING</text>
+            <text x="0" y="64" class="map-wind-note" text-anchor="middle">S/SSE WIND</text>
+          </g>
+
+          <!-- LANDMARKS -->
+          <g class="landmarks">
+            <!-- School — NE area of town -->
+            <rect x="600" y="130" width="120" height="70" rx="4" fill="#2a2a18" stroke="#6b4f10" stroke-width="1.5"/>
+            <text x="660" y="162" class="map-landmark-lbl" text-anchor="middle">DOLAND</text>
+            <text x="660" y="176" class="map-landmark-lbl" text-anchor="middle">SCHOOL</text>
+
+            <!-- City Park / ballfield — west central -->
+            <rect x="200" y="270" width="55" height="55" rx="4" fill="#1a2a18" stroke="#4a7a3a" stroke-width="1.2"/>
+            <text x="227" y="302" class="map-park-lbl" text-anchor="middle">PARK</text>
+
+            <!-- Grain elevators — along railroad/US-212 -->
+            <rect x="380" y="370" width="30" height="20" rx="2" fill="#2a2818" stroke="#6b5a30" stroke-width="1"/>
+            <text x="395" y="365" class="map-poi-lbl" text-anchor="middle">ELEVATOR</text>
+
+            <!-- Churches -->
+            <circle cx="370" cy="240" r="6" fill="none" stroke="#94A074" stroke-width="1.2"/>
+            <text x="370" y="230" class="map-poi-lbl" text-anchor="middle">CHURCH</text>
+
+            <circle cx="620" cy="480" r="6" fill="none" stroke="#94A074" stroke-width="1.2"/>
+            <text x="620" y="470" class="map-poi-lbl" text-anchor="middle">CHURCH</text>
+
+            <!-- Post Office / Main St -->
+            <rect x="455" y="330" width="35" height="16" rx="2" fill="#2a2818" stroke="#6b5a30" stroke-width="1"/>
+            <text x="472" y="328" class="map-poi-lbl" text-anchor="middle">MAIN ST</text>
+
+            <!-- Cemetery — W edge -->
+            <rect x="170" y="430" width="60" height="40" rx="3" fill="#1a2018" stroke="#4a5a3a" stroke-width="1" stroke-dasharray="3 2"/>
+            <text x="200" y="455" class="map-poi-lbl" text-anchor="middle">CEMETERY</text>
+          </g>
+
+          <!-- DISPERSAL RINGS from lagoon (1 km ≈ 590px at this scale) -->
+          <circle cx="860" cy="650" r="180" fill="none" stroke="#3a6a5a" stroke-width=".8" stroke-dasharray="4 6" opacity=".4"/>
+          <text x="750" y="510" class="map-disp-lbl">~300 m</text>
+          <circle cx="860" cy="650" r="360" fill="none" stroke="#3a6a5a" stroke-width=".6" stroke-dasharray="3 8" opacity=".25"/>
+
+          <!-- ========== TRAP SITES ========== -->
+
+          <!-- PRIORITY 1 — highest value -->
+          <g class="trap-sites">
+            <g class="trap-site pri-1" data-site="T1" tabindex="0" role="button" aria-label="Trap site T1: South edge near lagoon drainage">
+              <circle cx="680" cy="640" r="12" fill="#E6A630" fill-opacity=".25" stroke="#E6A630" stroke-width="2"/>
+              <circle cx="680" cy="640" r="4" fill="#E6A630"/>
+              <text x="680" y="628" class="map-site-lbl" text-anchor="middle">T1</text>
+            </g>
+
+            <g class="trap-site pri-1" data-site="T2" tabindex="0" role="button" aria-label="Trap site T2: SE residential edge, downwind of lagoon">
+              <circle cx="740" cy="560" r="12" fill="#E6A630" fill-opacity=".25" stroke="#E6A630" stroke-width="2"/>
+              <circle cx="740" cy="560" r="4" fill="#E6A630"/>
+              <text x="740" y="548" class="map-site-lbl" text-anchor="middle">T2</text>
+            </g>
+
+            <g class="trap-site pri-1" data-site="T3" tabindex="0" role="button" aria-label="Trap site T3: School buffer zone, north side">
+              <circle cx="640" cy="210" r="12" fill="#E6A630" fill-opacity=".25" stroke="#E6A630" stroke-width="2"/>
+              <circle cx="640" cy="210" r="4" fill="#E6A630"/>
+              <text x="640" y="198" class="map-site-lbl" text-anchor="middle">T3</text>
+            </g>
+
+            <g class="trap-site pri-1" data-site="T4" tabindex="0" role="button" aria-label="Trap site T4: North of US-212, downwind interception">
+              <circle cx="500" cy="340" r="12" fill="#E6A630" fill-opacity=".25" stroke="#E6A630" stroke-width="2"/>
+              <circle cx="500" cy="340" r="4" fill="#E6A630"/>
+              <text x="500" y="328" class="map-site-lbl" text-anchor="middle">T4</text>
+            </g>
+          </g>
+
+          <!-- PRIORITY 2 — strong supporting -->
+          <g class="trap-sites">
+            <g class="trap-site pri-2" data-site="T5" tabindex="0" role="button" aria-label="Trap site T5: West side near park">
+              <circle cx="250" cy="330" r="11" fill="#94A074" fill-opacity=".2" stroke="#94A074" stroke-width="1.8"/>
+              <circle cx="250" cy="330" r="3.5" fill="#94A074"/>
+              <text x="250" y="319" class="map-site-lbl s2" text-anchor="middle">T5</text>
+            </g>
+
+            <g class="trap-site pri-2" data-site="T6" tabindex="0" role="button" aria-label="Trap site T6: NW low area, source reduction">
+              <circle cx="260" cy="180" r="11" fill="#94A074" fill-opacity=".2" stroke="#94A074" stroke-width="1.8"/>
+              <circle cx="260" cy="180" r="3.5" fill="#94A074"/>
+              <text x="260" y="168" class="map-site-lbl s2" text-anchor="middle">T6</text>
+            </g>
+
+            <g class="trap-site pri-2" data-site="T7" tabindex="0" role="button" aria-label="Trap site T7: East residential edge">
+              <circle cx="780" cy="380" r="11" fill="#94A074" fill-opacity=".2" stroke="#94A074" stroke-width="1.8"/>
+              <circle cx="780" cy="380" r="3.5" fill="#94A074"/>
+              <text x="780" y="368" class="map-site-lbl s2" text-anchor="middle">T7</text>
+            </g>
+
+            <g class="trap-site pri-2" data-site="T8" tabindex="0" role="button" aria-label="Trap site T8: South central residential">
+              <circle cx="450" cy="580" r="11" fill="#94A074" fill-opacity=".2" stroke="#94A074" stroke-width="1.8"/>
+              <circle cx="450" cy="580" r="3.5" fill="#94A074"/>
+              <text x="450" y="568" class="map-site-lbl s2" text-anchor="middle">T8</text>
+            </g>
+
+            <g class="trap-site pri-2" data-site="T9" tabindex="0" role="button" aria-label="Trap site T9: North edge school approach">
+              <circle cx="500" cy="180" r="11" fill="#94A074" fill-opacity=".2" stroke="#94A074" stroke-width="1.8"/>
+              <circle cx="500" cy="180" r="3.5" fill="#94A074"/>
+              <text x="500" y="168" class="map-site-lbl s2" text-anchor="middle">T9</text>
+            </g>
+          </g>
+
+          <!-- PRIORITY 3 — extend coverage -->
+          <g class="trap-sites">
+            <g class="trap-site pri-3" data-site="T10" tabindex="0" role="button" aria-label="Trap site T10: NE corner">
+              <circle cx="740" cy="180" r="10" fill="#DE826B" fill-opacity=".15" stroke="#DE826B" stroke-width="1.5"/>
+              <circle cx="740" cy="180" r="3" fill="#DE826B"/>
+              <text x="740" y="168" class="map-site-lbl s3" text-anchor="middle">T10</text>
+            </g>
+
+            <g class="trap-site pri-3" data-site="T11" tabindex="0" role="button" aria-label="Trap site T11: SW residential">
+              <circle cx="300" cy="580" r="10" fill="#DE826B" fill-opacity=".15" stroke="#DE826B" stroke-width="1.5"/>
+              <circle cx="300" cy="580" r="3" fill="#DE826B"/>
+              <text x="300" y="568" class="map-site-lbl s3" text-anchor="middle">T11</text>
+            </g>
+
+            <g class="trap-site pri-3" data-site="T12" tabindex="0" role="button" aria-label="Trap site T12: West edge cemetery buffer">
+              <circle cx="195" cy="480" r="10" fill="#DE826B" fill-opacity=".15" stroke="#DE826B" stroke-width="1.5"/>
+              <circle cx="195" cy="480" r="3" fill="#DE826B"/>
+              <text x="195" y="468" class="map-site-lbl s3" text-anchor="middle">T12</text>
+            </g>
+
+            <g class="trap-site pri-3" data-site="T13" tabindex="0" role="button" aria-label="Trap site T13: East US-212 corridor">
+              <circle cx="780" cy="460" r="10" fill="#DE826B" fill-opacity=".15" stroke="#DE826B" stroke-width="1.5"/>
+              <circle cx="780" cy="460" r="3" fill="#DE826B"/>
+              <text x="780" y="448" class="map-site-lbl s3" text-anchor="middle">T13</text>
+            </g>
+          </g>
+
+          <!-- SCALE BAR -->
+          <g transform="translate(40,760)">
+            <line x1="0" y1="0" x2="100" y2="0" stroke="#94A074" stroke-width="1.5"/>
+            <line x1="0" y1="-4" x2="0" y2="4" stroke="#94A074" stroke-width="1.5"/>
+            <line x1="100" y1="-4" x2="100" y2="4" stroke="#94A074" stroke-width="1.5"/>
+            <text x="50" y="14" class="map-scale-lbl" text-anchor="middle">~200 m</text>
+          </g>
+
+          <!-- COMPASS -->
+          <g transform="translate(60,120)">
+            <polygon points="0,-20 -5,-8 0,-12 5,-8" fill="#94A074"/>
+            <polygon points="0,20 -5,8 0,12 5,8" fill="#3A3E2C"/>
+            <text x="0" y="-25" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#94A074" text-anchor="middle">N</text>
+          </g>
+
+          <!-- COORDINATES -->
+          <text x="980" y="790" class="map-coord-lbl" text-anchor="end">44.8958°N  98.1006°W  ·  Elev 1,355 ft</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- SITE DETAIL PANEL -->
+    <div class="site-panel" id="site-panel" hidden>
+      <button type="button" class="sp-close" id="sp-close" aria-label="Close detail panel">✕</button>
+      <div class="sp-head">
+        <span class="sp-id" id="sp-id"></span>
+        <span class="sp-pri" id="sp-pri"></span>
+      </div>
+      <h3 class="sp-name" id="sp-name"></h3>
+      <div class="sp-body" id="sp-body"></div>
+    </div>
+
+    <p class="map-note">This map is a planning aid, not a survey. Verify sites on the ground before emplacing. Review the <a class="u-amber" href="/build/#siting">Do Not Emplace</a> checklist first.</p>
+  </div>
+</section>
+
+<section class="order" id="sites">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">03</div>
+      <div class="sec-titles"><h2>Site Briefs</h2><div class="plain">All 13 sites.</div></div></div>
+    <div class="para-tag">PARA 2C — SITE-BY-SITE SCORING</div>
+    <p class="lead">Each site is scored on four factors. Higher total = higher priority.</p>
+
+    <div class="site-briefs">
+      <details class="site-brief" id="brief-T1">
+        <summary><span class="sb-id p1">T1</span><h3>South edge — lagoon drainage intercept</h3></summary>
+        <div class="sb-body">
+          <div class="sb-scores">
+            <span class="sb-s"><b>Water:</b> 5/5</span>
+            <span class="sb-s"><b>Wind:</b> 5/5</span>
+            <span class="sb-s"><b>Buffer:</b> 4/5</span>
+            <span class="sb-s"><b>Cover:</b> 4/5</span>
+          </div>
+          <p><b>Why here:</b> Directly north of the wastewater lagoon along the drainage path. Prevailing S/SSE wind pushes gravid females from the lagoon straight through this corridor toward the residential blocks. Intercepting them here keeps them away from the densest housing.</p>
+          <p><b>Trap type:</b> <a class="u-amber" href="/build/#arsenal">Storage tote or half-barrel</a> with Bti dunk. Shelter the trap against fenceline or outbuilding for shade.</p>
+          <p><b>Notes:</b> Highest-value single site. The lagoon is the largest persistent water body within dispersal range and a known Cx. tarsalis producer in small-town SD.</p>
+        </div>
+      </details>
+
+      <details class="site-brief" id="brief-T2">
+        <summary><span class="sb-id p1">T2</span><h3>SE residential edge — lagoon downwind belt</h3></summary>
+        <div class="sb-body">
+          <div class="sb-scores">
+            <span class="sb-s"><b>Water:</b> 4/5</span>
+            <span class="sb-s"><b>Wind:</b> 5/5</span>
+            <span class="sb-s"><b>Buffer:</b> 5/5</span>
+            <span class="sb-s"><b>Cover:</b> 4/5</span>
+          </div>
+          <p><b>Why here:</b> Second-line intercept behind T1. If gravid females get past the first trap, T2 catches them before they reach the SE residential blocks. Also intercepts any dispersal from the south drainage ditch.</p>
+          <p><b>Trap type:</b> <a class="u-amber" href="/build/#arsenal">Kiddie pool or bucket</a> at a backyard edge. Partial shade preferred.</p>
+        </div>
+      </details>
+
+      <details class="site-brief" id="brief-T3">
+        <summary><span class="sb-id p1">T3</span><h3>School buffer — south side of school grounds</h3></summary>
+        <div class="sb-body">
+          <div class="sb-scores">
+            <span class="sb-s"><b>Water:</b> 3/5</span>
+            <span class="sb-s"><b>Wind:</b> 4/5</span>
+            <span class="sb-s"><b>Buffer:</b> 5/5</span>
+            <span class="sb-s"><b>Cover:</b> 4/5</span>
+          </div>
+          <p><b>Why here:</b> The school is the single most important gathering area to protect. Traps here intercept females drifting north from town on the prevailing wind before they reach the playground and athletic fields. Place traps on the south edge of school property, near fencelines — <b>never</b> on the playground itself or anywhere a child could access the trap water.</p>
+          <p><b>Trap type:</b> <a class="u-amber" href="/build/#arsenal">Bucket trap</a> — small footprint, easy to secure. Coordinate with the school. Bti is nontoxic but the trap should be out of reach.</p>
+          <p><b>Notes:</b> Coordinate with school administration. A trap behind the maintenance building or along the south fence is ideal.</p>
+        </div>
+      </details>
+
+      <details class="site-brief" id="brief-T4">
+        <summary><span class="sb-id p1">T4</span><h3>Town center — US-212 / SD-37 corridor</h3></summary>
+        <div class="sb-body">
+          <div class="sb-scores">
+            <span class="sb-s"><b>Water:</b> 3/5</span>
+            <span class="sb-s"><b>Wind:</b> 4/5</span>
+            <span class="sb-s"><b>Buffer:</b> 4/5</span>
+            <span class="sb-s"><b>Cover:</b> 3/5</span>
+          </div>
+          <p><b>Why here:</b> The highway corridor collects runoff in ditches and culverts. This intersection is the geographic center of town — a trap here extends the interception belt and catches anything coming up from the south that T1/T2 missed. Place behind businesses or along the road ditch, not on the road shoulder.</p>
+          <p><b>Trap type:</b> <a class="u-amber" href="/build/#arsenal">Bucket or storage tote</a>. Road ditch traps should be staked or weighted against mowing.</p>
+        </div>
+      </details>
+
+      <details class="site-brief" id="brief-T5">
+        <summary><span class="sb-id p2">T5</span><h3>West side — park buffer</h3></summary>
+        <div class="sb-body">
+          <div class="sb-scores">
+            <span class="sb-s"><b>Water:</b> 3/5</span>
+            <span class="sb-s"><b>Wind:</b> 3/5</span>
+            <span class="sb-s"><b>Buffer:</b> 5/5</span>
+            <span class="sb-s"><b>Cover:</b> 4/5</span>
+          </div>
+          <p><b>Why here:</b> Shields the park and ballfield from westward-drifting adults on crosswinds. The park's trees and irrigation create a local microhabitat that attracts host-seeking females. A trap at the west edge lures egg-layers before they reach the gathering area.</p>
+          <p><b>Trap type:</b> <a class="u-amber" href="/build/#arsenal">Bucket or kiddie pool</a> near trees at the park perimeter, secured from tipping.</p>
+        </div>
+      </details>
+
+      <details class="site-brief" id="brief-T6">
+        <summary><span class="sb-id p2">T6</span><h3>NW low area — source reduction + trap</h3></summary>
+        <div class="sb-body">
+          <div class="sb-scores">
+            <span class="sb-s"><b>Water:</b> 5/5</span>
+            <span class="sb-s"><b>Wind:</b> 3/5</span>
+            <span class="sb-s"><b>Buffer:</b> 3/5</span>
+            <span class="sb-s"><b>Cover:</b> 4/5</span>
+          </div>
+          <p><b>Why here:</b> The NW corner has a persistent low spot that holds water after rain — a confirmed or likely larval habitat. Source reduction (filling or draining) is the best option. If it can't be drained, treat with Bti granules and set a trap nearby to catch any adults that emerge before the Bti finishes them.</p>
+          <p><b>Trap type:</b> Direct Bti application (bits/granules) to the standing water, plus a <a class="u-amber" href="/build/#arsenal">bucket trap</a> 10–20 feet away in shade.</p>
+        </div>
+      </details>
+
+      <details class="site-brief" id="brief-T7">
+        <summary><span class="sb-id p2">T7</span><h3>East residential edge — crosswind intercept</h3></summary>
+        <div class="sb-body">
+          <div class="sb-scores">
+            <span class="sb-s"><b>Water:</b> 3/5</span>
+            <span class="sb-s"><b>Wind:</b> 3/5</span>
+            <span class="sb-s"><b>Buffer:</b> 4/5</span>
+            <span class="sb-s"><b>Cover:</b> 3/5</span>
+          </div>
+          <p><b>Why here:</b> The east edge of town is open to agricultural land. Wind shifts to E or SE push adults from stock tanks, wheel ruts, and field water into the residential blocks. T7 intercepts that corridor.</p>
+          <p><b>Trap type:</b> <a class="u-amber" href="/build/#arsenal">Storage tote</a> near a fenceline or outbuilding at the east property edge.</p>
+        </div>
+      </details>
+
+      <details class="site-brief" id="brief-T8">
+        <summary><span class="sb-id p2">T8</span><h3>South-central residential — interior coverage</h3></summary>
+        <div class="sb-body">
+          <div class="sb-scores">
+            <span class="sb-s"><b>Water:</b> 3/5</span>
+            <span class="sb-s"><b>Wind:</b> 4/5</span>
+            <span class="sb-s"><b>Buffer:</b> 4/5</span>
+            <span class="sb-s"><b>Cover:</b> 3/5</span>
+          </div>
+          <p><b>Why here:</b> Central coverage gap-filler. Even with the perimeter ring, mosquitoes breeding in backyards (old tires, forgotten buckets, pet water, flower pot saucers) need local interception. This area has denser housing and more container habitat.</p>
+          <p><b>Trap type:</b> <a class="u-amber" href="/build/#arsenal">Bucket trap</a> at a backyard edge. Also: source-reduce everything you can find in this block first.</p>
+        </div>
+      </details>
+
+      <details class="site-brief" id="brief-T9">
+        <summary><span class="sb-id p2">T9</span><h3>North edge — school approach corridor</h3></summary>
+        <div class="sb-body">
+          <div class="sb-scores">
+            <span class="sb-s"><b>Water:</b> 3/5</span>
+            <span class="sb-s"><b>Wind:</b> 3/5</span>
+            <span class="sb-s"><b>Buffer:</b> 5/5</span>
+            <span class="sb-s"><b>Cover:</b> 3/5</span>
+          </div>
+          <p><b>Why here:</b> Second-line protection for the school from the west. Cross-references T3 to provide coverage when wind shifts NW. Sited along the north residential edge near any tree line or shelter belt.</p>
+          <p><b>Trap type:</b> <a class="u-amber" href="/build/#arsenal">Bucket trap</a> near a tree line or fence. Keep clear of walking routes to school.</p>
+        </div>
+      </details>
+
+      <details class="site-brief" id="brief-T10">
+        <summary><span class="sb-id p3">T10</span><h3>NE corner — extended coverage</h3></summary>
+        <div class="sb-body">
+          <div class="sb-scores">
+            <span class="sb-s"><b>Water:</b> 2/5</span>
+            <span class="sb-s"><b>Wind:</b> 2/5</span>
+            <span class="sb-s"><b>Buffer:</b> 3/5</span>
+            <span class="sb-s"><b>Cover:</b> 3/5</span>
+          </div>
+          <p><b>Why here:</b> Coverage extension if you have the traps and the hands. Closes the NE gap and backstops the school from the east. Lower priority because the prevailing wind pushes away from here, but valuable on E-wind days.</p>
+          <p><b>Trap type:</b> <a class="u-amber" href="/build/#arsenal">Bucket</a> — simplest possible, easy maintenance.</p>
+        </div>
+      </details>
+
+      <details class="site-brief" id="brief-T11">
+        <summary><span class="sb-id p3">T11</span><h3>SW residential — south perimeter</h3></summary>
+        <div class="sb-body">
+          <div class="sb-scores">
+            <span class="sb-s"><b>Water:</b> 3/5</span>
+            <span class="sb-s"><b>Wind:</b> 3/5</span>
+            <span class="sb-s"><b>Buffer:</b> 3/5</span>
+            <span class="sb-s"><b>Cover:</b> 3/5</span>
+          </div>
+          <p><b>Why here:</b> Closes the south perimeter gap between T1 (SE) and the cemetery (W). Catches anything moving NW on a shifted wind. Near the drainage ditch — source-reduce the ditch first if possible.</p>
+          <p><b>Trap type:</b> <a class="u-amber" href="/build/#arsenal">Bucket or storage tote</a>.</p>
+        </div>
+      </details>
+
+      <details class="site-brief" id="brief-T12">
+        <summary><span class="sb-id p3">T12</span><h3>West edge — cemetery buffer</h3></summary>
+        <div class="sb-body">
+          <div class="sb-scores">
+            <span class="sb-s"><b>Water:</b> 2/5</span>
+            <span class="sb-s"><b>Wind:</b> 2/5</span>
+            <span class="sb-s"><b>Buffer:</b> 3/5</span>
+            <span class="sb-s"><b>Cover:</b> 4/5</span>
+          </div>
+          <p><b>Why here:</b> Cemeteries have flower vases, birdbaths, and decorative containers — all larval habitat. The trees provide shade that Cx. tarsalis prefers. Source-reduce the containers first; a trap here catches what remains.</p>
+          <p><b>Trap type:</b> <a class="u-amber" href="/build/#arsenal">Bucket trap</a>. Coordinate with whoever maintains the grounds. Vase water should be dumped weekly.</p>
+        </div>
+      </details>
+
+      <details class="site-brief" id="brief-T13">
+        <summary><span class="sb-id p3">T13</span><h3>East US-212 — highway corridor</h3></summary>
+        <div class="sb-body">
+          <div class="sb-scores">
+            <span class="sb-s"><b>Water:</b> 3/5</span>
+            <span class="sb-s"><b>Wind:</b> 2/5</span>
+            <span class="sb-s"><b>Buffer:</b> 3/5</span>
+            <span class="sb-s"><b>Cover:</b> 2/5</span>
+          </div>
+          <p><b>Why here:</b> Highway ditches collect runoff and hold water for days. Traffic turbulence mixes the air but adults still breed in the ditch water. A trap here extends the east perimeter and catches ditch-bred adults before they enter the residential blocks.</p>
+          <p><b>Trap type:</b> <a class="u-amber" href="/build/#arsenal">Bucket</a> staked or weighted against mowing. Mark it so the mowing crew knows.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="order" id="layers">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">04</div>
+      <div class="sec-titles"><h2>The Three Layers</h2><div class="plain">Defense in depth.</div></div></div>
+    <div class="para-tag">PARA 2D — LAYERED DEFENSE MODEL</div>
+    <p class="lead">Effective coverage works in concentric layers — not random scatter. Deploy from the outside in.</p>
+    <div class="beats">
+      <div class="beat"><h3 class="bk">Layer 1</h3><p><b>Source reduction.</b> Drain, dump, or Bti-treat every body of standing water you can reach. The lagoon, ditches, low spots, old tires, gutters. Every egg raft killed at the source is 200–300 mosquitoes that never fly. <b>This layer matters most.</b></p></div>
+      <div class="beat"><h3 class="bk">Layer 2</h3><p><b>Perimeter intercept.</b> Traps at property and town edges — the T1–T4 ring — catch gravid females heading inbound from water sources to lay eggs. Place them downwind of water, upwind of people.</p></div>
+      <div class="beat"><h3 class="bk">Layer 3</h3><p><b>Interior fill.</b> Traps in backyards and between buildings catch anything that got past the perimeter. These address the container habitat that exists inside town — the backyard bucket, the old tire, the tarp fold.</p></div>
+    </div>
+    <p>You don't need all 13 sites to make a difference. <b>The Priority 1 sites alone cover the highest-risk corridors.</b> Add P2 and P3 as you have traps and hands.</p>
+  </div>
+</section>
+
+<section class="order" id="wind">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">05</div>
+      <div class="sec-titles"><h2>Wind &amp; Timing</h2><div class="plain">Use the weather.</div></div></div>
+    <div class="para-tag">PARA 2E — ENVIRONMENTAL FACTORS</div>
+    <div class="paperbox">
+      <div class="rt">WIND INTELLIGENCE — EASTERN SD SUMMER</div>
+      <h3>Why wind matters for trap placement</h3>
+      <p>Eastern South Dakota's prevailing summer winds blow from the <b>south to south-southeast</b> (S/SSE), typically 8–15 mph. Cx. tarsalis is a strong flier (up to 10+ miles), but even strong fliers follow the wind when dispersing from larval sites to feeding areas.</p>
+      <p>That means adults emerging from the lagoon and south drainage ditch are pushed <b>north into town</b> on the prevailing wind. The Priority 1 trap line (T1–T4) is oriented perpendicular to this flow — a net across the path.</p>
+      <p>On days when the wind shifts east or west, the P2 sites on the east (T7) and west (T5) edges catch the crosswind traffic. The system works because it covers the dominant direction <b>and</b> the alternates.</p>
+      <p class="u-mb-0"><b>Peak risk hours:</b> Cx. tarsalis is most active at <b>dusk and after dark</b>. Wind typically drops at dusk, reducing dispersal distance — which means more adults stay closer to their larval source. Traps close to water sources (T1, T6) are most effective during these calm-wind, high-activity hours.</p>
+    </div>
+    <p>Season context: we are mid-August — <b>at peak WNV risk</b>. See the <a class="u-amber" href="/intel/#season">season chart</a>. Every trap placed now is working during the highest-risk weeks of the year.</p>
+  </div>
+</section>
+
+<section class="order" id="deploy">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">06</div>
+      <div class="sec-titles"><h2>Deploy Checklist</h2><div class="plain">Before you emplace.</div></div></div>
+    <div class="para-tag">PARA 2F — DEPLOYMENT PROCEDURE</div>
+    <div class="quickstart">
+      <div class="qt">PRE-DEPLOYMENT CHECKLIST</div>
+      <ol class="qsteps">
+        <li><span><b>Read the <a class="u-amber" href="/build/#siting">Do Not Emplace</a> list.</b> Seriously.</span></li>
+        <li><span><b>Build your trap</b> from <a class="u-amber" href="/build/#arsenal">Build Plans</a>. Bucket is fine. Kiddie pool if you've got room.</span></li>
+        <li><span><b>Buy Bti</b> — Mosquito Dunks or Bits. See <a class="u-amber" href="/resupply/">Resupply</a>. About $10.</span></li>
+        <li><span><b>Walk this map.</b> Find your nearest site. Check it on the ground: is there shade? Is it accessible for weekly refills? Is it away from where kids play?</span></li>
+        <li><span><b>Place the trap at a property edge</b> — near a fence, shed, or tree line. Never next to a door, deck, or playground.</span></li>
+        <li><span><b>Add the Bti</b> per label directions. Top up weekly. Replace dunks monthly.</span></li>
+        <li><span><b>Tell your neighbors.</b> A trap network works when it's a network. The more of the 13 sites covered, the better the town-wide suppression.</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="order" id="sources">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">07</div>
+      <div class="sec-titles"><h2>Sources</h2><div class="plain">Where this comes from.</div></div></div>
+    <div class="para-tag">PARA 2G — INTELLIGENCE SOURCES</div>
+    <div class="supply">
+      <h3 class="sl">PLACEMENT MODEL SOURCES</h3>
+      <p>This map's placement model is built from published vector science and local geography:</p>
+      <ul class="reclist">
+        <li>Cx. tarsalis dispersal: Lothrop &amp; Reisen, <i>J. Med. Entomol.</i> — 1–3 km mean, 10+ mi max</li>
+        <li>Wastewater lagoon production: Walton &amp; Reisen, <i>J. Med. Entomol.</i> 2014</li>
+        <li>Gravid trap placement: Reiter, 1987 (CDC gravid trap design &amp; siting)</li>
+        <li>SD WNV surveillance: SD Department of Health &amp; CDC ArboNET</li>
+        <li>SDSU Extension: <i>Mosquitos to Watch for in South Dakota</i></li>
+        <li>Wind climatology: NOAA climate normals, eastern SD stations</li>
+        <li>Town coordinates: USGS GNIS — 44.8958°N, 98.1006°W, 1,355 ft</li>
+      </ul>
+      <div class="buy">
+        <a href="https://www.cdc.gov/west-nile-virus/index.html" target="_blank" rel="noopener noreferrer"><span class="bn">CDC ↗</span><span class="bd">West Nile facts</span></a>
+        <a href="https://extension.sdstate.edu/mosquitos-watch-south-dakota" target="_blank" rel="noopener noreferrer"><span class="bn">SDSU ↗</span><span class="bd">SD mosquito species</span></a>
+        <a href="https://westnile.sd.gov/" target="_blank" rel="noopener noreferrer"><span class="bn">SD DOH ↗</span><span class="bd">SD WNV data</span></a>
+      </div>
+    </div>
+  </div>
+</section>
