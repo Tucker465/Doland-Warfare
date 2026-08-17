@@ -101,12 +101,16 @@ last_verified: "2026-07-20"
           <circle cx="240" cy="28" r="4.2" fill="#E6A630" stroke="#10130C" stroke-width="1.6"/>
           <text x="240" y="17" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#E6A630" text-anchor="middle">PEAK THREAT</text>
         </g>
-        <!-- YOU ARE HERE marker -->
+        <!-- YOU ARE HERE marker. Child order matters: the ruler line and the
+             backing plate are drawn first so the plate can mask both the line
+             and the risk curve behind the caption, and the dot last so it is
+             never covered by its own label. -->
         <g id="season-now">
-          <line id="season-now-line" x1="242" y1="36" x2="242" y2="175" stroke="#DAD4BE" stroke-width="1.2" stroke-dasharray="3 3" opacity=".6"/>
-          <circle id="season-now-dot" cx="242" cy="29" r="5" fill="#DAD4BE" stroke="#10130C" stroke-width="1.8"/>
-          <text id="season-now-label" x="236" y="58" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#DAD4BE" text-anchor="end">YOU ARE HERE ▸</text>
-          <text id="season-now-phase" x="236" y="70" font-family="'IBM Plex Mono',monospace" font-size="8.5" fill="#C9C2A6" text-anchor="end">MID-AUGUST · AT PEAK</text>
+          <path id="season-now-line" d="M241.6,36 L241.6,175" fill="none" stroke="#DAD4BE" stroke-width="1.2" stroke-dasharray="3 3" opacity=".6"/>
+          <rect id="season-now-plate" x="114" y="48" width="99" height="26" rx="3" fill="#10130C" opacity=".92"/>
+          <text id="season-now-label" x="206.9" y="58" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#DAD4BE" text-anchor="end">YOU ARE HERE ▸</text>
+          <text id="season-now-phase" x="206.9" y="70" font-family="'IBM Plex Mono',monospace" font-size="8.5" fill="#C9C2A6" text-anchor="end">MID-AUG · AT PEAK</text>
+          <circle id="season-now-dot" cx="241.6" cy="29.1" r="5" fill="#DAD4BE" stroke="#10130C" stroke-width="1.8"/>
         </g>
         <!-- frost -->
         <text x="358" y="102" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="#DE826B" text-anchor="middle">FIRST FROST</text>

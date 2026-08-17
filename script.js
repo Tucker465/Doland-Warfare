@@ -951,6 +951,11 @@ const SEASON_PHASES = [
 ];
 const SEASON_MONTHS = ['January','February','March','April','May','June',
   'July','August','September','October','November','December'];
+// The caption uses the same three-letter tokens as the axis underneath it —
+// it matches the chart's own typography, and "MID-SEPTEMBER · FALLING OFF"
+// is wide enough that it struggles to find a clear slot at all.
+const SEASON_MONTHS_SHORT = ['JAN','FEB','MAR','APR','MAY','JUN',
+  'JUL','AUG','SEP','OCT','NOV','DEC'];
 
 // Horizontal position of a date, interpolated across its month's cell so the
 // marker moves through the month instead of jumping between month centres.
@@ -981,16 +986,91 @@ function seasonPhase(date){
   return hit;
 }
 
+// ----- callout placement -----
+// The caption is a wide two-line block and the risk curve is a tall, narrow
+// peak, so no single fixed position stays clear all year: the hand-drawn
+// original sat in open space in July and straight across the curve by
+// September. Candidate slots are scored against the curve and the chart's
+// other labels and the clearest one wins.
+//
+// Baselines for the first caption line, in preference order — the first entry
+// is where the caption has always sat, so a typical page load looks unchanged
+// and the lower/higher slots only come into play around the peak.
+const SEASON_BANDS = [58, 44, 30, 20, 100, 118];
+// Fixed furniture the caption must not land on, as [x1,y1,x2,y2].
+const SEASON_FROST_BOX = [316, 90, 400, 120];
+const SEASON_PEAK_BOX  = [204, 5, 276, 23];
+// Plot area the caption has to stay inside, and the baseline the fill sits on.
+const SEASON_BOUNDS = { left: 36, right: 410 };
+const SEASON_FILL_BOTTOM = 175;
+
+// getComputedTextLength() is the real laid-out width, but it throws on a
+// detached or undisplayed node; falling back to a monospace estimate keeps
+// placement sane rather than collapsing the caption to zero width.
+function textWidth(node){
+  try {
+    const w = node.getComputedTextLength();
+    if (w > 0) return w;
+  } catch (e) { /* not rendered yet */ }
+  const size = parseFloat(node.getAttribute('font-size')) || 10;
+  return node.textContent.length * size * 0.6;
+}
+
+function seasonRectOverlap(r, box){
+  const w = Math.min(r.x2, box[2]) - Math.max(r.x1, box[0]);
+  const h = Math.min(r.y2, box[3]) - Math.max(r.y1, box[1]);
+  return w > 0 && h > 0 ? w * h : 0;
+}
+// How much of a candidate slot lands on the risk curve or the shaded area
+// under it. Sampled in columns rather than solved exactly — the curve is
+// eight straight segments and this only has to rank candidates.
+function seasonCurveOverlap(r){
+  const steps = 20, dx = (r.x2 - r.x1) / steps;
+  let area = 0;
+  for (let i = 0; i < steps; i++){
+    // -3 keeps the caption off the stroke itself, not just the fill.
+    const top = Math.max(r.y1, seasonY(r.x1 + dx * (i + 0.5)) - 3);
+    area += Math.max(0, Math.min(r.y2, SEASON_FILL_BOTTOM) - top) * dx;
+  }
+  return area;
+}
+// Best slot for a caption of width w near a marker at x, given whether the
+// PEAK THREAT flag is currently on the chart.
+//
+// Slots are not locked to the marker — the caption is often wider than the
+// space beside it, and the open ground may be above the marker rather than to
+// either side of it. So every band is swept across the full plot width and
+// scored. Cost is dominated by how much ink the slot would cover, with light
+// nudges toward the usual band and toward staying close to the marker, so the
+// caption only travels when it genuinely has nowhere better to sit.
+function seasonSlot(x, w, peakShown){
+  let best = null;
+  SEASON_BANDS.forEach((band, bi) => {
+    for (let x1 = SEASON_BOUNDS.left; x1 + w <= SEASON_BOUNDS.right; x1 += 6){
+      const r = { x1, x2: x1 + w, y1: band - 10, y2: band + 16, band };
+      // Obstacles weigh heavier than the curve: overlapping a label makes two
+      // things unreadable, overlapping the curve only hides some shading.
+      const score = seasonCurveOverlap(r)
+        + seasonRectOverlap(r, SEASON_FROST_BOX) * 4
+        + (peakShown ? seasonRectOverlap(r, SEASON_PEAK_BOX) * 4 : 0)
+        + bi * 8 + Math.abs((r.x1 + r.x2) / 2 - x) * 0.25;
+      if (!best || score < best.score) best = { r, score };
+    }
+  });
+  return best;
+}
+
 (function initSeasonMarker(){
   const svg = document.getElementById('season-graph');
   if (!svg) return;
   const now   = document.getElementById('season-now');
   const peak  = document.getElementById('season-peak');
   const line  = document.getElementById('season-now-line');
+  const plate = document.getElementById('season-now-plate');
   const dot   = document.getElementById('season-now-dot');
   const label = document.getElementById('season-now-label');
   const phase = document.getElementById('season-now-phase');
-  if (!(now && peak && line && dot && label && phase)) return;
+  if (!(now && peak && line && plate && dot && label && phase)) return;
 
   const months = svg.querySelectorAll('[data-month]');
   const today = new Date();
@@ -1016,24 +1096,70 @@ function seasonPhase(date){
   const monthName = SEASON_MONTHS[m - 1];
 
   now.style.display = '';
-  line.setAttribute('x1', x.toFixed(1));
-  line.setAttribute('x2', x.toFixed(1));
   dot.setAttribute('cx', x.toFixed(1));
   dot.setAttribute('cy', y.toFixed(1));
 
-  // Near the left edge an end-anchored label would run off the chart, so the
-  // callout flips to the other side of its own ruler line.
-  const flip = x < 150;
-  [label, phase].forEach(t => {
-    t.setAttribute('x', (x + (flip ? 7 : -6)).toFixed(1));
-    t.setAttribute('text-anchor', flip ? 'start' : 'end');
-  });
-  label.textContent = flip ? '◂ YOU ARE HERE' : 'YOU ARE HERE ▸';
-  phase.textContent = `${part}-${monthName.toUpperCase()} · ${here.phase}`;
+  // Late in the season the ruler line runs down through the FIRST FROST label,
+  // so it breaks around it rather than striking it out. The caption needs no
+  // such treatment — its plate is drawn over the line and opens its own gap.
+  const lx = x.toFixed(1);
+  const overFrost = x > SEASON_FROST_BOX[0] && x < SEASON_FROST_BOX[2];
+  line.setAttribute('d', overFrost
+    ? `M${lx},36 L${lx},${SEASON_FROST_BOX[1] - 2} M${lx},${SEASON_FROST_BOX[3] + 2} L${lx},175`
+    : `M${lx},36 L${lx},175`);
 
   // At peak the two dots would land on each other; the marker's own caption
   // already reads "AT PEAK", so the standalone peak flag stands down.
-  peak.style.display = Math.abs(x - SEASON_PEAK_X) < 18 ? 'none' : '';
+  const peakShown = Math.abs(x - SEASON_PEAK_X) >= 18;
+  peak.style.display = peakShown ? '' : 'none';
+
+  phase.textContent = `${part}-${SEASON_MONTHS_SHORT[m - 1]} · ${here.phase}`;
+  placeCallout(x, peakShown);
+
+  // Text metrics depend on the webfont, which may still be loading on a cold
+  // visit; a second pass once it lands keeps the slot honest to the real
+  // caption width instead of the fallback font's.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => placeCallout(x, peakShown)).catch(() => {});
+  }
+
+  function placeCallout(mx, showPeak){
+    // Measured, not estimated: the caption's width changes with the month and
+    // the phase, and a slot picked from a guess would be the same overlap bug
+    // in a new place. Measured with an arrow attached — both arrow variants
+    // are the same width, so the side can still be decided afterwards.
+    label.textContent = 'YOU ARE HERE ▸';
+    const w = Math.max(textWidth(label), textWidth(phase)) + 12;
+    const slot = seasonSlot(mx, w, showPeak);
+    if (!slot) { label.textContent = 'YOU ARE HERE ▸'; return; }
+    const r = slot.r;
+
+    // The arrow points back at the marker and sits on whichever end of the
+    // caption faces it, with the text aligned to that end so the two are as
+    // close together as the slot allows. When the caption sits directly over
+    // the marker there is no direction to point in — the ruler line already
+    // runs out of the plate straight down to the dot — so the arrow is
+    // dropped rather than made to point at the text's own middle.
+    const over = mx > r.x1 && mx < r.x2;
+    const rightOf = !over && mx > r.x2;
+    label.textContent = over ? 'YOU ARE HERE' : rightOf ? 'YOU ARE HERE ▸' : '◂ YOU ARE HERE';
+    const align = over ? 'middle' : rightOf ? 'end' : 'start';
+    const tx = over ? (r.x1 + r.x2) / 2 : rightOf ? r.x2 - 6 : r.x1 + 6;
+    [label, phase].forEach(t => {
+      t.setAttribute('x', tx.toFixed(1));
+      t.setAttribute('text-anchor', align);
+    });
+    label.setAttribute('y', r.band);
+    phase.setAttribute('y', r.band + 12);
+
+    // The plate is the chart's own background colour: invisible when the
+    // caption lands in open space, and a clean mask when the only slots left
+    // sit over the curve.
+    plate.setAttribute('x', r.x1.toFixed(1));
+    plate.setAttribute('y', r.y1);
+    plate.setAttribute('width', (r.x2 - r.x1).toFixed(1));
+    plate.setAttribute('height', r.y2 - r.y1);
+  }
 
   months.forEach(t => {
     if (Number(t.getAttribute('data-month')) !== m) return;
@@ -1044,5 +1170,5 @@ function seasonPhase(date){
   svg.setAttribute('aria-label',
     'Typical West Nile risk by month for South Dakota: low in spring, climbing steeply ' +
     'through July, peaking in August and September, and ending at the first hard frost. ' +
-    `It is now ${part.toLowerCase()} ${monthName} — ${here.say}.`);
+    `It is now ${part.toLowerCase()}-${monthName} — ${here.say}.`);
 })();
