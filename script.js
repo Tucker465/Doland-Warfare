@@ -922,3 +922,127 @@ const KID_RANKS = [
 
   render();
 })();
+
+// ---------- CAMPAIGN SEASON GRAPH (/intel/) ----------
+// The "YOU ARE HERE" marker on the WNV risk-by-month chart used to be drawn
+// straight into the SVG by hand, which meant it went stale silently — it was
+// still pointing at mid-July most of the way through the following August.
+// Anything on that chart that depends on the date is now derived from the
+// reader's actual clock at load time, and the markup carries only a fallback.
+//
+// Chart geometry, kept in sync with the <svg> in intel.html: months sit at
+// 50px centres starting with APR at x=40, and SEASON_CURVE is the same set of
+// points the risk <path> is drawn through.
+const SEASON_X0 = 40, SEASON_STEP = 50, SEASON_FIRST = 4, SEASON_LAST = 11;
+const SEASON_PEAK_X = 240;
+const SEASON_CURVE = [
+  [40,170.5],[90,167.5],[140,155],[190,115],[240,28],[290,62],[340,138],[390,169]
+];
+// Phase copy, listed newest-start-last and matched by walking backwards. The
+// graph is a call to action rather than a thermometer, so each band is short
+// enough to sit under "YOU ARE HERE" on one line.
+const SEASON_PHASES = [
+  { m: 4,  d: 1,  phase: 'BUILD NOW',     say: 'the season is just opening' },
+  { m: 6,  d: 1,  phase: 'CLIMBING',      say: 'risk is rising' },
+  { m: 7,  d: 10, phase: 'CLIMBING FAST', say: 'risk is climbing fast toward the peak' },
+  { m: 8,  d: 1,  phase: 'AT PEAK',       say: 'risk is at its yearly peak' },
+  { m: 9,  d: 15, phase: 'FALLING OFF',   say: 'risk is falling but still real' },
+  { m: 10, d: 15, phase: 'ENDGAME',       say: 'the season is ending at the first hard frost' }
+];
+const SEASON_MONTHS = ['January','February','March','April','May','June',
+  'July','August','September','October','November','December'];
+
+// Horizontal position of a date, interpolated across its month's cell so the
+// marker moves through the month instead of jumping between month centres.
+// Clamped to the first and last plotted points: the curve is only drawn from
+// the APR centre to the NOV centre, so early April and late November would
+// otherwise put the marker out past the ends of the line it is meant to ride.
+function seasonX(date){
+  const m = date.getMonth() + 1, d = date.getDate();
+  const days = new Date(date.getFullYear(), m, 0).getDate();
+  const x = SEASON_X0 + (m - SEASON_FIRST) * SEASON_STEP
+          + ((d - 0.5) / days - 0.5) * SEASON_STEP;
+  return Math.min(Math.max(x, SEASON_CURVE[0][0]), SEASON_CURVE[SEASON_CURVE.length - 1][0]);
+}
+// Height of the risk curve at an arbitrary x, so the marker dot rides the line
+// rather than floating next to it.
+function seasonY(x){
+  if (x <= SEASON_CURVE[0][0]) return SEASON_CURVE[0][1];
+  for (let i = 1; i < SEASON_CURVE.length; i++){
+    const [x0,y0] = SEASON_CURVE[i-1], [x1,y1] = SEASON_CURVE[i];
+    if (x <= x1) return y0 + (y1 - y0) * (x - x0) / (x1 - x0);
+  }
+  return SEASON_CURVE[SEASON_CURVE.length - 1][1];
+}
+function seasonPhase(date){
+  const m = date.getMonth() + 1, d = date.getDate();
+  let hit = SEASON_PHASES[0];
+  for (const p of SEASON_PHASES) if (m > p.m || (m === p.m && d >= p.d)) hit = p;
+  return hit;
+}
+
+(function initSeasonMarker(){
+  const svg = document.getElementById('season-graph');
+  if (!svg) return;
+  const now   = document.getElementById('season-now');
+  const peak  = document.getElementById('season-peak');
+  const line  = document.getElementById('season-now-line');
+  const dot   = document.getElementById('season-now-dot');
+  const label = document.getElementById('season-now-label');
+  const phase = document.getElementById('season-now-phase');
+  if (!(now && peak && line && dot && label && phase)) return;
+
+  const months = svg.querySelectorAll('[data-month]');
+  const today = new Date();
+  const m = today.getMonth() + 1;
+
+  months.forEach(t => { t.removeAttribute('fill'); t.removeAttribute('font-weight'); });
+
+  // December through March is off the chart entirely — nothing is flying and
+  // nothing is breeding, so there is no honest place to put the marker.
+  if (m < SEASON_FIRST || m > SEASON_LAST){
+    now.style.display = 'none';
+    peak.style.display = '';
+    svg.setAttribute('aria-label',
+      'Typical West Nile risk by month for South Dakota: low in spring, climbing steeply ' +
+      'through July, peaking in August and September, and ending at the first hard frost. ' +
+      'It is currently the off-season — no active mosquitoes until the spring thaw.');
+    return;
+  }
+
+  const x = seasonX(today), y = seasonY(x);
+  const here = seasonPhase(today);
+  const part = today.getDate() <= 10 ? 'EARLY' : today.getDate() <= 20 ? 'MID' : 'LATE';
+  const monthName = SEASON_MONTHS[m - 1];
+
+  now.style.display = '';
+  line.setAttribute('x1', x.toFixed(1));
+  line.setAttribute('x2', x.toFixed(1));
+  dot.setAttribute('cx', x.toFixed(1));
+  dot.setAttribute('cy', y.toFixed(1));
+
+  // Near the left edge an end-anchored label would run off the chart, so the
+  // callout flips to the other side of its own ruler line.
+  const flip = x < 150;
+  [label, phase].forEach(t => {
+    t.setAttribute('x', (x + (flip ? 7 : -6)).toFixed(1));
+    t.setAttribute('text-anchor', flip ? 'start' : 'end');
+  });
+  label.textContent = flip ? '◂ YOU ARE HERE' : 'YOU ARE HERE ▸';
+  phase.textContent = `${part}-${monthName.toUpperCase()} · ${here.phase}`;
+
+  // At peak the two dots would land on each other; the marker's own caption
+  // already reads "AT PEAK", so the standalone peak flag stands down.
+  peak.style.display = Math.abs(x - SEASON_PEAK_X) < 18 ? 'none' : '';
+
+  months.forEach(t => {
+    if (Number(t.getAttribute('data-month')) !== m) return;
+    t.setAttribute('fill', '#DAD4BE');
+    t.setAttribute('font-weight', '600');
+  });
+
+  svg.setAttribute('aria-label',
+    'Typical West Nile risk by month for South Dakota: low in spring, climbing steeply ' +
+    'through July, peaking in August and September, and ending at the first hard frost. ' +
+    `It is now ${part.toLowerCase()} ${monthName} — ${here.say}.`);
+})();

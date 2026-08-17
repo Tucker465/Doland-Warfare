@@ -68,7 +68,13 @@ last_verified: "2026-07-20"
     <div class="seasonwrap">
       <div class="sct">Campaign Season — Typical WNV Risk by Month</div>
       <div class="scs">RELATIVE RISK // SOUTH DAKOTA &amp; NORTHERN PLAINS</div>
-      <svg viewBox="0 0 440 200" role="img" aria-label="Typical West Nile risk by month for South Dakota: low in spring, climbing steeply through July, peaking in August and September, and ending at the first hard frost. It is now mid-July — risk is ramping up fast toward the peak.">
+      <!-- Everything time-sensitive in this chart (the YOU ARE HERE marker, the
+           highlighted month, the aria-label) is set by initSeasonMarker() in
+           script.js from the reader's actual date. The values written into the
+           markup below are the no-JS fallback: they are hand-set and only as
+           current as the last deploy, so don't treat them as the source of
+           truth — the script is. -->
+      <svg id="season-graph" viewBox="0 0 440 200" role="img" aria-label="Typical West Nile risk by month for South Dakota: low in spring, climbing steeply through July, peaking in August and September, and ending at the first hard frost.">
         <defs>
           <linearGradient id="riskfill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stop-color="#E6A630" stop-opacity=".5"/>
@@ -88,30 +94,37 @@ last_verified: "2026-07-20"
           <circle cx="40" cy="170.5" r="2"/><circle cx="90" cy="167.5" r="2"/><circle cx="140" cy="155" r="2"/>
           <circle cx="290" cy="62" r="2.4"/><circle cx="340" cy="138" r="2"/><circle cx="390" cy="169" r="2"/>
         </g>
-        <!-- PEAK marker -->
-        <circle cx="240" cy="28" r="4.2" fill="#E6A630" stroke="#10130C" stroke-width="1.6"/>
-        <text x="240" y="17" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#E6A630" text-anchor="middle">PEAK THREAT</text>
-        <!-- YOU ARE HERE marker (mid-July) -->
-        <line x1="190" y1="36" x2="190" y2="175" stroke="#DAD4BE" stroke-width="1.2" stroke-dasharray="3 3" opacity=".6"/>
-        <circle cx="190" cy="115" r="5" fill="#DAD4BE" stroke="#10130C" stroke-width="1.8"/>
-        <text x="184" y="58" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#DAD4BE" text-anchor="end">YOU ARE HERE ▸</text>
-        <text x="184" y="70" font-family="'IBM Plex Mono',monospace" font-size="8.5" fill="#C9C2A6" text-anchor="end">MID-JULY · CLIMBING FAST</text>
+        <!-- PEAK marker. Hidden by the script whenever the YOU ARE HERE marker
+             lands on top of it — during peak season the two would be the same
+             dot, and the marker's own caption already says "AT PEAK". -->
+        <g id="season-peak" style="display:none">
+          <circle cx="240" cy="28" r="4.2" fill="#E6A630" stroke="#10130C" stroke-width="1.6"/>
+          <text x="240" y="17" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#E6A630" text-anchor="middle">PEAK THREAT</text>
+        </g>
+        <!-- YOU ARE HERE marker -->
+        <g id="season-now">
+          <line id="season-now-line" x1="242" y1="36" x2="242" y2="175" stroke="#DAD4BE" stroke-width="1.2" stroke-dasharray="3 3" opacity=".6"/>
+          <circle id="season-now-dot" cx="242" cy="29" r="5" fill="#DAD4BE" stroke="#10130C" stroke-width="1.8"/>
+          <text id="season-now-label" x="236" y="58" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#DAD4BE" text-anchor="end">YOU ARE HERE ▸</text>
+          <text id="season-now-phase" x="236" y="70" font-family="'IBM Plex Mono',monospace" font-size="8.5" fill="#C9C2A6" text-anchor="end">MID-AUGUST · AT PEAK</text>
+        </g>
         <!-- frost -->
         <text x="358" y="102" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="#DE826B" text-anchor="middle">FIRST FROST</text>
         <text x="358" y="113" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="#DE826B" text-anchor="middle">= ENDGAME</text>
-        <!-- month labels -->
+        <!-- month labels. data-month is the calendar month number; the script
+             uses it to move the highlight onto the reader's current month. -->
         <g font-family="'IBM Plex Mono',monospace" font-size="11" fill="#94A074" text-anchor="middle">
-          <text x="40" y="192">APR</text><text x="90" y="192">MAY</text><text x="140" y="192">JUN</text>
-          <text x="190" y="192" fill="#DAD4BE" font-weight="600">JUL</text><text x="240" y="192">AUG</text><text x="290" y="192">SEP</text>
-          <text x="340" y="192">OCT</text><text x="390" y="192">NOV</text>
+          <text data-month="4" x="40" y="192">APR</text><text data-month="5" x="90" y="192">MAY</text><text data-month="6" x="140" y="192">JUN</text>
+          <text data-month="7" x="190" y="192">JUL</text><text data-month="8" x="240" y="192" fill="#DAD4BE" font-weight="600">AUG</text><text data-month="9" x="290" y="192">SEP</text>
+          <text data-month="10" x="340" y="192">OCT</text><text data-month="11" x="390" y="192">NOV</text>
         </g>
         <!-- y labels -->
         <text x="28" y="31" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#6E7A55" text-anchor="end">HIGH</text>
         <text x="28" y="173" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#6E7A55" text-anchor="end">LOW</text>
       </svg>
-      <div class="cap">SOURCE: CDC &amp; SD surveillance — WNV cases climb through July, peak late Aug–Sept, and end at the first hard frost. Get set up now, before the peak.</div>
+      <div class="cap">SOURCE: CDC &amp; SD surveillance — WNV cases climb through July, peak late Aug–Sept, and end at the first hard frost. Check the marker for where the season stands today.</div>
     </div>
-    <p>Translation: the fight runs from <b>spring thaw to the first hard frost</b>, and the smart move is to be set up <b>before</b> August. Start when the snow's gone, not when you're already getting bit.</p>
+    <p>Translation: the fight runs from <b>spring thaw to the first hard frost</b>, and the earlier you're set up the more of the season your traps cover. But there is no point in the season where it's too late to start — <b>every trap you put out stops the next batch from hatching</b>, and the mosquitoes biting in September hatched in August. Best day to start was spring. Second best is today.</p>
   </div>
 </section>
 
