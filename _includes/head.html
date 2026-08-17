@@ -23,6 +23,16 @@
      Note there is no 'unsafe-inline': inline <script> AND inline <style>
      elements are both blocked, including <style> inside inline SVG.
 
+     /trap-map/ loads the Google Maps JavaScript API (see GOOGLE_MAPS_API_KEY
+     in script.js) and will NOT render until the Transform Rule also allows:
+       script-src  ...  https://maps.googleapis.com
+       img-src     ...  https://maps.gstatic.com https://maps.googleapis.com
+                          https://*.ggpht.com
+       connect-src ...  https://maps.googleapis.com
+       style-src   ...  'unsafe-inline'   (the Maps SDK injects a <style> tag)
+     Until the Cloudflare rule is updated, the browser console will show CSP
+     violations and the page falls back to its "map unavailable" message.
+
      /water-hunt/ is layout:null and does not use this include, so it keeps
      its own meta CSP — without one it would ship no policy at all if the
      Transform Rule were ever removed. {%- endcomment -%}

@@ -1174,12 +1174,17 @@ function seasonSlot(x, w, peakShown){
 })();
 
 
-// ---------- TRAP MAP: PAN, ZOOM, SITE DETAILS ----------
+// ---------- TRAP MAP: GOOGLE MAPS + SITE DETAILS ----------
 (function initTrapMap() {
-  var vp = document.getElementById('map-viewport');
-  if (!vp) return;
-  var svg = document.getElementById('town-map');
-  var container = document.getElementById('map-container');
+  var mapEl = document.getElementById('trap-gmap');
+  if (!mapEl) return;
+
+  // TODO: set this to a Google Maps JavaScript API key restricted (HTTP
+  // referrer) to https://dolandskeeterwar.com/* in Google Cloud Console.
+  // Until it's set, the map shows a fallback message instead of loading.
+  var GOOGLE_MAPS_API_KEY = '';
+
+  var fallback = document.getElementById('gmap-fallback');
   var panel = document.getElementById('site-panel');
   var spId = document.getElementById('sp-id');
   var spPri = document.getElementById('sp-pri');
@@ -1187,103 +1192,63 @@ function seasonSlot(x, w, peakShown){
   var spBody = document.getElementById('sp-body');
   var spClose = document.getElementById('sp-close');
 
-  var scale = 1, tx = 0, ty = 0, minS = 0.5, maxS = 4;
-  var dragging = false, startX = 0, startY = 0, startTx = 0, startTy = 0;
+  var TOWN_CENTER = {lat: 44.89444, lng: -98.09972};
 
-  function apply() {
-    svg.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
-    svg.style.transformOrigin = '0 0';
-  }
-
-  function clampPan() {
-    var sw = svg.getBoundingClientRect().width / scale;
-    var sh = svg.getBoundingClientRect().height / scale;
-    var vw = vp.clientWidth;
-    var vh = vp.clientHeight;
-    var maxTx = 0, maxTy = 0;
-    var minTx = vw - sw * scale;
-    var minTy = vh - sh * scale;
-    if (minTx > 0) { tx = minTx / 2; }
-    else { tx = Math.max(minTx, Math.min(maxTx, tx)); }
-    if (minTy > 0) { ty = minTy / 2; }
-    else { ty = Math.max(minTy, Math.min(maxTy, ty)); }
-  }
-
-  function zoom(delta) {
-    var prev = scale;
-    scale = Math.max(minS, Math.min(maxS, scale + delta));
-    var cx = vp.clientWidth / 2;
-    var cy = vp.clientHeight / 2;
-    tx = cx - (cx - tx) * (scale / prev);
-    ty = cy - (cy - ty) * (scale / prev);
-    clampPan();
-    apply();
-  }
-
-  function reset() { scale = 1; tx = 0; ty = 0; apply(); }
-
-  document.getElementById('map-zin').addEventListener('click', function() { zoom(0.3); });
-  document.getElementById('map-zout').addEventListener('click', function() { zoom(-0.3); });
-  document.getElementById('map-reset').addEventListener('click', reset);
-
-  vp.addEventListener('wheel', function(e) {
-    e.preventDefault();
-    zoom(e.deltaY < 0 ? 0.15 : -0.15);
-  }, {passive: false});
-
-  vp.addEventListener('pointerdown', function(e) {
-    dragging = true; startX = e.clientX; startY = e.clientY;
-    startTx = tx; startTy = ty;
-    vp.setPointerCapture(e.pointerId);
-  });
-  vp.addEventListener('pointermove', function(e) {
-    if (!dragging) return;
-    tx = startTx + (e.clientX - startX);
-    ty = startTy + (e.clientY - startY);
-    clampPan(); apply();
-  });
-  vp.addEventListener('pointerup', function() { dragging = false; });
-  vp.addEventListener('pointercancel', function() { dragging = false; });
-
-  container.addEventListener('keydown', function(e) {
-    var step = 40;
-    if (e.key === 'ArrowLeft') { tx += step; clampPan(); apply(); e.preventDefault(); }
-    if (e.key === 'ArrowRight') { tx -= step; clampPan(); apply(); e.preventDefault(); }
-    if (e.key === 'ArrowUp') { ty += step; clampPan(); apply(); e.preventDefault(); }
-    if (e.key === 'ArrowDown') { ty -= step; clampPan(); apply(); e.preventDefault(); }
-    if (e.key === '+' || e.key === '=') { zoom(0.3); e.preventDefault(); }
-    if (e.key === '-') { zoom(-0.3); e.preventDefault(); }
-    if (e.key === '0') { reset(); e.preventDefault(); }
-  });
-
+  // Coordinates below are reprojected from the site's original hand-drawn
+  // layout onto real lat/lng, anchored only at the town center — they are
+  // NOT surveyed addresses. See the on-page notice above the map.
   var siteData = {
-    T1:  {pri:'PRIORITY 1', name:'South edge — lagoon drainage intercept',
+    T1:  {pri:'PRIORITY 1', name:'South edge — lagoon drainage intercept', lat:44.88975, lng:-98.09516,
           body:'<p><b>Score: 18/20.</b> Directly north of the wastewater lagoon. Prevailing S/SSE wind pushes gravid females from the lagoon straight through this corridor. Highest-value single site.</p><p>Trap: storage tote or half-barrel with Bti. Shelter against a fenceline.</p>'},
-    T2:  {pri:'PRIORITY 1', name:'SE residential edge — lagoon downwind belt',
+    T2:  {pri:'PRIORITY 1', name:'SE residential edge — lagoon downwind belt', lat:44.89120, lng:-98.09364,
           body:'<p><b>Score: 18/20.</b> Second-line intercept behind T1. Catches females before they reach the SE residential blocks.</p><p>Trap: kiddie pool or bucket at a backyard edge.</p>'},
-    T3:  {pri:'PRIORITY 1', name:'School buffer — south side',
+    T3:  {pri:'PRIORITY 1', name:'School buffer — south side', lat:44.89750, lng:-98.09617,
           body:'<p><b>Score: 16/20.</b> Protects the school — the most important gathering area. Place on south edge of school property near fences, never on the playground.</p><p>Trap: bucket, secured and out of reach of children.</p>'},
-    T4:  {pri:'PRIORITY 1', name:'Town center — US-212 / SD-37 corridor',
+    T4:  {pri:'PRIORITY 1', name:'Town center — US-212 / SD-37 corridor', lat:44.89516, lng:-98.09972,
           body:'<p><b>Score: 14/20.</b> Highway ditches collect runoff. Central location extends the interception belt.</p><p>Trap: bucket or tote, staked against mowing.</p>'},
-    T5:  {pri:'PRIORITY 2', name:'West side — park buffer',
+    T5:  {pri:'PRIORITY 2', name:'West side — park buffer', lat:44.89534, lng:-98.10606,
           body:'<p><b>Score: 15/20.</b> Shields the park and ballfield from crosswind dispersal. Trees create attractive microhabitat.</p><p>Trap: bucket or kiddie pool at park perimeter.</p>'},
-    T6:  {pri:'PRIORITY 2', name:'NW low area — source reduction + trap',
+    T6:  {pri:'PRIORITY 2', name:'NW low area — source reduction + trap', lat:44.89804, lng:-98.10580,
           body:'<p><b>Score: 15/20.</b> Persistent low spot holding water after rain. Drain if possible; otherwise Bti-treat directly and trap nearby.</p><p>Trap: Bti granules in the water + bucket 10–20 ft away.</p>'},
-    T7:  {pri:'PRIORITY 2', name:'East residential edge',
+    T7:  {pri:'PRIORITY 2', name:'East residential edge', lat:44.89444, lng:-98.09262,
           body:'<p><b>Score: 13/20.</b> Open to agricultural land. Wind shifts push adults from stock tanks and wheel ruts into residential blocks.</p><p>Trap: storage tote near a fenceline.</p>'},
-    T8:  {pri:'PRIORITY 2', name:'South-central residential',
+    T8:  {pri:'PRIORITY 2', name:'South-central residential', lat:44.89084, lng:-98.10099,
           body:'<p><b>Score: 14/20.</b> Interior gap-filler for backyard container habitat. Source-reduce first, then trap.</p><p>Trap: bucket at a backyard edge.</p>'},
-    T9:  {pri:'PRIORITY 2', name:'North edge — school approach',
+    T9:  {pri:'PRIORITY 2', name:'North edge — school approach', lat:44.89804, lng:-98.09972,
           body:'<p><b>Score: 14/20.</b> Second-line school protection from the west. Cross-references T3.</p><p>Trap: bucket near a tree line or fence.</p>'},
-    T10: {pri:'PRIORITY 3', name:'NE corner — extended coverage',
+    T10: {pri:'PRIORITY 3', name:'NE corner — extended coverage', lat:44.89804, lng:-98.09364,
           body:'<p><b>Score: 10/20.</b> Closes NE gap, backstops the school from the east. Lower priority — prevailing wind pushes away from here.</p><p>Trap: bucket.</p>'},
-    T11: {pri:'PRIORITY 3', name:'SW residential — south perimeter',
+    T11: {pri:'PRIORITY 3', name:'SW residential — south perimeter', lat:44.89084, lng:-98.10479,
           body:'<p><b>Score: 12/20.</b> Closes the south gap between T1 and the cemetery. Near the drainage ditch.</p><p>Trap: bucket or storage tote.</p>'},
-    T12: {pri:'PRIORITY 3', name:'West edge — cemetery buffer',
+    T12: {pri:'PRIORITY 3', name:'West edge — cemetery buffer', lat:44.89264, lng:-98.10745,
           body:'<p><b>Score: 11/20.</b> Cemetery flower vases and birdbaths are larval habitat. Trees provide preferred shade.</p><p>Trap: bucket. Dump vase water weekly.</p>'},
-    T13: {pri:'PRIORITY 3', name:'East US-212 — highway corridor',
+    T13: {pri:'PRIORITY 3', name:'East US-212 — highway corridor', lat:44.89300, lng:-98.09262,
           body:'<p><b>Score: 10/20.</b> Highway ditches hold water for days. Extends the east perimeter.</p><p>Trap: bucket, staked or weighted.</p>'}
   };
+
+  var landmarks = [
+    {label: 'Doland School', lat: 44.89831, lng: -98.09566},
+    {label: 'City Park',     lat: 44.89593, lng: -98.10663},
+    {label: 'Cemetery',      lat: 44.89318, lng: -98.10733},
+    {label: 'Wastewater lagoon', lat: 44.88957, lng: -98.09059}
+  ];
+
+  var PRI_COLOR = {'PRIORITY 1': '#E6A630', 'PRIORITY 2': '#94A074', 'PRIORITY 3': '#DE826B'};
+
+  function siteIcon(pri) {
+    var c = PRI_COLOR[pri] || '#94A074';
+    return {
+      path: 'M0,0m-9,0a9,9 0 1,0 18,0a9,9 0 1,0 -18,0',
+      fillColor: c, fillOpacity: 0.85, strokeColor: c, strokeWeight: 2, scale: 1
+    };
+  }
+
+  function landmarkIcon() {
+    return {
+      path: 'M0,0m-5,0a5,5 0 1,0 10,0a5,5 0 1,0 -10,0',
+      fillColor: '#1a2018', fillOpacity: 0.9, strokeColor: '#6b5a30', strokeWeight: 1.5, scale: 1
+    };
+  }
 
   function showSite(id) {
     var d = siteData[id];
@@ -1298,19 +1263,47 @@ function seasonSlot(x, w, peakShown){
     if (brief) brief.open = true;
   }
 
-  svg.addEventListener('click', function(e) {
-    var site = e.target.closest('.trap-site');
-    if (!site) return;
-    showSite(site.getAttribute('data-site'));
-  });
+  if (spClose) spClose.addEventListener('click', function() { panel.hidden = true; });
 
-  svg.addEventListener('keydown', function(e) {
-    if (e.key !== 'Enter' && e.key !== ' ') return;
-    var site = e.target.closest('.trap-site');
-    if (!site) return;
-    e.preventDefault();
-    showSite(site.getAttribute('data-site'));
-  });
+  if (!GOOGLE_MAPS_API_KEY) {
+    mapEl.hidden = true;
+    if (fallback) fallback.hidden = false;
+    return;
+  }
 
-  spClose.addEventListener('click', function() { panel.hidden = true; });
+  window.__initTrapGMap = function() {
+    var map = new google.maps.Map(mapEl, {
+      center: TOWN_CENTER,
+      zoom: 15,
+      mapTypeId: 'hybrid',
+      streetViewControl: false,
+      mapTypeControl: false
+    });
+
+    landmarks.forEach(function(lm) {
+      var m = new google.maps.Marker({
+        position: {lat: lm.lat, lng: lm.lng}, map: map,
+        icon: landmarkIcon(), title: lm.label
+      });
+    });
+
+    Object.keys(siteData).forEach(function(id) {
+      var d = siteData[id];
+      var marker = new google.maps.Marker({
+        position: {lat: d.lat, lng: d.lng}, map: map,
+        icon: siteIcon(d.pri), label: {text: id, color: '#191B12', fontSize: '10px', fontWeight: '700'},
+        title: id + ' — ' + d.name
+      });
+      marker.addListener('click', function() { showSite(id); });
+    });
+  };
+
+  var script = document.createElement('script');
+  script.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(GOOGLE_MAPS_API_KEY) + '&callback=__initTrapGMap';
+  script.async = true;
+  script.onerror = function() {
+    mapEl.hidden = true;
+    if (fallback) fallback.hidden = false;
+  };
+  document.head.appendChild(script);
 })();
