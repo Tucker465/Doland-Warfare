@@ -1223,7 +1223,19 @@ function seasonSlot(x, w, peakShown){
     T12: {pri:'PRIORITY 3', name:'West edge — cemetery buffer', lat:44.89264, lng:-98.10745,
           body:'<p><b>Score: 11/20.</b> Cemetery flower vases and birdbaths are larval habitat. Trees provide preferred shade.</p><p>Trap: bucket. Dump vase water weekly.</p>'},
     T13: {pri:'PRIORITY 3', name:'East US-212 — highway corridor', lat:44.89300, lng:-98.09262,
-          body:'<p><b>Score: 10/20.</b> Highway ditches hold water for days. Extends the east perimeter.</p><p>Trap: bucket, staked or weighted.</p>'}
+          body:'<p><b>Score: 10/20.</b> Highway ditches hold water for days. Extends the east perimeter.</p><p>Trap: bucket, staked or weighted.</p>'},
+    T14: {pri:'PRIORITY 2', name:'NW church grounds — shaded interior stop', lat:44.89696, lng:-98.10302,
+          body:'<p><b>Score: 13/20.</b> Mature shade trees give this one of the best cover scores in town outside the park. Fills the interior gap between T6 and T9.</p><p>Trap: bucket in the shade line along the property fence, clear of entrances.</p>'},
+    T15: {pri:'PRIORITY 2', name:'SE church grounds — shaded interior stop', lat:44.89264, lng:-98.09668,
+          body:'<p><b>Score: 14/20.</b> Second shaded interior stop, closing the gap between T4 and the T1/T2 lagoon line. Tree cover plus proximity to the south drainage path.</p><p>Trap: bucket or kiddie pool in the shade line, away from entrances.</p>'},
+    T16: {pri:'PRIORITY 3', name:'NW interior block — tree-lined backyard fill', lat:44.89732, lng:-98.10276,
+          body:'<p><b>Score: 11/20.</b> Backyard container habitat holds water longest in shaded interior blocks like this one. Source-reduce first, then trap in the shadiest corner.</p><p>Trap: bucket under a tree or against a shed.</p>'},
+    T17: {pri:'PRIORITY 3', name:'NE interior block — tree-lined backyard fill', lat:44.89588, lng:-98.09465,
+          body:'<p><b>Score: 11/20.</b> Interior fill east of the school under mature boulevard trees, catching anything past T3, T9, and T10.</p><p>Trap: bucket in a shaded backyard corner.</p>'},
+    T18: {pri:'PRIORITY 3', name:'SW interior block — tree-lined backyard fill', lat:44.89228, lng:-98.10276,
+          body:'<p><b>Score: 12/20.</b> Closes the interior gap south of T5 and west of T8. Shaded yards here hold water longer after rain.</p><p>Trap: bucket or storage tote in shade.</p>'},
+    T19: {pri:'PRIORITY 3', name:'SE interior block — tree-lined backyard fill', lat:44.89156, lng:-98.09465,
+          body:'<p><b>Score: 12/20.</b> Interior fill between T2 and T13, catching backyard habitat the perimeter sites miss. Good tree cover along the block.</p><p>Trap: bucket in the shadiest available corner.</p>'}
   };
 
   var landmarks = [
