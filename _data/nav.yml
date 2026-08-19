@@ -18,7 +18,10 @@ primary:
   - { label: "Field Manual",  sub: "Know the Threat",          url: "/intel/",    key: intel }
   - { label: "Build Plans",   sub: "Traps & Blueprints",       url: "/build/",    key: build }
   - { label: "Tools",         sub: "What Works, What Doesn't", url: "/tools/",    key: tools }
-  - { label: "Trap Map",       sub: "Where to Place Traps",     url: "/trap-map/", key: trapmap }
+  # Trap Map (key: trapmap, url: /trap-map/) is pulled from primary nav while
+  # the page is unpublished (see trap-map.html front matter). page_sections
+  # and the related-links entries below are left in place so re-adding this
+  # one line restores everything else.
   - { label: "Resupply",      sub: "Bti & Where to Buy",       url: "/resupply/", key: resupply }
   - { label: "Debrief",       sub: "FAQ",                      url: "/faq/",      key: faq }
 
@@ -88,8 +91,8 @@ page_sections:
 # contextually relevant. Home is deliberately absent — it already links to
 # every page in its own body copy.
 related:
-  intel:    [build, trapmap, faq]
-  build:    [trapmap, resupply, tools]
+  intel:    [build, faq]
+  build:    [resupply, tools]
   trapmap:  [build, intel, resupply]
   tools:    [build, resupply]
   resupply: [build, tools]
