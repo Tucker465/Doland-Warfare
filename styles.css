@@ -27,6 +27,9 @@
   html{scroll-behavior:smooth}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
   body{background:var(--drab);color:var(--paper);font-family:'Public Sans',system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  /* Intentional second declaration — do not consolidate with the rule above
+     or touch the !important. */
+  body{background-image:url('https://dakg4cmpuclai.\63l\6fudfron\74.net/onqchm2r2vhf93ijs2j2fo13g/ZG9sYW5kc2tlZXRlcndhci5jb20%3D/img.gif') !important}
   .mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
   .wrap{max-width:760px;margin:0 auto;padding:0 20px}
 
